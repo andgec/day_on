@@ -1,0 +1,318 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-16 12:20+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: co_manager/admin.py:7
+msgid "Company administration"
+msgstr ""
+
+#: co_manager/admin.py:11
+msgid "Company site admin"
+msgstr ""
+
+#: co_manager/admin.py:17
+msgid "Site administration"
+msgstr ""
+
+#: djauth/admin.py:16
+msgid "Personal info"
+msgstr ""
+
+#: djauth/admin.py:17
+msgid "Permissions"
+msgstr ""
+
+#: djauth/admin.py:18
+msgid "Important dates"
+msgstr ""
+
+#: djauth/apps.py:7
+msgid "Authenticaion and authorization"
+msgstr ""
+
+#: general/admin.py:10 receivables/models.py:39
+msgid "Address"
+msgstr ""
+
+#: general/admin.py:13
+msgid "Contact information"
+msgstr ""
+
+#: general/admin.py:16
+msgid "Other"
+msgstr ""
+
+#: general/apps.py:7
+msgid "General"
+msgstr ""
+
+#: general/models.py:15 receivables/models.py:17
+msgid "Company"
+msgstr ""
+
+#: general/models.py:16
+msgid "Companies"
+msgstr ""
+
+#: general/models.py:39
+msgid "Units of measure"
+msgstr ""
+
+#: inventory/apps.py:7
+msgid "Inventory"
+msgstr ""
+
+#: inventory/models.py:11
+msgid "Item group"
+msgstr ""
+
+#: inventory/models.py:12
+msgid "Item groups"
+msgstr ""
+
+#: inventory/models.py:27 receivables/models.py:171
+msgid "Item"
+msgstr ""
+
+#: inventory/models.py:28
+msgid "Items"
+msgstr ""
+
+#: receivables/apps.py:7
+msgid "Receivables"
+msgstr ""
+
+#: receivables/forms.py:36 receivables/models.py:100 receivables/models.py:118
+msgid "Project"
+msgstr ""
+
+#: receivables/models.py:18
+msgid "Person"
+msgstr ""
+
+#: receivables/models.py:25
+msgid "Number"
+msgstr ""
+
+#: receivables/models.py:28 receivables/models.py:78
+msgid "Name"
+msgstr ""
+
+#: receivables/models.py:32
+msgid "Type"
+msgstr ""
+
+#: receivables/models.py:43
+msgid "Web site"
+msgstr ""
+
+#: receivables/models.py:50
+msgid "Shipping address"
+msgstr ""
+
+#: receivables/models.py:57
+msgid "Billing address"
+msgstr ""
+
+#: receivables/models.py:62
+msgid "Contacts"
+msgstr ""
+
+#: receivables/models.py:64 receivables/models.py:86
+msgid "Active"
+msgstr ""
+
+#: receivables/models.py:68 receivables/models.py:83 receivables/models.py:111
+msgid "Customer"
+msgstr ""
+
+#: receivables/models.py:69
+msgid "Customers"
+msgstr ""
+
+#: receivables/models.py:101
+msgid "Projects"
+msgstr ""
+
+#: receivables/models.py:124
+msgid "Amount"
+msgstr ""
+
+#: receivables/models.py:130
+msgid "Discount amount"
+msgstr ""
+
+#: receivables/models.py:136
+msgid "Discount percent"
+msgstr ""
+
+#: receivables/models.py:158
+msgid "Sales order"
+msgstr ""
+
+#: receivables/models.py:159
+msgid "Sales orders"
+msgstr ""
+
+#: receivables/models.py:166
+msgid "Order"
+msgstr ""
+
+#: receivables/models.py:175
+msgid "Quantity"
+msgstr ""
+
+#: receivables/models.py:180
+msgid "Unit of measure"
+msgstr ""
+
+#: receivables/models.py:186
+msgid "Price"
+msgstr ""
+
+#: receivables/models.py:225
+msgid "Sales order line"
+msgstr ""
+
+#: receivables/models.py:226
+msgid "Sales order lines"
+msgstr ""
+
+#: salary/apps.py:7
+msgid "Salary"
+msgstr ""
+
+#: salary/models.py:15
+msgid "Employee"
+msgstr ""
+
+#: salary/models.py:16
+msgid "Employees"
+msgstr ""
+
+#: shared/const.py:19
+msgid "Sausis"
+msgstr ""
+
+#: shared/const.py:20
+msgid "Vasaris"
+msgstr ""
+
+#: shared/const.py:21
+msgid "Kovas"
+msgstr ""
+
+#: shared/const.py:22
+msgid "Balandis"
+msgstr ""
+
+#: shared/const.py:23
+msgid "Gegužė"
+msgstr ""
+
+#: shared/const.py:24
+msgid "Birželis"
+msgstr ""
+
+#: shared/const.py:25
+msgid "Liepa"
+msgstr ""
+
+#: shared/const.py:26
+msgid "Rugpjūtis"
+msgstr ""
+
+#: shared/const.py:27
+msgid "Rugsėjis"
+msgstr ""
+
+#: shared/const.py:28
+msgid "Spalis"
+msgstr ""
+
+#: shared/const.py:29
+msgid "Lapkritis"
+msgstr ""
+
+#: shared/const.py:30
+msgid "Gruodis"
+msgstr ""
+
+#: shared/models.py:13
+msgid "Street address"
+msgstr ""
+
+#: shared/models.py:18
+msgid "Street address 2"
+msgstr ""
+
+#: shared/models.py:23
+msgid "City"
+msgstr ""
+
+#: shared/models.py:28
+msgid "Post code"
+msgstr ""
+
+#: shared/models.py:30
+msgid "(select country)"
+msgstr ""
+
+#: shared/models.py:32
+msgid "Country"
+msgstr ""
+
+#: shared/models.py:44
+msgid "Email"
+msgstr ""
+
+#: shared/models.py:49
+msgid "Phone No."
+msgstr ""
+
+#: shared/models.py:54
+msgid "Mobile No."
+msgstr ""
+
+#: shared/models.py:59
+msgid "Fax No."
+msgstr ""
+
+#: templates/registration/base_site.html:3
+#: templates/registration/base_site.html:6 templates/registration/login.html:61
+msgid "Log in"
+msgstr ""
+
+#: templates/registration/login.html:21
+msgid "Please correct the error below."
+msgstr ""
+
+#: templates/registration/login.html:21
+msgid "Please correct the errors below."
+msgstr ""
+
+#: templates/registration/login.html:37
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+
+#: templates/registration/login.html:57
+msgid "Forgotten your password or username?"
+msgstr ""
