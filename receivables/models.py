@@ -2,10 +2,8 @@ from django.db import models
 from django.contrib.admin.models import LogEntry
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import CharField, PositiveSmallIntegerField,\
-    BooleanField, DateTimeField, TextField
-from general.models import Address, Contact
+    BooleanField, TextField
 from django.db.models.deletion import PROTECT
-from djauth.models import User
 from inventory.models import Item
 from general.models import UnitOfMeasure
 from conf.settings import MAX_DIGITS_PRICE, MAX_DIGITS_QTY, DECIMAL_PLACES_PRICE, DECIMAL_PLACES_QTY,\
@@ -14,7 +12,8 @@ from shared.models import AddressMixin
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from salary.models import Employee
-from django.core.validators import MaxLengthValidator
+from django.db.models.fields.related import ManyToManyField
+
 
 COMPANY = 100
 PERSON  = 200
@@ -75,7 +74,9 @@ class Customer(AddressMixin, models.Model):
 
     
     def __str__(self):
-        return self.number + ' - ' + self.name
+        #return self.number + ' - ' + self.name
+        #return self.name + ' (' + self.number + ')' if self.number is not None and self.number != '' else ''
+        return self.name
 
 
 class Project(models.Model):
@@ -94,6 +95,13 @@ class Project(models.Model):
     active = BooleanField(default=True,
                           verbose_name=_('Active')
                           )
+    
+    employees = ManyToManyField(Employee,
+                                through = 'RelatedEmployee',
+                                related_name = 'projects',
+                                verbose_name = _('Employees'),
+                                )
+
     '''
     created_date_time   = models.DateTimeField(auto_now=True,
                                                verbose_name=_('Created date/time')
@@ -129,7 +137,13 @@ class SalesOrderHeader(models.Model):
     description         = models.CharField(max_length = 120,
                                            blank=True,
                                            default = '',
+                                           verbose_name=_('Description')
                                            )
+    employees = ManyToManyField(Employee,
+                                through = 'RelatedEmployee',
+                                related_name = 'sales_orders',
+                                verbose_name = _('Employees'),
+                                )
     estimated_amount    = models.DecimalField(max_digits=MAX_DIGITS_CURRENCY,
                                               decimal_places=DECIMAL_PLACES_CURRENCY,
                                               blank=True,
@@ -154,12 +168,12 @@ class SalesOrderHeader(models.Model):
         log_entry = LogEntry.objects.get(content_type__model='salesorderheader', action_flag=1, object_id=self.id)
         return log_entry.action_time
     
-    created_date_time.short_description = _('Created date / time')
+    created_date_time.short_description = _('Created')
     
     def created_date_time_str(self):
         return self.created_date_time().strftime("%Y-%m-%d %H:%M")
         
-    created_date_time_str.short_description = _('Created date / time')
+    created_date_time_str.short_description = _('Created')
     
         
         
@@ -261,6 +275,13 @@ class SalesOrderLine(models.Model):
     class Meta:
         verbose_name = _('Sales order line')
         verbose_name_plural = _('Sales order lines')
+
+
+class RelatedEmployee(models.Model):
+    project = models.ForeignKey(Project, on_delete=PROTECT)
+    sales_order_header = models.ForeignKey(SalesOrderHeader, on_delete=PROTECT, blank=True, null=True)
+    employee = models.ForeignKey(Employee, on_delete=PROTECT)
+    assigned = models.DateTimeField(auto_now=True)
 
 
 class WorkTimeJournal(models.Model):

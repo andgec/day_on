@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 12:20+0200\n"
+"POT-Creation-Date: 2018-10-24 11:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,27 +32,36 @@ msgstr "VitasBygg site admin"
 msgid "Site administration"
 msgstr "Įmonės administravimas"
 
-#: djauth/admin.py:16
+#: djauth/admin.py:17 receivables/admin.py:32 receivables/admin.py:46
+#: salary/admin.py:15
+msgid "Address information"
+msgstr "Adresas"
+
+#: djauth/admin.py:31
 msgid "Personal info"
 msgstr "Asmeninė informacija"
 
-#: djauth/admin.py:17
+#: djauth/admin.py:32
 msgid "Permissions"
 msgstr "Leidimai"
 
-#: djauth/admin.py:18
+#: djauth/admin.py:33
 msgid "Important dates"
 msgstr "Svarbios datos"
 
 #: djauth/apps.py:7
-msgid "Authenticaion and authorization"
+msgid "Authentication and authorization"
 msgstr "Autentifikacija ir įgaliojimai"
 
-#: general/admin.py:10 receivables/models.py:39
+#: djauth/models.py:53
+msgid "Employee status"
+msgstr "Darbuotojas"
+
+#: general/admin.py:10 general/models.py:45
 msgid "Address"
 msgstr "Adresas"
 
-#: general/admin.py:13
+#: general/admin.py:13 receivables/admin.py:35 salary/admin.py:12
 msgid "Contact information"
 msgstr "Kontaktinė informacija"
 
@@ -64,15 +73,54 @@ msgstr "Kita"
 msgid "General"
 msgstr "Bendra informacija"
 
-#: general/models.py:15 receivables/models.py:17
+#: general/models.py:11 inventory/models.py:10 inventory/models.py:31
+#: receivables/models.py:31 receivables/models.py:81
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: general/models.py:12 receivables/models.py:28
+msgid "Number"
+msgstr "Numeris"
+
+#: general/models.py:13
+#, fuzzy
+#| msgid "Web site"
+msgid "Website"
+msgstr "Interneto puslapis"
+
+#: general/models.py:17 receivables/models.py:21
 msgid "Company"
 msgstr "Įmonė"
 
-#: general/models.py:16
+#: general/models.py:18
 msgid "Companies"
 msgstr "Duomenys apie įmonę"
 
-#: general/models.py:39
+#: general/models.py:24
+msgid "First name"
+msgstr "Vardas"
+
+#: general/models.py:25
+msgid "Last name"
+msgstr "Pavardė"
+
+#: general/models.py:31
+msgid "Contact"
+msgstr "Kontaktas"
+
+#: general/models.py:32
+msgid "Contacts"
+msgstr "Kontaktai"
+
+#: general/models.py:46
+msgid "Addresses"
+msgstr "Adresai"
+
+#: general/models.py:56 inventory/models.py:47 receivables/models.py:214
+msgid "Unit of measure"
+msgstr "Matavimo vienetai"
+
+#: general/models.py:57
 msgid "Units of measure"
 msgstr "Matavimo vienetai"
 
@@ -80,131 +128,141 @@ msgstr "Matavimo vienetai"
 msgid "Inventory"
 msgstr "Paslaugos"
 
-#: inventory/models.py:11
+#: inventory/models.py:16 inventory/models.py:37 receivables/models.py:85
+#: receivables/models.py:130
+msgid "Description"
+msgstr "Aprašymas"
+
+#: inventory/models.py:20 inventory/models.py:42
 msgid "Item group"
 msgstr "Darbų grupė"
 
-#: inventory/models.py:12
+#: inventory/models.py:21
 msgid "Item groups"
 msgstr "Darbų grupės"
 
-#: inventory/models.py:27 receivables/models.py:171
+#: inventory/models.py:51 receivables/models.py:67 receivables/models.py:93
+#: salary/models.py:25
+msgid "Active"
+msgstr "Aktyvus"
+
+#: inventory/models.py:57 receivables/models.py:220
+msgid "Price"
+msgstr "Kaina"
+
+#: inventory/models.py:61 receivables/models.py:205
 msgid "Item"
 msgstr "Darbas"
 
-#: inventory/models.py:28
+#: inventory/models.py:62
 msgid "Items"
 msgstr "Darbai"
+
+#: receivables/admin.py:16
+msgid "Amounts"
+msgstr "Sumos"
+
+#: receivables/admin.py:49
+msgid "Other information"
+msgstr "Kita informacija"
 
 #: receivables/apps.py:7
 msgid "Receivables"
 msgstr "Įplaukos"
 
-#: receivables/forms.py:36 receivables/models.py:100 receivables/models.py:118
+#: receivables/forms.py:37 receivables/models.py:107 receivables/models.py:125
 msgid "Project"
 msgstr "Projektas"
 
-#: receivables/models.py:18
+#: receivables/models.py:22
 msgid "Person"
 msgstr "Asmuo"
 
-#: receivables/models.py:25
-msgid "Number"
-msgstr "Numeris"
-
-#: receivables/models.py:28 receivables/models.py:78
-msgid "Name"
-msgstr "Pavadinimas"
-
-#: receivables/models.py:32
+#: receivables/models.py:35
 msgid "Type"
 msgstr "Tipas"
 
-#: receivables/models.py:43
+#: receivables/models.py:48
 msgid "Web site"
 msgstr "Interneto puslapis"
 
-#: receivables/models.py:50
-msgid "Shipping address"
-msgstr "Pristatymo adresas"
-
-#: receivables/models.py:57
-msgid "Billing address"
-msgstr "Faktūravimo adresas"
-
-#: receivables/models.py:62
-msgid "Contacts"
-msgstr "Kontaktai"
-
-#: receivables/models.py:64 receivables/models.py:86
-msgid "Active"
-msgstr "Aktyvus"
-
-#: receivables/models.py:68 receivables/models.py:83 receivables/models.py:111
+#: receivables/models.py:71 receivables/models.py:90 receivables/models.py:118
 msgid "Customer"
 msgstr "Klientas"
 
-#: receivables/models.py:69
+#: receivables/models.py:72
 msgid "Customers"
 msgstr "Klientai"
 
-#: receivables/models.py:101
+#: receivables/models.py:108
 msgid "Projects"
 msgstr "Projektai"
 
-#: receivables/models.py:124
-msgid "Amount"
-msgstr "Suma"
+#: receivables/models.py:136
+msgid "Estimated amount"
+msgstr "Numatyta suma"
 
-#: receivables/models.py:130
+#: receivables/models.py:142
 msgid "Discount amount"
 msgstr "Nuolaidos suma"
 
-#: receivables/models.py:136
+#: receivables/models.py:148
 msgid "Discount percent"
 msgstr "Nuolaida %"
 
-#: receivables/models.py:158
+#: receivables/models.py:156 receivables/models.py:161
+msgid "Created"
+msgstr "Sukurta"
+
+#: receivables/models.py:191
 msgid "Sales order"
 msgstr "Užsakymas"
 
-#: receivables/models.py:159
+#: receivables/models.py:192
 msgid "Sales orders"
 msgstr "Užsakymai"
 
-#: receivables/models.py:166
+#: receivables/models.py:200
 msgid "Order"
 msgstr "Užsakymas"
 
-#: receivables/models.py:175
+#: receivables/models.py:209
 msgid "Quantity"
 msgstr "Kiekis"
 
-#: receivables/models.py:180
-msgid "Unit of measure"
-msgstr "Matavimo vienetai"
-
-#: receivables/models.py:186
-msgid "Price"
-msgstr "Kaina"
-
-#: receivables/models.py:225
+#: receivables/models.py:261
 msgid "Sales order line"
 msgstr "Užsakymo eilutė"
 
-#: receivables/models.py:226
+#: receivables/models.py:262
 msgid "Sales order lines"
 msgstr "Užsakymo eilutės"
+
+#: receivables/models.py:271
+msgid "Created date/time"
+msgstr "Sukurta (data/laikas)"
+
+#: receivables/models.py:276
+msgid "Work time journal"
+msgstr "Darbo laiko žurnalas"
 
 #: salary/apps.py:7
 msgid "Salary"
 msgstr "Atlyginimai"
 
-#: salary/models.py:15
+#: salary/models.py:16
+msgid "Full name"
+msgstr "Vardas, pavardė"
+
+#: salary/models.py:20 shared/models.py:44
+msgid "Email"
+msgstr "El. paštas"
+
+#: salary/models.py:28
 msgid "Employee"
 msgstr "Darbuotojas"
 
-#: salary/models.py:16
+#: salary/models.py:29
 msgid "Employees"
 msgstr "Darbuotojai"
 
@@ -280,10 +338,6 @@ msgstr "(pasirinkti šalį)"
 msgid "Country"
 msgstr "Šalis"
 
-#: shared/models.py:44
-msgid "Email"
-msgstr "El. paštas"
-
 #: shared/models.py:49
 msgid "Phone No."
 msgstr "Telefonas"
@@ -303,11 +357,11 @@ msgstr "Prisijungimas"
 
 #: templates/registration/login.html:21
 msgid "Please correct the error below."
-msgstr ""
+msgstr "Ištaisykite žemiau nurodytą klaidą"
 
 #: templates/registration/login.html:21
 msgid "Please correct the errors below."
-msgstr ""
+msgstr "Ištaisykite žemiau nurodytą klaidą"
 
 #: templates/registration/login.html:37
 #, python-format
@@ -315,13 +369,21 @@ msgid ""
 "You are authenticated as %(username)s, but are not authorized to access this "
 "page. Would you like to login to a different account?"
 msgstr ""
+"Jūs prisijungėte kaip %(username)s, bet neturite teisų pasiekti šį puslapį."
+"Ar norėtumėte prisijungti kitu vardu?"
 
 #: templates/registration/login.html:57
 msgid "Forgotten your password or username?"
-msgstr ""
+msgstr "Ar užmiršote savo slaptažodį arba vartotojo vardą?"
+
+#~ msgid "Created date / time"
+#~ msgstr "Sukurta (data / laikas)"
+
+#~ msgid "Shipping address"
+#~ msgstr "Pristatymo adresas"
+
+#~ msgid "Billing address"
+#~ msgstr "Faktūravimo adresas"
 
 #~ msgid "Login"
 #~ msgstr "Prisijungimas"
-
-#~ msgid "Contact"
-#~ msgstr "Kontaktas"

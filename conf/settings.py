@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from django.conf.global_settings import LOGIN_REDIRECT_URL
+#from django.conf.global_settings import LOGIN_REDIRECT_URL
+from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'django_select2',
+    'admin_reorder',
+    'parler',
     'djauth',
     'inventory',
     'general',
@@ -58,11 +61,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'co_manager.urls'
 
 AUTH_USER_MODEL = 'djauth.User'
+
+
+ADMIN_REORDER = (
+    {'app': 'auth', 'models': ('auth.Group', 'djauth.User', 'salary.Employee')},
+    {'app': 'general', 'models': ('general.Company',)},
+    {'app': 'inventory', 'models': ('inventory.Item', 'inventory.ItemGroup')},
+    {'app': 'receivables', 'models': ('receivables.Customer', 'receivables.Project', 'receivables.SalesOrderHeader')},
+    {'app': 'general', 'label':_('Supplementary lists'), 'models': ('general.UnitOfMeasure',)},
+)
+
 
 TEMPLATES = [
     {
@@ -126,9 +140,22 @@ USE_L10N = True
 USE_TZ = True
 
 LANGUAGES=(
-    ('lt', 'Lietuvių'),
+    ('nb', 'Norwegian Bokmål'),
+    ('lt', 'Lithuanian'),
     ('en', 'English'),
 )
+
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'nb',},
+        {'code': 'lt',},
+        {'code': 'en',},
+    ),
+    'default': {
+        'fallback': 'nb',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        'hide_untranslated': False,   # the default; let .active_translations() return fallbacks too.
+    }
+}
 
 LOCALE_PATHS = (
     os.path.join(os.path.abspath(os.path.dirname(__file__)), 'locale'),
@@ -140,7 +167,7 @@ MAX_DIGITS_QTY          = 14
 
 DECIMAL_PLACES_PRICE    = 4
 DECIMAL_PLACES_CURRENCY = 2
-DECIMAL_PLACES_QTY      = 3 
+DECIMAL_PLACES_QTY      = 3
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

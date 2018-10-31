@@ -33,7 +33,7 @@ class UserAdmin(DjangoUserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
 
-    list_display=('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_employee')
+    list_display=('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
     
     def save_model(self, request, obj, form, change):
         obj.company = request.user.company

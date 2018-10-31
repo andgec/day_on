@@ -31,8 +31,17 @@ class AddressMixin(models.Model):
                                blank=True,
                                verbose_name=_('Country')
                                )
+
+    def full_address(self):
+        return (self.address + ', ' if self.address is not None else '') +\
+               (self.post_code + ' ' if self.post_code is not None else '') +\
+               (self.city + ' ' if self.city is not None else '')
+
+    full_address.short_description = _('Full address')
+    
     class Meta:
         abstract = True
+
 
 class ContactMixin(models.Model):
     '''

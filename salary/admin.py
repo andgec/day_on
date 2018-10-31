@@ -16,6 +16,8 @@ class EmployeeAdmin(admin.ModelAdmin):
             'fields': ('address', 'post_code', 'city', 'country')
         }),
     )
+    def has_add_permission(self, request):
+        return False
 
 
 admin.site.register(Employee, EmployeeAdmin)
