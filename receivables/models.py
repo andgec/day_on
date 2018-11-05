@@ -278,10 +278,26 @@ class SalesOrderLine(models.Model):
 
 
 class RelatedEmployee(models.Model):
-    project = models.ForeignKey(Project, on_delete=PROTECT)
+    project = models.ForeignKey(Project, on_delete=PROTECT, blank=True, null=True)
     sales_order_header = models.ForeignKey(SalesOrderHeader, on_delete=PROTECT, blank=True, null=True)
     employee = models.ForeignKey(Employee, on_delete=PROTECT)
     assigned = models.DateTimeField(auto_now=True)
+    '''
+    def save(self, *args, **kwargs):
+        if self.sales_order_header:
+            self.project = self.sales_order_header.project
+        super(RelatedEmployee, self).save(*args, **kwargs)
+    '''
+    def __str__(self):
+        return self.employee.full_name()
+
+    class Meta:
+        unique_together = (
+            ('employee', 'sales_order_header'),
+            ('employee', 'project'),
+        )
+        verbose_name = ('Related employee')
+        verbose_name_plural = _('Related employees')
 
 
 class WorkTimeJournal(models.Model):

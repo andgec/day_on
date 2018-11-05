@@ -2,10 +2,17 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 from django.contrib.contenttypes.admin import GenericStackedInline
+from django.utils.translation import ugettext_lazy as _
 from .models import Customer, Project, SalesOrderHeader
 from .forms import SalesOrderAdminForm
 from general.models import Contact
-from django.utils.translation import ugettext_lazy as _
+#from salary.models import Employee
+
+
+class AssignedSalesOrderEmployeeAdminInline(admin.TabularInline):
+    model = SalesOrderHeader.employees.through
+    fields = ('employee',)
+    extra = 0
 
 class SalesOrderAdmin(admin.ModelAdmin):
     form = SalesOrderAdminForm
@@ -16,12 +23,16 @@ class SalesOrderAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            'fields': ('customer', 'project', 'description', 'created_date_time_str', 'employees')
+            'fields': ('customer', 'project', 'description', 'created_date_time_str')
         }),
         (_('Amounts'), {
             'fields': ('estimated_amount', 'discount_amount', 'discount_percent')
         }),
     )
+    
+    inlines = [
+        AssignedSalesOrderEmployeeAdminInline,
+    ]
     
 class SalesOrderInLine(admin.TabularInline):
     model = SalesOrderHeader
@@ -80,6 +91,11 @@ class CustomerAdmin(admin.ModelAdmin):
         ContactInLine,
     ]
     
+class AssignedProjectEmployeeAdminInline(admin.TabularInline):
+    model = Project.employees.through
+    fields = ('employee',)
+    extra = 0
+    
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'customer', 'active',)
     list_filter = ('active',)
@@ -87,6 +103,7 @@ class ProjectAdmin(admin.ModelAdmin):
     
     inlines = [
         SalesOrderInLine,
+        AssignedProjectEmployeeAdminInline,
     ]
 
 admin.site.register(Customer, CustomerAdmin)
