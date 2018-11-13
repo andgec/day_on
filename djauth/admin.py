@@ -9,7 +9,7 @@ from .models import User
 class EmployeeInLine(StackedInline):
     model = Employee
     extra = 0
-    
+
     fieldsets = (
         (None, {
             'fields': ('mobile_no', 'phone_no')
@@ -22,10 +22,35 @@ class EmployeeInLine(StackedInline):
     verbose_name_plural = 'Employee'
 
 
+class IsEmployeeFilter(admin.SimpleListFilter):
+    title = _('Employee')
+    parameter_name = 'is_employee'
+
+    def lookups(self, request, models_admin):
+        return(
+            (True, _('Yes')),
+            (False, _('No')),
+        )
+    
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value is not None:
+            value = value != 'True' #converting to boolean and reversing the value for query
+            return queryset.filter(employee__isnull=value)
+        return queryset
+
+
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
+
+    def get_queryset(self, request):
+        qs = super(UserAdmin, self).get_queryset(request)
+        #qs = qs.values(qs)
+        return qs
+
     readonly_fields = ('last_login', 'date_joined')
-   
+    list_filter = ('is_staff', IsEmployeeFilter, 'is_active', 'groups')    
+
     fieldsets=(
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
@@ -34,16 +59,23 @@ class UserAdmin(DjangoUserAdmin):
     )
 
     list_display=('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
-    
+
+    '''
+    def is_employee(self, obj):
+        return obj.is_employee()
+    is_employee.admin_order_field = 'employee__isnull'
+    is_employee.short_description = _('Employee status')
+    '''
+
     def save_model(self, request, obj, form, change):
         obj.company = request.user.company
-        print('Saving user. Company: ' + str(request.user.company))        
+        #print('Saving user. Company: ' + str(request.user.company))
         super().save_model(request, obj, form, change)
-        
-        
+
+
     inlines = [
         EmployeeInLine,
     ]
 
-    
+
     pass

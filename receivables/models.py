@@ -4,15 +4,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import CharField, PositiveSmallIntegerField,\
     BooleanField, TextField
 from django.db.models.deletion import PROTECT
-from inventory.models import Item
 from general.models import UnitOfMeasure
 from conf.settings import MAX_DIGITS_PRICE, MAX_DIGITS_QTY, DECIMAL_PLACES_PRICE, DECIMAL_PLACES_QTY,\
     MAX_DIGITS_CURRENCY, DECIMAL_PLACES_CURRENCY
-from shared.models import AddressMixin
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from salary.models import Employee
 from django.db.models.fields.related import ManyToManyField
+
+from salary.models import Employee
+from shared.models import AddressMixin
+from inventory.models import Item
 
 
 COMPANY = 100
@@ -301,15 +302,44 @@ class RelatedEmployee(models.Model):
 
 
 class WorkTimeJournal(models.Model):
-    employee_id = models.ForeignKey(Employee, on_delete=PROTECT)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, 
+                                     on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-    created_date_time = models.DateTimeField(auto_now=True,
-                                             verbose_name = _('Created date/time')
-                                             )
-    
+    content_object = GenericForeignKey('content_type',
+                                       'object_id')
+    employee = models.ForeignKey(Employee,
+                                 on_delete = models.PROTECT,
+                                 related_name = 'journal_lines',
+                                 verbose_name = _('Employee'))
+    item = models.ForeignKey(Item,
+                             on_delete = PROTECT,
+                             related_name = 'journal_lines',
+                             verbose_name = _('Item'))
+    work_date = models.DateField(verbose_name = _('Date'))
+    work_time_from = models.TimeField(verbose_name = _('From'))
+    work_time_to = models.TimeField(verbose_name = _('To'))
+    work_time = models.DecimalField(max_digits = 4,
+                                    decimal_places = 2, 
+                                    verbose_name = _('Work time')
+                                    )
+    distance = models.PositiveSmallIntegerField()
+    toll_ring = models.DecimalField(max_digits = 7,
+                                    decimal_places = 2,
+                                    verbose_name = _('Toll ring')
+                                    )
+    ferry = models.DecimalField(max_digits = 7,
+                                decimal_places = 2,
+                                verbose_name = _('Ferry')
+                                )
+    diet = models.DecimalField(max_digits = 7, 
+                                decimal_places = 2, 
+                                verbose_name = _('Diet')
+                                )
+    created_date_time = models.DateTimeField(
+                             auto_now = True,
+                             verbose_name = _('Created date/time')
+                             )
     class Meta:
         verbose_name = ('Work time journal')
         verbose_name_plural = _('Work time journal')
-    
+

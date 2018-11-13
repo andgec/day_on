@@ -1,7 +1,10 @@
+from django.utils import timezone
 from django import forms
-from .models import Customer, Project, SalesOrderHeader
+from .models import Project, SalesOrderHeader, WorkTimeJournal
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
+from django.forms.widgets import SelectDateWidget
+#from nntplib import ArticleInfo
 
 class SalesOrderAdminForm(forms.ModelForm):
     description = forms.CharField(widget = forms.Textarea, max_length=120)
@@ -43,4 +46,28 @@ class SalesOrderAdminForm(forms.ModelForm):
             model = Project
         )
     )
+
+
+class WorkTimeJournalForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
+        self.fields['work_date'].initial = timezone.now()
+    class Meta:
+        model = WorkTimeJournal
+        fields = ['employee',
+                  'item',
+                  'work_date',
+                  'work_time_from',
+                  'work_time_to',
+                  'distance',
+                  'toll_ring',
+                  'ferry',
+                  'diet'
+                  ]
+        widgets = {
+            'work_date': SelectDateWidget(),
+            'employee': forms.Select(attrs={'disabled': True})
+        }
+        
+
     

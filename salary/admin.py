@@ -12,8 +12,8 @@ class IsActiveFilter(admin.SimpleListFilter):
 
     def lookups(self, request, models_admin):
         return(
-            (True, 'Yes'),
-            (False, 'No'),
+            (True, _('Yes')),
+            (False, _('No')),
         )
     
     def queryset(self, request, queryset):
@@ -40,7 +40,6 @@ class EmployeeAdmin(MultiFieldSortableModelAdmin):
                      'phone_no',
                      'address',
                      'post_code',
-                     'city',
                      'city',
                      'country')
     list_filter     = (IsActiveFilter,)

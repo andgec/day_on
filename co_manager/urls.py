@@ -21,6 +21,7 @@ from django.urls import include
 from .admin import setup_admin_site
 from conf import settings
 from . import views
+from receivables.wiews import WorkTimeJournalView
 
 setup_admin_site(admin.site)
 
@@ -29,6 +30,7 @@ urlpatterns = i18n_patterns(
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^admin/', admin.site.urls, name='admin'),
+    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)$', WorkTimeJournalView.as_view(), name='tjournal'),
     prefix_default_language=False
 )
 
