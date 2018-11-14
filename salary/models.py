@@ -8,8 +8,16 @@ from shared.models import AddressMixin
 
 class Employee(AddressMixin, models.Model):
     user        = OneToOneField(User, primary_key=True, related_name='employee', on_delete=CASCADE)
-    phone_no    = models.CharField(max_length=20, blank=True, default='')
-    mobile_no   = models.CharField(max_length=20, blank=True, default='')
+    phone_no    = models.CharField(max_length=20,
+                                   blank=True,
+                                   default='',
+                                   verbose_name = _('Phone No.')
+                                   )
+    mobile_no   = models.CharField(max_length=20,
+                                   blank=True,
+                                   default='',
+                                   verbose_name = _('Mobile No.')
+                                   )
 
     def full_name(self):
         return self.user.get_full_name()

@@ -54,8 +54,7 @@ class WorkTimeJournalForm(forms.ModelForm):
         self.fields['work_date'].initial = timezone.now()
     class Meta:
         model = WorkTimeJournal
-        fields = ['employee',
-                  'item',
+        fields = ['item',
                   'work_date',
                   'work_time_from',
                   'work_time_to',
@@ -65,8 +64,10 @@ class WorkTimeJournalForm(forms.ModelForm):
                   'diet'
                   ]
         widgets = {
-            'work_date': SelectDateWidget(),
-            'employee': forms.Select(attrs={'disabled': True})
+            'work_date': SelectDateWidget(years = range(2010, 2030)),
+            'employee': forms.Select(attrs={'disabled': True}),
+            'work_time_from': forms.TimeInput(),
+            'work_time_to': forms.TimeInput()
         }
         
 

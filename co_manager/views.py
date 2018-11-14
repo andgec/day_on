@@ -7,7 +7,4 @@ from receivables.models import Project, SalesOrderHeader, SalesOrderLine
 def index(request):
     projects = Project.objects.order_by('customer', 'name') #published_date__lte=timezone.now()).
     return render(request, 'salary/registration_list.html', {'projects': projects})
-    
-    
-    
     #return render_to_response('co_manager/index.html')

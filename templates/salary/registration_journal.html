@@ -5,14 +5,51 @@
 		<h3>{{employee.full_name}}</h3>
 		<h3>{{project.name}}</h3>
 		<p>{{project.description}}</p>
-			<form action = "time_journal" method = "post">
-				<table>
+			<form action = "" method = "post">
+			{% csrf_token %}
+				<table border = 1 cellpadding = 10 style="border-collapse: collapse">
 					<tr>
+						<td>Projektas</td>
 						<td>Darbas</td>
-						<td>Laikas</td>
+						<td>Data</td>
+						<td>Nuo</td>
+						<td>Iki</td>
+						<td>Val.</td>
+						<td>Atstumas</td>
+						<td>BOM</td>
+						<td>Keltas</td>
+						<td>Maistas</td>
 					</tr>
-					{{form.as_table}}					
+					{% for jr_line in jr_lines %}
+						<tr>
+							<td>{{jr_line.project}}</td>
+							<td>{{jr_line.item}}</td>
+							<td>{{jr_line.work_date}}</td>
+							<td>{{jr_line.work_time_from}}</td>
+							<td>{{jr_line.work_time_to}}</td>
+							<td>{{jr_line.work_time}}</td>
+							<td>{{jr_line.distance}}</td>
+							<td>{{jr_line.toll_ring}}</td>
+							<td>{{jr_line.ferry}}</td>
+							<td>{{jr_line.diet}}</td>
+						</tr>
+					{% endfor %}
+					{{form.as_table}}
+					<tr>
+						<td>Viso:</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					
 				</table>
+		<input type = "submit" value = "Registruoti">
 		</div>
 {% endblock %}
  

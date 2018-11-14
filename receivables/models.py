@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.admin.models import LogEntry
 from django.utils.translation import ugettext_lazy as _
@@ -314,7 +315,8 @@ class WorkTimeJournal(models.Model):
     item = models.ForeignKey(Item,
                              on_delete = PROTECT,
                              related_name = 'journal_lines',
-                             verbose_name = _('Item'))
+                             verbose_name = _('Item')
+                             )
     work_date = models.DateField(verbose_name = _('Date'))
     work_time_from = models.TimeField(verbose_name = _('From'))
     work_time_to = models.TimeField(verbose_name = _('To'))
@@ -322,23 +324,43 @@ class WorkTimeJournal(models.Model):
                                     decimal_places = 2, 
                                     verbose_name = _('Work time')
                                     )
-    distance = models.PositiveSmallIntegerField()
+    distance = models.PositiveSmallIntegerField(blank = True,
+                                                null = True,
+                                                verbose_name = _('Distance')
+                                                )
     toll_ring = models.DecimalField(max_digits = 7,
                                     decimal_places = 2,
+                                    null = True,
+                                    blank = True,
                                     verbose_name = _('Toll ring')
                                     )
     ferry = models.DecimalField(max_digits = 7,
                                 decimal_places = 2,
+                                null = True,
+                                blank = True,
                                 verbose_name = _('Ferry')
                                 )
     diet = models.DecimalField(max_digits = 7, 
-                                decimal_places = 2, 
+                                decimal_places = 2,
+                                null = True,
+                                blank = True, 
                                 verbose_name = _('Diet')
                                 )
     created_date_time = models.DateTimeField(
                              auto_now = True,
                              verbose_name = _('Created date/time')
                              )
+
+    def calc_work_hours(self):
+        timediff = datetime.combine(self.work_date,  self.work_time_to) -\
+                   datetime.combine(self.work_date, self.work_time_from)
+        timediff_hours = timediff.total_seconds() / 3600
+        return round(timediff_hours, 2)
+                    
+    def save(self, *args, **kwargs):
+        self.work_time = self.calc_work_hours()
+        super(WorkTimeJournal, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = ('Work time journal')
         verbose_name_plural = _('Work time journal')
