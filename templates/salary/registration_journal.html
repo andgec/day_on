@@ -7,36 +7,30 @@
 		<p>{{project.description}}</p>
 			<form action = "" method = "post">
 			{% csrf_token %}
-				<table border = 1 cellpadding = 10 style="border-collapse: collapse">
+				<table border = 1 cellpadding = 3 style="border-collapse: collapse">
 					<tr>
-						<td>Projektas</td>
-						<td>Darbas</td>
-						<td>Data</td>
-						<td>Nuo</td>
-						<td>Iki</td>
-						<td>Val.</td>
-						<td>Atstumas</td>
-						<td>BOM</td>
-						<td>Keltas</td>
-						<td>Maistas</td>
+						<th>{{ _('Project') }}</th>
+						<th>{{ _('Item') }}</th>
+						<th>{{ _('Date') }}</th>
+						<th>{{ _('Time') }}</th>
+						<th>{{ _('Hours') }}</th>
+						<th>{{ _('Distance (km)') }}</th>
+						<th>{{ _('Toll ring') }}</th>
+						<th>{{ _('Ferry') }}</th>
+						<th>{{ _('Diet') }}</th>
 					</tr>
 					{% for jr_line in jr_lines %}
-						<tr>
-							<td>{{jr_line.project}}</td>
-							<td>{{jr_line.item}}</td>
-							<td>{{jr_line.work_date}}</td>
-							<td>{{jr_line.work_time_from}}</td>
-							<td>{{jr_line.work_time_to}}</td>
-							<td>{{jr_line.work_time}}</td>
-							<td>{{jr_line.distance}}</td>
-							<td>{{jr_line.toll_ring}}</td>
-							<td>{{jr_line.ferry}}</td>
-							<td>{{jr_line.diet}}</td>
-						</tr>
+						{% if modify_id == jr_line.id %}
+							{% include 'salary/jobreg_form.html' %}
+						{% else %}
+						    {% include 'salary/jobreg_jrline.html' %}
+						{% endif %}
 					{% endfor %}
-					{{form.as_table}}
+					{% if modify_id == 0 %}
+						{% include 'salary/jobreg_form.html' %}
+					{% endif %}
 					<tr>
-						<td>Viso:</td>
+						<td>{{ _('Total') }}:</td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -49,7 +43,7 @@
 					</tr>
 					
 				</table>
-		<input type = "submit" value = "Registruoti">
+			</form>
 		</div>
 {% endblock %}
  

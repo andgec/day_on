@@ -4,6 +4,7 @@ from .models import Project, SalesOrderHeader, WorkTimeJournal
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 from django.forms.widgets import SelectDateWidget
+from shared.widgets import SelectTimeWidget
 #from nntplib import ArticleInfo
 
 class SalesOrderAdminForm(forms.ModelForm):
@@ -52,8 +53,10 @@ class WorkTimeJournalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
         self.fields['work_date'].initial = timezone.now()
+
     class Meta:
         model = WorkTimeJournal
+        readonly_fields = ['empty',]
         fields = ['item',
                   'work_date',
                   'work_time_from',
@@ -63,11 +66,12 @@ class WorkTimeJournalForm(forms.ModelForm):
                   'ferry',
                   'diet'
                   ]
+
         widgets = {
             'work_date': SelectDateWidget(years = range(2010, 2030)),
             'employee': forms.Select(attrs={'disabled': True}),
-            'work_time_from': forms.TimeInput(),
-            'work_time_to': forms.TimeInput()
+            'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
+            'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
         }
         
 

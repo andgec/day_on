@@ -31,6 +31,7 @@ urlpatterns = i18n_patterns(
     url(r'^select2/', include('django_select2.urls')),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^receivables/tjournal/(?P<project_id>[0-9]+)$', WorkTimeJournalView.as_view(), name='tjournal'),
+    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<modify_id>[0-9]+)$', WorkTimeJournalView.as_view(), name='tjournal'),
     prefix_default_language=False
 )
 

@@ -1,8 +1,9 @@
-django-2.1.1
-pytz-2018.5
-django-countries-5.3.2
-django-debug-toolbar-1.10.1
-django-select2-6.3.1
-django-parler-1.9.2
-django-modeladmin-reorder-0.3.1
+django==2.1.1
+pytz==2018.5
+django-countries==5.3.2
+django-debug-toolbar==1.10.1
+django-select2==6.3.1
+django-parler==1.9.2
+django-modeladmin-reorder==0.3.1
+boto==2.49.0
 #django-autocomplete-light 3.3.0 documentation

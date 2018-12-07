@@ -169,9 +169,11 @@ DECIMAL_PLACES_PRICE    = 4
 DECIMAL_PLACES_CURRENCY = 2
 DECIMAL_PLACES_QTY      = 3
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+STATIC_ROOT = BASE_DIR
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 LOGIN_REDIRECT_URL = '/'

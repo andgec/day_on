@@ -1,0 +1,41 @@
+					<tr>
+						<td></td>
+						<td>
+							{{ form.item.errors }}
+							{{ form.item }}
+						</td>
+						<td>
+							{{ form.work_date.errors }}
+							{{ form.work_date }}
+						</td>
+						<td>
+							{{ form.work_time_from.errors }}
+							{{ form.work_time_from }} - 
+							{{ form.work_time_to.errors }}
+							{{ form.work_time_to }}
+						</td>
+						<td></td>
+						<td>
+							{{ form.distance.errors }}
+							{{ form.distance }}
+						</td>
+						<td>
+							{{ form.toll_ring.errors }}
+							{{ form.toll_ring }}
+						</td>
+						<td>
+							{{ form.ferry.errors }}
+							{{ form.ferry }}
+						</td>
+						<td>
+							{{ form.diet.errors }}
+							{{ form.diet }}
+						</td>
+						<td>
+							<button class="btn-create" title = {{ _('Register') }} type="submit">
+								<!-- i class="fa fa-plus-circle"></i>  -->
+								<i class="fa fa-save"></i>
+							</button>
+						</td>
+
+					</tr>
