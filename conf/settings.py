@@ -27,7 +27,7 @@ SECRET_KEY = 't(auwl)iz9o_ovf6lstrql_w)9kt@6(m_nw_nn5r3&nyvdv_!%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vitasbygg-dev.eu-central-1.elasticbeanstalk.com', '127.0.0.1']
 
 INTERNAL_IPS=['127.0.0.1']
 
