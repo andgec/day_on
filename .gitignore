@@ -12,7 +12,12 @@ __pycache__/
 #Media folder
 media
 
+#Collect static folder
+staticfiles
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+

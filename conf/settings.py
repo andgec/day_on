@@ -24,10 +24,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 't(auwl)iz9o_ovf6lstrql_w)9kt@6(m_nw_nn5r3&nyvdv_!%'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+RUNTIME_ENV = os.environ.get('RUNTIME_ENV', 'local')
 
-ALLOWED_HOSTS = ['vitasbygg-dev.eu-central-1.elasticbeanstalk.com', '127.0.0.1']
+LOCAL_ENV = RUNTIME_ENV not in ('PROD', 'PRODUCTION', 'PROD-DEBUG', 'STAGING', 'DEV')
+
+
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
+DEBUG = str(os.environ.get('DEBUG', RUNTIME_ENV not in ('PROD', 'PRODUCTION'))).lower() in ('true', '1')
+
+ALLOWED_HOSTS = ['vitasbygg-dev.eu-central-1.elasticbeanstalk.com', '127.0.0.1', os.environ.get('WEB_HOST', 'localhost')]
 
 INTERNAL_IPS=['127.0.0.1']
 
@@ -169,11 +176,30 @@ DECIMAL_PLACES_PRICE    = 4
 DECIMAL_PLACES_CURRENCY = 2
 DECIMAL_PLACES_QTY      = 3
 
-STATIC_ROOT = BASE_DIR
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
 LOGIN_REDIRECT_URL = '/'
+
+
+try:
+    if LOCAL_ENV:
+        from .local_settings import *
+
+    if RUNTIME_ENV in ('PROD', 'PRODUCTION', 'PROD-DEBUG'):
+        from .settings_production import *
+
+    if RUNTIME_ENV == 'STAGING':
+        from .settings_staging import *
+
+    if RUNTIME_ENV == 'DEV':
+        from .settings_dev import *
+
+except ImportError:
+    pass
+
