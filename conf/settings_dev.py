@@ -1,4 +1,5 @@
 AWS_STORAGE_BUCKET_NAME = 'vitasbygg-dev'
+
 DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
 STATIC_S3_PATH = 'static'
 STATIC_URL = 'https://%s.s3.amazonaws.com/static/' % AWS_STORAGE_BUCKET_NAME
