@@ -15,9 +15,10 @@ django-parler==1.9.2
 django-s3-folder-storage==0.5
 django-select2==6.3.1
 django-storages==1.7.1
-django==2.1.1
+django==2.1.4
 docutils==0.14            # via botocore
 jmespath==0.9.3           # via boto3, botocore
+psycopg2-binary==2.7.6.1
 python-dateutil==2.7.5    # via botocore
 pytz==2018.5
 s3transfer==0.1.13        # via boto3
