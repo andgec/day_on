@@ -101,6 +101,13 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ('active',)
     search_fields   = ('name', 'description', 'customer__name',)
     
+    fieldsets = (
+        (None, {
+            'fields': ('customer', 'name', 'description', 'active',)
+        }),
+    )
+    
+    
     inlines = [
         SalesOrderInLine,
         AssignedProjectEmployeeAdminInline,

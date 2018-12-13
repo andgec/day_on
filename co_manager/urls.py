@@ -26,7 +26,7 @@ from receivables.wiews import WorkTimeJournalView
 setup_admin_site(admin.site)
 
 urlpatterns = i18n_patterns(
-    url(r'^$', views.index),
+    url(r'^$', views.index, name='index'),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^admin/', admin.site.urls, name='admin'),

@@ -151,3 +151,6 @@ tr:edit-line {background-color: #e2f2e2;}
 	position:relative;
 	top:1px;
 }
+.timereg_num_field {
+	width:70px;
+}

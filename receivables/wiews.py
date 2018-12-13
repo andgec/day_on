@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 #from django.http import HttpResponse
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 #from django.views.generic import ListView
 from .models import Project, SalesOrderHeader, WorkTimeJournal
 from .forms import WorkTimeJournalForm
@@ -23,8 +24,9 @@ class WorkTimeJournalListView(ListView):
     pass
 '''
 
-class WorkTimeJournalView(View):
+class WorkTimeJournalView(LoginRequiredMixin, View):
     # Time registration for a selected object (project)
+    login_url='/accounts/login/'
     
     form_class = WorkTimeJournalForm
 

@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+		<div class="breadcrumbs">
+			<a href={% url 'index' %}>Project list</a> › {{project.name}}
+		</div>
+{% endblock %}
+
 {% block content %}
 		<div class="project">
 		<h3>{{employee.full_name}}</h3>

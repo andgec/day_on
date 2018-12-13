@@ -34,7 +34,7 @@ LOCAL_ENV = RUNTIME_ENV not in ('PROD', 'PRODUCTION', 'PROD-DEBUG', 'STAGING', '
 # DEBUG = True
 DEBUG = str(os.environ.get('DEBUG', RUNTIME_ENV not in ('PROD', 'PRODUCTION'))).lower() in ('true', '1')
 
-ALLOWED_HOSTS = ['127.0.0.1', os.environ.get('WEB_HOST', 'localhost')]
+ALLOWED_HOSTS = ['127.0.0.1', '10.0.0.111', os.environ.get('WEB_HOST', 'localhost')]
 
 INTERNAL_IPS=['127.0.0.1']
 

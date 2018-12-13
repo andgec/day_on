@@ -72,6 +72,10 @@ class WorkTimeJournalForm(forms.ModelForm):
             'employee': forms.Select(attrs={'disabled': True}),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
+            'distance': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+            'toll_ring': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+            'ferry': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+            'diet': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
         }
         
 

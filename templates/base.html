@@ -4,16 +4,31 @@
 		<title>Time registration</title>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+		<link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
 	</head>
-	<div class="page-header">
-		<h1>{{ _('Work time registration') }}</h1>
-		{% if user.is_staff or user.is_superuser %}
-			<a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }} <span class="adminicon adminicon-plus"></a>
-		{% endif %}
-		
-	</div>
-	<div class="content container">
-		{% block content %}
+	<div id = "container">
+		<div id = "header">
+			<div id = "branding">
+				<h1 id="site-name">{{ _('Vitasbygg AS') }}</h1>
+			</div>
+			<div id="user-tools">
+			{{ _('Welcome')}}, <strong>{{user.first_name}}</strong>.
+			{% if user.is_staff or user.is_superuser %}
+				<a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
+				 /
+			{% endif %}
+			<a href="{% url 'logout' %}">{{ _('Log out')}}</a>
+			</div>
+		</div>
+		{% block breadcrumbs %}
 		{% endblock %}
+		<div id="content" class=colMS>
+			<h1>{{ _('Working time registration') }}</h1>
+			<div id="content_main">
+				{% block content %}
+				{% endblock %}
+			</div>
+		</div>
 	</div>
 </html>

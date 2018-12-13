@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	{% for project in projects %}
-		<div class="project">
-			<a class="btn" href={% url 'tjournal' project_id=project.id %}>Kortelė</a>
-			{{ project.name }}
-			<p>{{project.description}}</p>
-			
-		</div>
-	{% endfor %}
+	<div class="project-list module">
+		<table>
+			<caption>{{ _('Project list') }}</caption>
+			<tbody>
+			{% for project in projects %}
+				<tr class="model">
+					<th scope="row">
+						<a href={% url 'tjournal' project_id=project.id %}>{{ project.customer }} - {{ project.name }}</a>
+						<!-- {{project.description}}  -->
+					</th>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}
  
