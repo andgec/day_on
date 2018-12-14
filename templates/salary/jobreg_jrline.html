@@ -8,5 +8,5 @@
 							<td>{{jr_line.toll_ring|default_if_none:""}}</td>
 							<td>{{jr_line.ferry|default_if_none:""}}</td>
 							<td>{{jr_line.diet|default_if_none:""}}</td>
-							<td><a class="btn-edit" title = {{ _('Modify') }} href={% url 'tjournal' project_id=project.id modify_id=jr_line.id %}><i class="fa fa-edit"></i></a></td>
+							<td id="button-edit-col"><a class="btn-edit" title = {{ _('Modify') }} href={% url 'tjournal' project_id=project.id modify_id=jr_line.id %}><i class="fa fa-edit"></i></a></td>
 						</tr>

@@ -1,4 +1,6 @@
-					<tr>
+				<form action = "" method = "post">
+				{% csrf_token %}
+					<tr class="edit-row">
 						<td></td>
 						<td>
 							{{ form.item.errors }}
@@ -10,7 +12,7 @@
 						</td>
 						<td>
 							{{ form.work_time_from.errors }}
-							{{ form.work_time_from }} - 
+							{{ form.work_time_from }} {{ _('to') }} 
 							{{ form.work_time_to.errors }}
 							{{ form.work_time_to }}
 						</td>
@@ -31,7 +33,8 @@
 							{{ form.diet.errors }}
 							{{ form.diet }}
 						</td>
-						<td>
+						<!-- td>  -->
+						<td id="button-save-col">
 							<button class="btn-create" title = {{ _('Register') }} type="submit">
 								<!-- i class="fa fa-plus-circle"></i>  -->
 								<i class="fa fa-save"></i>
@@ -39,3 +42,4 @@
 						</td>
 
 					</tr>
+				</form>

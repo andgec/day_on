@@ -8,23 +8,25 @@
 
 {% block content %}
 		<div class="project">
-		<h3>{{employee.full_name}}</h3>
-		<h3>{{project.name}}</h3>
-		<p>{{project.description}}</p>
-			<form action = "" method = "post">
-			{% csrf_token %}
-				<table border = 1 cellpadding = 3 style="border-collapse: collapse">
-					<tr>
-						<th>{{ _('Project') }}</th>
-						<th>{{ _('Item') }}</th>
-						<th>{{ _('Date') }}</th>
-						<th>{{ _('Time') }}</th>
-						<th>{{ _('Hours') }}</th>
-						<th>{{ _('Distance (km)') }}</th>
-						<th>{{ _('Toll ring') }}</th>
-						<th>{{ _('Ferry') }}</th>
-						<th>{{ _('Diet') }}</th>
-					</tr>
+			<!-- h3>{{employee.full_name}}</h3>  -->
+			<!--  h3>{{project.name}}</h3>  -->
+			<p>{{project.description}}</p>
+			<div class="results" style="overflow-x:auto;">
+				<table class="time-register">
+					<thead>
+						<tr>
+							<th scope="col">{{ _('Project') }}</th>
+							<th scope="col">{{ _('Item') }}</th>
+							<th scope="col">{{ _('Date') }}</th>
+							<th scope="col">{{ _('Time') }}</th>
+							<th scope="col">{{ _('Hours') }}</th>
+							<th scope="col">{{ _('Distance (km)') }}</th>
+							<th scope="col">{{ _('Toll ring') }}</th>
+							<th scope="col">{{ _('Ferry') }}</th>
+							<th scope="col">{{ _('Diet') }}</th>
+							<th scope="col">
+						</tr>
+					</thead>
 					{% for jr_line in jr_lines %}
 						{% if modify_id == jr_line.id %}
 							{% include 'salary/jobreg_form.html' %}
@@ -47,9 +49,7 @@
 						<td></td>
 						<td></td>
 					</tr>
-					
 				</table>
-			</form>
 		</div>
 {% endblock %}
  
