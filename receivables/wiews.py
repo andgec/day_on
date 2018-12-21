@@ -4,6 +4,7 @@ from django.urls import reverse
 #from django.http import HttpResponse
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
 #from django.views.generic import ListView
 from .models import Project, SalesOrderHeader, WorkTimeJournal
 from .forms import WorkTimeJournalForm
@@ -24,6 +25,7 @@ class WorkTimeJournalListView(ListView):
     pass
 '''
 
+#for validation check this source: https://stackoverflow.com/questions/7948750/custom-form-validation
 class WorkTimeJournalView(LoginRequiredMixin, View):
     # Time registration for a selected object (project)
     login_url='/accounts/login/'
@@ -35,10 +37,19 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
         employee = request.user.employee
         jr_lines = WorkTimeJournal.objects.filter(created_date_time__gte=utils.start_of_today(),
                                                   created_date_time__lte=utils.end_of_today(),
-                                                  employee = employee)
+                                                  employee = employee).order_by('work_time_from').prefetch_related('content_object')
+
+        jr_totals = WorkTimeJournal.objects.filter(created_date_time__gte=utils.start_of_today(),
+                                                  created_date_time__lte=utils.end_of_today(),
+                                                  employee = employee).aggregate(Sum('work_time'),
+                                                                                 Sum('distance'), 
+                                                                                 Sum('toll_ring'), 
+                                                                                 Sum('ferry'), 
+                                                                                 Sum('diet'))
         return {'project': project,
                 'employee': employee,
                 'jr_lines': jr_lines,
+                'jr_totals': jr_totals,
                 'modify_id': int(modify_id),
                 'form': form
                 }

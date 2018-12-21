@@ -50,9 +50,36 @@ class SalesOrderAdminForm(forms.ModelForm):
 
 
 class WorkTimeJournalForm(forms.ModelForm):
+    '''    
+    accepted
+    To validate a single field on it's own you can use a clean_FIELDNAME() method in your form, so for email:
+    
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Email already exists")
+        return email
+    then for co-dependant fields that rely on each other, you can overwrite the forms clean() method which is run after all the fields (like email above) have been validated individually:
+    
+    def clean(self):
+        form_data = self.cleaned_data
+        if form_data['password'] != form_data['password_repeat']:
+            self._errors["password"] = ["Password do not match"] # Will raise a error message
+            del form_data['password']
+        return form_data
+    '''     
     def __init__(self, *args, **kwargs):
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
         self.fields['work_date'].initial = timezone.now()
+        
+    #def clean_work_time_from(self):
+        
+        # (EndA <= StartB or StartA >= EndB)
+        # If ( NOT (EndA <= StartB or StartA >= EndB) ; “Overlap”)
+        #overlaps = WorkTimeJournal.objects.filter() 
+        
+        #raise forms.ValidationError("Email already exists")
+    #    pass
 
     class Meta:
         model = WorkTimeJournal

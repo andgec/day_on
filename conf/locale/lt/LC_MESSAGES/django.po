@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-24 11:16+0200\n"
+"POT-Creation-Date: 2018-12-21 13:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,26 +26,42 @@ msgstr "VitasBygg administravimas"
 
 #: co_manager/admin.py:11
 msgid "Company site admin"
-msgstr "VitasBygg site admin"
+msgstr "VitasBygg administravimas"
 
 #: co_manager/admin.py:17
 msgid "Site administration"
 msgstr "Įmonės administravimas"
 
-#: djauth/admin.py:17 receivables/admin.py:32 receivables/admin.py:46
-#: salary/admin.py:15
+#: conf/settings.py:84
+msgid "Supplementary lists"
+msgstr "Papildomi sąrašai"
+
+#: djauth/admin.py:17 receivables/admin.py:64 receivables/admin.py:83
+#: salary/admin.py:53
 msgid "Address information"
 msgstr "Adresas"
 
-#: djauth/admin.py:31
+#: djauth/admin.py:26 receivables/models.py:316 salary/models.py:36
+msgid "Employee"
+msgstr "Darbuotojas"
+
+#: djauth/admin.py:31 salary/admin.py:15
+msgid "Yes"
+msgstr "Taip"
+
+#: djauth/admin.py:32 salary/admin.py:16
+msgid "No"
+msgstr "Ne"
+
+#: djauth/admin.py:56
 msgid "Personal info"
 msgstr "Asmeninė informacija"
 
-#: djauth/admin.py:32
+#: djauth/admin.py:57
 msgid "Permissions"
 msgstr "Leidimai"
 
-#: djauth/admin.py:33
+#: djauth/admin.py:58
 msgid "Important dates"
 msgstr "Svarbios datos"
 
@@ -57,15 +73,15 @@ msgstr "Autentifikacija ir įgaliojimai"
 msgid "Employee status"
 msgstr "Darbuotojas"
 
-#: general/admin.py:10 general/models.py:45
+#: general/admin.py:19 general/models.py:45
 msgid "Address"
 msgstr "Adresas"
 
-#: general/admin.py:13 receivables/admin.py:35 salary/admin.py:12
+#: general/admin.py:22 receivables/admin.py:67 salary/admin.py:50
 msgid "Contact information"
 msgstr "Kontaktinė informacija"
 
-#: general/admin.py:16
+#: general/admin.py:25
 msgid "Other"
 msgstr "Kita"
 
@@ -73,22 +89,20 @@ msgstr "Kita"
 msgid "General"
 msgstr "Bendra informacija"
 
-#: general/models.py:11 inventory/models.py:10 inventory/models.py:31
-#: receivables/models.py:31 receivables/models.py:81
+#: general/models.py:11 inventory/models.py:12 inventory/models.py:35
+#: receivables/models.py:36 receivables/models.py:88
 msgid "Name"
 msgstr "Pavadinimas"
 
-#: general/models.py:12 receivables/models.py:28
+#: general/models.py:12 receivables/models.py:33
 msgid "Number"
 msgstr "Numeris"
 
 #: general/models.py:13
-#, fuzzy
-#| msgid "Web site"
 msgid "Website"
 msgstr "Interneto puslapis"
 
-#: general/models.py:17 receivables/models.py:21
+#: general/models.py:17 receivables/models.py:26
 msgid "Company"
 msgstr "Įmonė"
 
@@ -116,7 +130,7 @@ msgstr "Kontaktai"
 msgid "Addresses"
 msgstr "Adresai"
 
-#: general/models.py:56 inventory/models.py:47 receivables/models.py:214
+#: general/models.py:56 inventory/models.py:52 receivables/models.py:233
 msgid "Unit of measure"
 msgstr "Matavimo vienetai"
 
@@ -128,41 +142,42 @@ msgstr "Matavimo vienetai"
 msgid "Inventory"
 msgstr "Paslaugos"
 
-#: inventory/models.py:16 inventory/models.py:37 receivables/models.py:85
-#: receivables/models.py:130
+#: inventory/models.py:18 inventory/models.py:41 receivables/models.py:92
+#: receivables/models.py:144
 msgid "Description"
 msgstr "Aprašymas"
 
-#: inventory/models.py:20 inventory/models.py:42
+#: inventory/models.py:23 inventory/models.py:47
 msgid "Item group"
 msgstr "Darbų grupė"
 
-#: inventory/models.py:21
+#: inventory/models.py:24
 msgid "Item groups"
 msgstr "Darbų grupės"
 
-#: inventory/models.py:51 receivables/models.py:67 receivables/models.py:93
-#: salary/models.py:25
+#: inventory/models.py:56 receivables/models.py:72 receivables/models.py:100
+#: salary/admin.py:10 salary/admin.py:63 salary/models.py:33
 msgid "Active"
 msgstr "Aktyvus"
 
-#: inventory/models.py:57 receivables/models.py:220
+#: inventory/models.py:62 receivables/models.py:239
 msgid "Price"
 msgstr "Kaina"
 
-#: inventory/models.py:61 receivables/models.py:205
+#: inventory/models.py:66 receivables/models.py:224 receivables/models.py:320
+#: templates/salary/registration_journal.html:19
 msgid "Item"
 msgstr "Darbas"
 
-#: inventory/models.py:62
+#: inventory/models.py:67
 msgid "Items"
 msgstr "Darbai"
 
-#: receivables/admin.py:16
+#: receivables/admin.py:28
 msgid "Amounts"
 msgstr "Sumos"
 
-#: receivables/admin.py:49
+#: receivables/admin.py:86
 msgid "Other information"
 msgstr "Kita informacija"
 
@@ -170,101 +185,150 @@ msgstr "Kita informacija"
 msgid "Receivables"
 msgstr "Įplaukos"
 
-#: receivables/forms.py:37 receivables/models.py:107 receivables/models.py:125
+#: receivables/forms.py:41 receivables/models.py:121 receivables/models.py:139
+#: templates/salary/registration_journal.html:18
 msgid "Project"
 msgstr "Projektas"
 
-#: receivables/models.py:22
+#: receivables/models.py:27
 msgid "Person"
 msgstr "Asmuo"
 
-#: receivables/models.py:35
+#: receivables/models.py:40
 msgid "Type"
 msgstr "Tipas"
 
-#: receivables/models.py:48
+#: receivables/models.py:53
 msgid "Web site"
 msgstr "Interneto puslapis"
 
-#: receivables/models.py:71 receivables/models.py:90 receivables/models.py:118
+#: receivables/models.py:76 receivables/models.py:97 receivables/models.py:132
 msgid "Customer"
 msgstr "Klientas"
 
-#: receivables/models.py:72
+#: receivables/models.py:77
 msgid "Customers"
 msgstr "Klientai"
 
-#: receivables/models.py:108
+#: receivables/models.py:106 receivables/models.py:149 salary/models.py:37
+msgid "Employees"
+msgstr "Darbuotojai"
+
+#: receivables/models.py:122
 msgid "Projects"
 msgstr "Projektai"
 
-#: receivables/models.py:136
+#: receivables/models.py:155
 msgid "Estimated amount"
 msgstr "Numatyta suma"
 
-#: receivables/models.py:142
+#: receivables/models.py:161
 msgid "Discount amount"
 msgstr "Nuolaidos suma"
 
-#: receivables/models.py:148
+#: receivables/models.py:167
 msgid "Discount percent"
 msgstr "Nuolaida %"
 
-#: receivables/models.py:156 receivables/models.py:161
+#: receivables/models.py:175 receivables/models.py:180
 msgid "Created"
 msgstr "Sukurta"
 
-#: receivables/models.py:191
+#: receivables/models.py:210
 msgid "Sales order"
 msgstr "Užsakymas"
 
-#: receivables/models.py:192
+#: receivables/models.py:211
 msgid "Sales orders"
 msgstr "Užsakymai"
 
-#: receivables/models.py:200
+#: receivables/models.py:219
 msgid "Order"
 msgstr "Užsakymas"
 
-#: receivables/models.py:209
+#: receivables/models.py:228
 msgid "Quantity"
 msgstr "Kiekis"
 
-#: receivables/models.py:261
+#: receivables/models.py:280
 msgid "Sales order line"
 msgstr "Užsakymo eilutė"
 
-#: receivables/models.py:262
+#: receivables/models.py:281
 msgid "Sales order lines"
 msgstr "Užsakymo eilutės"
 
-#: receivables/models.py:271
+#: receivables/models.py:304
+msgid "Related employees"
+msgstr "Priskirti darbuotojai"
+
+#: receivables/models.py:322 templates/salary/registration_journal.html:20
+msgid "Date"
+msgstr ""
+
+#: receivables/models.py:323
+msgid "From"
+msgstr ""
+
+#: receivables/models.py:324
+msgid "To"
+msgstr ""
+
+#: receivables/models.py:327
+msgid "Work time"
+msgstr "Darbo laikas"
+
+#: receivables/models.py:331
+msgid "Distance"
+msgstr "Atstumas"
+
+#: receivables/models.py:337 templates/salary/registration_journal.html:24
+msgid "Toll ring"
+msgstr "BOM"
+
+#: receivables/models.py:343 templates/salary/registration_journal.html:25
+msgid "Ferry"
+msgstr "Keltas"
+
+#: receivables/models.py:349 templates/salary/registration_journal.html:26
+msgid "Diet"
+msgstr "Maistas"
+
+#: receivables/models.py:353
 msgid "Created date/time"
 msgstr "Sukurta (data/laikas)"
 
-#: receivables/models.py:276
+#: receivables/models.py:358
+msgid "Working time cannot be zero."
+msgstr "Nurodykite darbo laiką."
+
+#: receivables/models.py:360
+msgid "Start time cannot be later than the end time."
+msgstr "Darbo pradžia negali būti vėliau už pabaigą."
+
+#: receivables/models.py:403
 msgid "Work time journal"
 msgstr "Darbo laiko žurnalas"
+
+#: salary/admin.py:70 salary/models.py:24
+msgid "Full name"
+msgstr "Vardas, pavardė"
+
+#: salary/admin.py:76 salary/models.py:28 shared/models.py:53
+msgid "Email"
+msgstr "El. paštas"
 
 #: salary/apps.py:7
 msgid "Salary"
 msgstr "Atlyginimai"
 
-#: salary/models.py:16
-msgid "Full name"
-msgstr "Vardas, pavardė"
+#: salary/models.py:14 shared/models.py:58
+msgid "Phone No."
+msgstr "Telefonas"
 
-#: salary/models.py:20 shared/models.py:44
-msgid "Email"
-msgstr "El. paštas"
-
-#: salary/models.py:28
-msgid "Employee"
-msgstr "Darbuotojas"
-
-#: salary/models.py:29
-msgid "Employees"
-msgstr "Darbuotojai"
+#: salary/models.py:19 shared/models.py:63
+msgid "Mobile No."
+msgstr "Mob. tel."
 
 #: shared/const.py:19
 msgid "Sausis"
@@ -338,17 +402,33 @@ msgstr "(pasirinkti šalį)"
 msgid "Country"
 msgstr "Šalis"
 
-#: shared/models.py:49
-msgid "Phone No."
-msgstr "Telefonas"
+#: shared/models.py:40
+msgid "Full address"
+msgstr "Pilnas adresas"
 
-#: shared/models.py:54
-msgid "Mobile No."
-msgstr "Mob. tel."
-
-#: shared/models.py:59
+#: shared/models.py:68
 msgid "Fax No."
 msgstr "Faksas"
+
+#: templates/base.html:13
+msgid "Vitasbygg AS"
+msgstr ""
+
+#: templates/base.html:16
+msgid "Welcome"
+msgstr "Sveiki"
+
+#: templates/base.html:18
+msgid "Administration"
+msgstr "Administravimas"
+
+#: templates/base.html:21
+msgid "Log out"
+msgstr "Atsijungti"
+
+#: templates/base.html:27
+msgid "Working time registration"
+msgstr "Darbo laiko registravimas"
 
 #: templates/registration/base_site.html:3
 #: templates/registration/base_site.html:6 templates/registration/login.html:61
@@ -357,11 +437,11 @@ msgstr "Prisijungimas"
 
 #: templates/registration/login.html:21
 msgid "Please correct the error below."
-msgstr "Ištaisykite žemiau nurodytą klaidą"
+msgstr "Ištaisykite žemiau nurodytą klaidą."
 
 #: templates/registration/login.html:21
 msgid "Please correct the errors below."
-msgstr "Ištaisykite žemiau nurodytą klaidą"
+msgstr "Ištaisykite žemiau nurodytas klaidas."
 
 #: templates/registration/login.html:37
 #, python-format
@@ -376,14 +456,43 @@ msgstr ""
 msgid "Forgotten your password or username?"
 msgstr "Ar užmiršote savo slaptažodį arba vartotojo vardą?"
 
+#: templates/salary/jobreg_form.html:17
+msgid "to"
+msgstr "iki"
+
+#: templates/salary/jobreg_form.html:40
+msgid "Register"
+msgstr "Registruoti"
+
+#: templates/salary/jobreg_jrline.html:11
+msgid "Modify"
+msgstr "Keisti"
+
+#: templates/salary/registration_journal.html:21
+msgid "Time"
+msgstr "Laikas"
+
+#: templates/salary/registration_journal.html:22
+msgid "Hours"
+msgstr "Valandos"
+
+#: templates/salary/registration_journal.html:23
+msgid "Distance (km)"
+msgstr "Atstumas (km)"
+
+#: templates/salary/registration_journal.html:41
+msgid "Total"
+msgstr "Viso"
+
+#: templates/salary/registration_list.html:6
+msgid "Project list"
+msgstr "Projektų sąrašas"
+
 #~ msgid "Created date / time"
 #~ msgstr "Sukurta (data / laikas)"
 
 #~ msgid "Shipping address"
 #~ msgstr "Pristatymo adresas"
-
-#~ msgid "Billing address"
-#~ msgstr "Faktūravimo adresas"
 
 #~ msgid "Login"
 #~ msgstr "Prisijungimas"

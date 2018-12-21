@@ -19,11 +19,11 @@
 							<th scope="col">{{ _('Item') }}</th>
 							<th scope="col">{{ _('Date') }}</th>
 							<th scope="col">{{ _('Time') }}</th>
-							<th scope="col">{{ _('Hours') }}</th>
-							<th scope="col">{{ _('Distance (km)') }}</th>
-							<th scope="col">{{ _('Toll ring') }}</th>
-							<th scope="col">{{ _('Ferry') }}</th>
-							<th scope="col">{{ _('Diet') }}</th>
+							<th id="num-col" scope="col">{{ _('Hours') }}</th>
+							<th id="num-col">{{ _('Distance (km)') }}</th>
+							<th id="num-col">{{ _('Toll ring') }}</th>
+							<th id="num-col">{{ _('Ferry') }}</th>
+							<th id="num-col" scope="col">{{ _('Diet') }}</th>
 							<th scope="col">
 						</tr>
 					</thead>
@@ -37,17 +37,17 @@
 					{% if modify_id == 0 %}
 						{% include 'salary/jobreg_form.html' %}
 					{% endif %}
-					<tr>
+					<tr style="font-weight:bold">
 						<td>{{ _('Total') }}:</td>
 						<td></td>
 						<td></td>
 						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td id="num-col">{{ jr_totals.work_time__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.distance__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.toll_ring__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.ferry__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.diet__sum|default_if_none:"" }}</td>
+						<td id="num-col"></td>
 					</tr>
 				</table>
 		</div>

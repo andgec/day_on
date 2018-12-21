@@ -1,7 +1,9 @@
 				<form action = "" method = "post">
 				{% csrf_token %}
 					<tr class="edit-row">
-						<td></td>
+						<td style="vertical-align:top; padding:8px;">
+							{{ project.name}}
+						</td>
 						<td>
 							{{ form.item.errors }}
 							{{ form.item }}
@@ -17,19 +19,19 @@
 							{{ form.work_time_to }}
 						</td>
 						<td></td>
-						<td>
+						<td id="num-col">
 							{{ form.distance.errors }}
 							{{ form.distance }}
 						</td>
-						<td>
+						<td id="num-col">
 							{{ form.toll_ring.errors }}
 							{{ form.toll_ring }}
 						</td>
-						<td>
+						<td id="num-col">
 							{{ form.ferry.errors }}
 							{{ form.ferry }}
 						</td>
-						<td>
+						<td id="num-col">
 							{{ form.diet.errors }}
 							{{ form.diet }}
 						</td>

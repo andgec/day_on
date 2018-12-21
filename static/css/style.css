@@ -17,6 +17,8 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 tr:total-line {background-color: #e2e2e2;}
 tr:edit-line {background-color: #e2f2e2;}
 
+.time-register-in-form {vertical-align:top;
+				        padding:8px;}
 
 .time-register td {vertical-align:top;
 				   padding:8px;}
@@ -25,6 +27,8 @@ tr:edit-line {background-color: #e2f2e2;}
 .edit-row td {padding: 3px;
 			  padding-bottom:1px;
 			  padding-top: 3px;}
+			  
+#num-col {text-align: right;}
 
 #button-edit-col {padding: 5px;}
 

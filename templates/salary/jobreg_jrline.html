@@ -1,12 +1,12 @@
 						<tr>
-							<td>{{jr_line.project.name}}</td>
+							<td>{{jr_line.content_object.name}}</td>
 							<td>{{jr_line.item}}</td>
 							<td>{{jr_line.work_date}}</td>
 							<td>{{jr_line.work_time_from}} - {{jr_line.work_time_to}}</td>
-							<td>{{jr_line.work_time}}</td>
-							<td>{{jr_line.distance|default_if_none:""}}</td>
-							<td>{{jr_line.toll_ring|default_if_none:""}}</td>
-							<td>{{jr_line.ferry|default_if_none:""}}</td>
-							<td>{{jr_line.diet|default_if_none:""}}</td>
+							<td id="num-col" >{{jr_line.work_time}}</td>
+							<td id="num-col">{{jr_line.distance|default_if_none:""}}</td>
+							<td id="num-col">{{jr_line.toll_ring|default_if_none:""}}</td>
+							<td id="num-col">{{jr_line.ferry|default_if_none:""}}</td>
+							<td id="num-col">{{jr_line.diet|default_if_none:""}}</td>
 							<td id="button-edit-col"><a class="btn-edit" title = {{ _('Modify') }} href={% url 'tjournal' project_id=project.id modify_id=jr_line.id %}><i class="fa fa-edit"></i></a></td>
 						</tr>

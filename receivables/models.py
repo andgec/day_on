@@ -1,5 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.contrib.admin.models import LogEntry
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import CharField, PositiveSmallIntegerField,\
@@ -350,6 +352,41 @@ class WorkTimeJournal(models.Model):
                              auto_now = True,
                              verbose_name = _('Created date/time')
                              )
+
+    def clean(self):
+        if self.calc_work_hours() == 0:
+            raise ValidationError({'work_time_from': _('Working time cannot be zero.')})
+        if datetime.combine(self.work_date,  self.work_time_to) < datetime.combine(self.work_date, self.work_time_from):
+            raise ValidationError({'work_time_from': _('Start time cannot be later than the end time.')})
+        overlap = self.time_overlap(self.work_date, self.work_time_from, self.work_time_to)
+        if overlap is not None:
+            raise ValidationError({'work_time_from': ('Selected time is already used for the task [%(time_from)s-%(time_to)s %(job)s].') % \
+                                    {'time_from': overlap.work_time_from.strftime('%H:%M'),
+                                     'time_to': overlap.work_time_to.strftime('%H:%M'),
+                                     'job': overlap.item,
+                                    }
+                                  },
+                                )
+    
+    def time_overlap(self, date, time_from, time_to):
+        #dt_from_less = datetime.combine(date, time_from) - timedelta(microseconds=1)
+        dt_from_more = datetime.combine(date, time_from) + timedelta(microseconds=1)
+        dt_to_less = datetime.combine(date, time_to) - timedelta(microseconds=1)
+        #wdt_to_more = datetime.combine(date, time_to) + timedelta(microseconds=1)
+        
+        overlaps = WorkTimeJournal.objects.filter(Q(work_date=date,
+                                                    work_time_from__gt=dt_from_more.time(),
+                                                    work_time_from__lt=dt_to_less.time()) |
+                                                  Q(work_date=date,
+                                                    work_time_from__lt=dt_from_more.time(),
+                                                    work_time_to__gt=dt_from_more.time()
+                                                    )
+                                                  )
+        #print (overlaps.query)
+        if overlaps.count() == 0:
+            return None
+        else:
+            return overlaps[0]
 
     def calc_work_hours(self):
         timediff = datetime.combine(self.work_date,  self.work_time_to) -\
