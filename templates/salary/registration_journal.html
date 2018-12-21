@@ -2,7 +2,7 @@
 
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
-			<a href={% url 'index' %}>Project list</a> › {{project.name}}
+			<a href={% url 'index' %}>{{ _('Project list') }}</a> › {{project.name}}
 		</div>
 {% endblock %}
 
