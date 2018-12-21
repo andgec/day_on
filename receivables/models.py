@@ -360,7 +360,7 @@ class WorkTimeJournal(models.Model):
             raise ValidationError({'work_time_from': _('Start time cannot be later than the end time.')})
         overlap = self.time_overlap(self.work_date, self.work_time_from, self.work_time_to)
         if overlap is not None:
-            raise ValidationError({'work_time_from': ('Selected time is already used for the task [%(time_from)s-%(time_to)s %(job)s].') % \
+            raise ValidationError({'work_time_from': _('Selected time is already used for the task [%(time_from)s-%(time_to)s %(job)s].') % \
                                     {'time_from': overlap.work_time_from.strftime('%H:%M'),
                                      'time_to': overlap.work_time_to.strftime('%H:%M'),
                                      'job': overlap.item,

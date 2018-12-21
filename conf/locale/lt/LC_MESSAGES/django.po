@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-21 13:02+0100\n"
+"POT-Creation-Date: 2018-12-21 14:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -306,6 +306,14 @@ msgstr "Nurodykite darbo laiką."
 msgid "Start time cannot be later than the end time."
 msgstr "Darbo pradžia negali būti vėliau už pabaigą."
 
+#: receivables/models.py:363
+#, python-format
+msgid ""
+"Selected time is already used for the task [%(time_from)s-%(time_to)s "
+"%(job)s]."
+msgstr "Nurodytas laikas jau panaudotas užduočiai [%(time_from)s-%(time_to)s "
+"%(job)s]."
+
 #: receivables/models.py:403
 msgid "Work time journal"
 msgstr "Darbo laiko žurnalas"
@@ -468,6 +476,11 @@ msgstr "Registruoti"
 msgid "Modify"
 msgstr "Keisti"
 
+#: templates/salary/registration_journal.html:5
+#: templates/salary/registration_list.html:6
+msgid "Project list"
+msgstr "Projektų sąrašas"
+
 #: templates/salary/registration_journal.html:21
 msgid "Time"
 msgstr "Laikas"
@@ -483,10 +496,6 @@ msgstr "Atstumas (km)"
 #: templates/salary/registration_journal.html:41
 msgid "Total"
 msgstr "Viso"
-
-#: templates/salary/registration_list.html:6
-msgid "Project list"
-msgstr "Projektų sąrašas"
 
 #~ msgid "Created date / time"
 #~ msgstr "Sukurta (data / laikas)"

@@ -80,7 +80,7 @@ ADMIN_REORDER = (
     {'app': 'auth', 'models': ('auth.Group', 'djauth.User', 'salary.Employee')},
     {'app': 'general', 'models': ('general.Company',)},
     {'app': 'inventory', 'models': ('inventory.Item', 'inventory.ItemGroup')},
-    {'app': 'receivables', 'models': ('receivables.Customer', 'receivables.Project', 'receivables.SalesOrderHeader')},
+    {'app': 'receivables', 'models': ('receivables.Customer', 'receivables.Project')},
     {'app': 'general', 'label':_('Supplementary lists'), 'models': ('general.UnitOfMeasure',)},
 )
 
