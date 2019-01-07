@@ -71,7 +71,8 @@ class WorkTimeJournalForm(forms.ModelForm):
     '''     
     def __init__(self, *args, **kwargs):
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
-        self.fields['work_date'].initial = timezone.now()
+        self.work_date = kwargs.get('work_date', timezone.now())
+        self.fields['work_date'].initial = self.work_date
         self.fields['item'].choices = self.items_as_choices()
         
     def items_as_choices(self):

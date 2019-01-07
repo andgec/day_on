@@ -156,6 +156,9 @@
 	font-weight: bold;
 	border: 0;
 }
+.ui-datepicker tr {
+	background-color: #FFFFFF;
+}
 .ui-datepicker td {
 	border: 0;
 	padding: 1px;

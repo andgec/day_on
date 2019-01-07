@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -67,27 +68,31 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
                       )
 
     def post(self, request, project_id, date, modify_id = 0, *args, **kwargs):
+        work_date = datetime.strptime(date, '%Y-%m-%d').date()
+        
         if modify_id == 0:
             journal = None
         else:
             journal = WorkTimeJournal.objects.get(id=modify_id)
             
+        request.POST = request.POST.copy()
+        
+        #Adding date to request data to pass form validation
+        request.POST['work_date_day'] = work_date.day
+        request.POST['work_date_month'] = work_date.month
+        request.POST['work_date_year'] = work_date.year
+        
         form =  self.form_class(request.POST, instance = journal)
-            
-        print(request.POST)
         
         project = Project.objects.get(id=project_id)
         employee = request.user.employee
-
         if form.is_valid():
             journal = form.save(commit=False)
-                
             journal.employee = employee 
             journal.content_type = ContentType.objects.get_for_model(Project)
             journal.content_object = project
-            #journal.work_date = date
+            journal.work_date = work_date
             journal.save()
-            
             #if save successfull, generate empty form for new record:            
             form = self.form_class(initial={'employee': employee})
             # Redirect to GET. 
