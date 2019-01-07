@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+		<div class="breadcrumbs">
+			{{ _('Project list') }}
+		</div>
+{% endblock %}
+
 {% block content %}
 	<div class="project-list module">
 		<table>
@@ -8,7 +14,8 @@
 			{% for project in projects %}
 				<tr class="model">
 					<th scope="row">
-						<a href={% url 'tjournal' project_id=project.id %}>{{ project.customer }} - {{ project.name }}</a>
+					    {% now 'Y-m-d' as current_date %}
+						<a href={% url 'tjournal' project_id=project.id date=current_date %}>{{ project.customer }} - {{ project.name }}</a>
 						<!-- {{project.description}}  -->
 					</th>
 				</tr>

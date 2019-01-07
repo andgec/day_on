@@ -354,11 +354,13 @@ class WorkTimeJournal(models.Model):
                              )
 
     def clean(self):
+        #if self.work_date is None:
+        #    raise ValidationError({'work_time_from': _('Working date is empty.')})
         if self.calc_work_hours() == 0:
             raise ValidationError({'work_time_from': _('Working time cannot be zero.')})
         if datetime.combine(self.work_date,  self.work_time_to) < datetime.combine(self.work_date, self.work_time_from):
             raise ValidationError({'work_time_from': _('Start time cannot be later than the end time.')})
-        overlap = self.time_overlap(self.work_date, self.work_time_from, self.work_time_to)
+        overlap = self.time_overlap(self.id, self.work_date, self.work_time_from, self.work_time_to)
         if overlap is not None:
             raise ValidationError({'work_time_from': _('Selected time is already used for the task [%(time_from)s-%(time_to)s %(job)s].') % \
                                     {'time_from': overlap.work_time_from.strftime('%H:%M'),
@@ -367,13 +369,12 @@ class WorkTimeJournal(models.Model):
                                     }
                                   },
                                 )
-    
-    def time_overlap(self, date, time_from, time_to):
+
+    def time_overlap(self, rec_id, date, time_from, time_to):
         #dt_from_less = datetime.combine(date, time_from) - timedelta(microseconds=1)
         dt_from_more = datetime.combine(date, time_from) + timedelta(microseconds=1)
         dt_to_less = datetime.combine(date, time_to) - timedelta(microseconds=1)
         #wdt_to_more = datetime.combine(date, time_to) + timedelta(microseconds=1)
-        
         overlaps = WorkTimeJournal.objects.filter(Q(work_date=date,
                                                     work_time_from__gt=dt_from_more.time(),
                                                     work_time_from__lt=dt_to_less.time()) |
@@ -381,7 +382,7 @@ class WorkTimeJournal(models.Model):
                                                     work_time_from__lt=dt_from_more.time(),
                                                     work_time_to__gt=dt_from_more.time()
                                                     )
-                                                  )
+                                                  ).exclude(id=rec_id)
         #print (overlaps.query)
         if overlaps.count() == 0:
             return None

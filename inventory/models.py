@@ -44,7 +44,8 @@ class Item(TranslatableModel):
     item_group      = models.ForeignKey(
                           ItemGroup,
                           on_delete=PROTECT,
-                          verbose_name = _('Item group')
+                          verbose_name = _('Item group'),
+                          related_name = 'items',
                           )
     unit_of_measure = models.ForeignKey(
                           UnitOfMeasure,

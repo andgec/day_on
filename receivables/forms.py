@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 from django.forms.widgets import SelectDateWidget
 from shared.widgets import SelectTimeWidget
+from inventory.models import ItemGroup, Item
 #from nntplib import ArticleInfo
 
 class SalesOrderAdminForm(forms.ModelForm):
@@ -71,15 +72,19 @@ class WorkTimeJournalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
         self.fields['work_date'].initial = timezone.now()
+        self.fields['item'].choices = self.items_as_choices()
         
-    #def clean_work_time_from(self):
-        
-        # (EndA <= StartB or StartA >= EndB)
-        # If ( NOT (EndA <= StartB or StartA >= EndB) ; “Overlap”)
-        #overlaps = WorkTimeJournal.objects.filter() 
-        
-        #raise forms.ValidationError("Email already exists")
-    #    pass
+    def items_as_choices(self):
+        item_group_list = []
+        for itemgroup in ItemGroup.objects.all():
+            new_itemgroup = []
+            item_list = []
+            for item in itemgroup.items.all():
+                item_list.append([item.id, item.name])
+                
+            new_itemgroup = [itemgroup.name, item_list]
+            item_group_list.append(new_itemgroup)
+        return item_group_list
 
     class Meta:
         model = WorkTimeJournal

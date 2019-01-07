@@ -1,5 +1,38 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block linked_files %}
+	<!-- link rel="stylesheet" href="jquery-ui.css">
+	<link rel="stylesheet" href="picker.css">
+	<script src="external/jquery/jquery.js"></script>
+    <script src="jquery-ui.js"></script>
+	-->
+	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/jquery/picker.css' %}">
+	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+	<script>
+		$( function() {
+    		$.datepicker.setDefaults($.datepicker.regional["lt"]);
+    		$( "#datepicker" ).datepicker({ minDate: "-2M", 
+        		                            maxDate: "+0D",
+            		                        onSelect: set_date
+                		                  });
+    		$( "#datepicker" ).datepicker('setDate', '{{date}}');
+    		
+    		function set_date(value){
+ 				redirect_url = '{% url 'tjournal' project_id=project.id date='0000-00-00' %}';
+ 				redirect_url = redirect_url.replace('0000-00-00', value);
+    		  	window.location.replace(redirect_url)
+    		};
+    	  } 
+    	 )
+	</script>
+{% endblock %}
+
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
 			<a href={% url 'index' %}>{{ _('Project list') }}</a> › {{project.name}}
@@ -7,17 +40,21 @@
 {% endblock %}
 
 {% block content %}
+		{{ _('Date:') }}
+		<div id="datepicker"></div>
+		<p></p>
+
 		<div class="project">
 			<!-- h3>{{employee.full_name}}</h3>  -->
 			<!--  h3>{{project.name}}</h3>  -->
-			<p>{{project.description}}</p>
+			{{project.description}}
 			<div class="results" style="overflow-x:auto;">
 				<table class="time-register">
 					<thead>
 						<tr>
 							<th scope="col">{{ _('Project') }}</th>
 							<th scope="col">{{ _('Item') }}</th>
-							<th scope="col">{{ _('Date') }}</th>
+							<!-- th scope="col">{{ _('Date') }}</th>  -->
 							<th scope="col">{{ _('Time') }}</th>
 							<th id="num-col" scope="col">{{ _('Hours') }}</th>
 							<th id="num-col">{{ _('Distance (km)') }}</th>
@@ -38,10 +75,10 @@
 						{% include 'salary/jobreg_form.html' %}
 					{% endif %}
 					<tr style="font-weight:bold">
-						<td>{{ _('Total') }}:</td>
 						<td></td>
 						<td></td>
-						<td></td>
+						<!-- td></td> -->
+						<td style="text-align:right">{{ _('Total') }}:</td>
 						<td id="num-col">{{ jr_totals.work_time__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ jr_totals.distance__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ jr_totals.toll_ring__sum|default_if_none:"" }}</td>

@@ -9,6 +9,7 @@ from django.db.models import Sum
 from .models import Project, SalesOrderHeader, WorkTimeJournal
 from .forms import WorkTimeJournalForm
 from shared import utils
+from django.http.response import Http404
 
 '''
 class RegistrationObjectListView(View):
@@ -32,21 +33,20 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
     
     form_class = WorkTimeJournalForm
 
-    def get_context(self, request, project_id, modify_id, form):
+    def get_context(self, request, project_id, date, modify_id, form):
         project = Project.objects.get(id=project_id)
         employee = request.user.employee
-        jr_lines = WorkTimeJournal.objects.filter(created_date_time__gte=utils.start_of_today(),
-                                                  created_date_time__lte=utils.end_of_today(),
+        jr_lines = WorkTimeJournal.objects.filter(work_date=date,
                                                   employee = employee).order_by('work_time_from').prefetch_related('content_object')
 
-        jr_totals = WorkTimeJournal.objects.filter(created_date_time__gte=utils.start_of_today(),
-                                                  created_date_time__lte=utils.end_of_today(),
-                                                  employee = employee).aggregate(Sum('work_time'),
-                                                                                 Sum('distance'), 
-                                                                                 Sum('toll_ring'), 
-                                                                                 Sum('ferry'), 
-                                                                                 Sum('diet'))
-        return {'project': project,
+        jr_totals = WorkTimeJournal.objects.filter(work_date=date,
+                                                   employee = employee).aggregate(Sum('work_time'),
+                                                                                  Sum('distance'), 
+                                                                                  Sum('toll_ring'), 
+                                                                                  Sum('ferry'), 
+                                                                                  Sum('diet'))
+        return {'date': date,
+                'project': project,
                 'employee': employee,
                 'jr_lines': jr_lines,
                 'jr_totals': jr_totals,
@@ -54,7 +54,7 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
                 'form': form
                 }
 
-    def get(self, request, project_id, modify_id = 0):
+    def get(self, request, project_id, date, modify_id = 0):
         if modify_id == 0: 
             form = self.form_class()
         else:
@@ -63,35 +63,40 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
         
         return render(request, 
                       'salary/registration_journal.html',
-                      self.get_context(request, project_id, modify_id, form) 
+                      self.get_context(request, project_id, date, modify_id, form) 
                       )
 
-    def post(self, request, project_id, modify_id = 0, *args, **kwargs):
+    def post(self, request, project_id, date, modify_id = 0, *args, **kwargs):
+        if modify_id == 0:
+            journal = None
+        else:
+            journal = WorkTimeJournal.objects.get(id=modify_id)
+            
+        form =  self.form_class(request.POST, instance = journal)
+            
+        print(request.POST)
+        
         project = Project.objects.get(id=project_id)
         employee = request.user.employee
-        form = self.form_class(request.POST)
 
         if form.is_valid():
-            if modify_id == 0:
-                journal = form.save(commit=False)
-                #print(form.cleaned_data)
-            else:
-                journal = WorkTimeJournal.objects.get(id=modify_id)
-                form = self.form_class(request.POST, instance = journal)
-                journal = form.save(commit=False)
-
-            journal.employee = employee
+            journal = form.save(commit=False)
+                
+            journal.employee = employee 
             journal.content_type = ContentType.objects.get_for_model(Project)
             journal.content_object = project
+            #journal.work_date = date
             journal.save()
             
             #if save successfull, generate empty form for new record:            
             form = self.form_class(initial={'employee': employee})
-
-            return redirect(reverse('tjournal', args = [project_id]))
+            # Redirect to GET. 
+            return redirect(reverse('tjournal', args = [project_id, date]))
         else:
-        # !! Redirect to GET. Stay in POST only if form was not valid.
+            # Stay in POST only if form was not valid.
             return render(request, 
                           'salary/registration_journal.html', 
-                          self.get_context(request, project_id, modify_id, form))
+                          self.get_context(request, project_id, date, modify_id, form))
     
+    def delete(self, id):
+        return Http404
