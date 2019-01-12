@@ -93,8 +93,6 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
             journal.content_object = project
             journal.work_date = work_date
             journal.save()
-            #if save successfull, generate empty form for new record:            
-            form = self.form_class(initial={'employee': employee})
             # Redirect to GET. 
             return redirect(reverse('tjournal', args = [project_id, date]))
         else:
@@ -103,5 +101,8 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
                           'salary/registration_journal.html', 
                           self.get_context(request, project_id, date, modify_id, form))
     
-    def delete(self, id):
-        return Http404
+    def delete(self, id=None):
+        try:
+            WorkTimeJournal.objects.get(id=id).delete()
+        except:
+            return Http404

@@ -300,7 +300,7 @@ class RelatedEmployee(models.Model):
             ('employee', 'sales_order_header'),
             ('employee', 'project'),
         )
-        verbose_name = ('Related employee')
+        verbose_name = _('Related employee')
         verbose_name_plural = _('Related employees')
 
 

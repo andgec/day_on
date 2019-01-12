@@ -1,0 +1,53 @@
+# Translate object on the fly:
+
+>>> object = MyModel.objects.all()[0]
+>>> object.get_current_language()
+'en'
+>>> object.title
+u'cheese omelet'
+
+>>> object.set_current_language('fr')       # Only switches
+>>> object.title = "omelette du fromage"    # Translation is created on demand.
+>>> object.save()
+
+-------------------------------------------------------------------------------------
+
+Changing the language
+The queryset can be instructed to return objects in a specific language:
+
+>>> objects = MyModel.objects.language('fr').all()
+>>> objects[0].title
+u'omelette du fromage'
+
+----------------------------------------------
+https://stackoverflow.com/questions/2459979/how-to-import-csv-data-into-django-models
+
+with open(path) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            _, created = Teacher.objects.get_or_create(
+                first_name=row[0],
+                last_name=row[1],
+                middle_name=row[2],
+                )
+            # creates a tuple of the new object or
+            # current object and a boolean of if it was created
+            
+--------------------------------------------------------------------
+# open file & create csvreader
+import csv, yada yada yada
+
+# import the relevant model
+from myproject.models import Foo
+
+#loop:
+for line in csv file:
+     line = parse line to a list
+     # add some custom validation\parsing for some of the fields
+
+     foo = Foo(fieldname1=line[1], fieldname2=line[2] ... etc. )
+     try:
+         foo.save()
+     except:
+         # if the're a problem anywhere, you wanna know about it
+         print "there was a problem with line", i 
