@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>{{timelist}}</title>
+		<style>
+	        body 
+	        {
+	            border:0; 
+	            margin: 0;
+	            padding-top: 40px;
+	        }
+			div.project {
+				width: 100%;
+				text-align: center;
+				padding-top: 0px;
+				font-family: Arial;
+				/*background-color: lightgreen;*/
+			}
+			.timelist {
+				width: 100%;
+			   font-family: Arial;
+			}
+			table {
+				border-collapse: collapse;
+				font-size: 12px;
+			}
+			th, td{
+				padding: 3px;
+				padding-left: 5px;
+				padding-right: 5px;
+			}
+			td{
+				border-right: 1px solid black;
+				border-left: 1px solid black;
+			}
+			td.num{
+				text-align: right;
+			}
+			tr:nth-child(even){
+				background-color: #f2f2f2;
+			}
+			th {
+				border: 1px solid black;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+			tfoot {
+				border: 1px solid black;
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- -- Project name section --- -->
+		<div class="project">
+			<h2>Prinsdal skole</h2>
+		</div>
+		<!-- -- Timelist data section --- -->
+		<div class="timelist">
+			<table class="timelist">
+				<thead>
+					<tr>
+						<th style="width:60px">Dato</th>
+						<th style="width:34px">Dag</th>
+						<th style="width:180px">Ansatt</th>
+						<th>Beskrivelse</th>
+						<th style="width:40px">Timer</th>
+						<th style="width:80px">Fra kl.-Til kl.</th>
+						<th style="width:24px">50%</th>
+						<th style="width:24px">100%</th>
+						<th style="width:24px">Km</th>
+						<th style="width:40px">Diet</th>
+						<th style="width:40px">Transport Nok</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>12 08 2018</td>
+						<td>Fre</td>
+						<td>Stasys Perminas</td>
+						<td>Sparkle vegg</td>
+						<td>1.75</td>
+						<td style="text-align:center">14:30-16:15</td>
+						<td class="num">0</td>
+						<td class="num">0</td>
+						<td class="num">0</td>
+						<td class="num">0</td>
+						<td class="num">0</td>
+					</tr>
+					<tr>
+						<td>12 08 2018</td>
+						<td>Fre</td>
+						<td>Stasys Perminas</td>
+						<td>Sparkle vegg</td>
+						<td>1.75</td>
+						<td>14:30-16:15</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+					</tr>
+					<tfoot>
+						<tr>
+							<td colspan="4">Totals</td>
+							<td></td>
+							<td></td>
+							<td class="num"></td>
+							<td class="num"></td>
+							<td class="num"></td>
+							<td class="num"></td>
+							<td class="num"></td>
+						</tr>					
+					</tfoot>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,75 @@
+https://xhtml2pdf.readthedocs.io/en/latest/format_html.html
+
+xhtml2pdf facilitates the conversion of HTML content into a PDF document by flowing the continuous HTML content through one or more pages using Pages and Frames. A page represents a page layout within a PDF document. A Frame represents a rectangular region within a page through which the HTML content will flow.
+
+Pages
+The @page object defines a Page template by defining the properties of a page, such as page type (letter or A4), page orientation (portrait or landscape), and page margins. The @page definition follows the style sheet convention of ordinary CSS style sheets:
+
+<style>
+    @page {
+        size: letter landscape;
+        margin: 2cm;
+    }
+</style>
+Frames
+The @frame object defines the position and size of rectangular region within a page. A @page object can hold one or more @frame objects. The @frame definition follows the style sheet convention of ordinary CSS style sheets:
+
+Here’s a definition of a page template with one Content Frame. It makes use of the Letter page size of 612pt x 792pt.
+
+<style>
+    @page {
+        size: letter portrait;
+        @frame content_frame {
+            left: 50pt;
+            width: 512pt;
+            top: 50pt;
+            height: 692pt;
+            -pdf-frame-border: 1;    /* for debugging the layout */
+        }
+    }
+</style>
+
+------------------------------------------------
+https://stackoverflow.com/questions/18232691/creating-pdfs-with-django-wkhtmltopdf
+
+def some_view(request):
+    t = loader.get_template('myapp/template.html')
+    c = RequestContext(request, {'foo': 'bar'})
+    html = t.render(c)
+    pdf_data = html2pdf(html) # Your favorite html2pdf generator
+    response = HttpResponse(pdf_data, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="some_filename.pdf"'
+    return response
+EDIT 2
+
+A simple view with context:
+
+template.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Untitled</title>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+</body>
+</html
+
+-------- PAGE BREAK ----------------
+Specify a CSS rule specific to the print media type. There are a number of properties that can be used for paging. I find it easiest to attach the page-break-before property to a class, as shown below.
+
+In the HTML:
+
+<p>Page 1, paragraph 1</p>
+<p class="new-page">Page 2, paragraph 1</p>
+<p>Page 2, paragraph 2</p>
+In the CSS:
+
+@media print {
+  .new-page {
+    page-break-before: always;
+  }
+}
+

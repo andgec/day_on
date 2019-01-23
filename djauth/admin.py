@@ -3,6 +3,8 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 from receivables.models import Employee
 from django.contrib.admin.options import StackedInline
+from co_manager.admin import admin_site
+
 from .models import User
 
 
@@ -40,7 +42,7 @@ class IsEmployeeFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(User)
+#@admin.register(User)
 class UserAdmin(DjangoUserAdmin):
 
     def get_queryset(self, request):
@@ -60,22 +62,13 @@ class UserAdmin(DjangoUserAdmin):
 
     list_display=('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
 
-    '''
-    def is_employee(self, obj):
-        return obj.is_employee()
-    is_employee.admin_order_field = 'employee__isnull'
-    is_employee.short_description = _('Employee status')
-    '''
-
     def save_model(self, request, obj, form, change):
         obj.company = request.user.company
         #print('Saving user. Company: ' + str(request.user.company))
         super().save_model(request, obj, form, change)
 
-
     inlines = [
         EmployeeInLine,
     ]
 
-
-    pass
+admin_site.register(User, UserAdmin)

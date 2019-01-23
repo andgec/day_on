@@ -51,4 +51,3 @@ class User(AbstractUser):
     
     is_employee.boolean = True
     is_employee.short_description = _('Employee status')
-

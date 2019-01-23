@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from co_manager.admin import admin_site
 from .models import Company, UnitOfMeasure
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -27,5 +28,5 @@ class CompanyAdmin(admin.ModelAdmin):
         }),
     )
 
-admin.site.register(Company, CompanyAdmin)
-admin.site.register(UnitOfMeasure)
+admin_site.register(Company, CompanyAdmin)
+admin_site.register(UnitOfMeasure)

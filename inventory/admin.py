@@ -2,6 +2,7 @@ from django.contrib import admin
 from parler.admin import TranslatableAdmin
 from parler.admin import TranslatableTabularInline
 
+from co_manager.admin import admin_site
 from .models import ItemGroup, Item
 from .forms import ItemGroupAdminForm, ItemAdminForm
 
@@ -21,5 +22,5 @@ class ItemAdmin(admin.ModelAdmin):
     list_filter     = ('item_group', 'active',)
     search_fields   = ('name', 'description', 'unit_of_measure__description', 'item_group__name') 
 
-admin.site.register(ItemGroup, ItemGroupAdmin)
-admin.site.register(Item, ItemAdmin)
+admin_site.register(ItemGroup, ItemGroupAdmin)
+admin_site.register(Item, ItemAdmin)

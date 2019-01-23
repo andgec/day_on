@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>{{timelist}}</title>
+		<style>
+			footer.dsection{
+				position: relative;
+				width: 100%;
+				background-color: lightgreen;
+				font-size: 12px;
+				font-style: italic;
+			}
+			div.companyinfo{
+				position: static;
+				position: relative;
+				float: right;
+				background-color: lightgray;
+			}
+			div.companyinforow{
+				display: table-row;			
+			}			
+			div.titles{
+				width: 70px;
+				display: table-cell;
+				font-weight: bold;
+			}
+			div.data{
+				width: 180px;
+				display: table-cell;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: 12px;
+			}
+			th, td{
+				padding: 3px;
+			}
+			td{
+				border-right: 1px solid black;
+				border-left: 1px solid black;
+			}
+			tr:nth-child(even){
+				background-color: #f2f2f2;
+			}
+			th {
+				border: 1px solid black;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+			tfoot {
+				border: 1px solid black;
+			}
+
+		</style>
+	</head>
+	<body>
+		<footer class="dsection">
+			<div class="companyinfo">
+				<div><b>VitasBygg AS</b></div>
+				<div class="companyinforow">
+					<div class="titles">
+						Org nr:
+						<br>Tel.:	
+						<br>E-post:
+						<br>Adresse:
+					</div>
+					<div class="data">
+						NO998 210 569MVA
+						<br>+47 46 22 82 98
+						<br>info@vitasbygg.no
+						<br>Sleipnersvei 16, 1400 Ski
+					</div>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

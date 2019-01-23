@@ -16,16 +16,16 @@ NOVEMBER    = 11
 DECEMBER    = 12
 
 MONTH_CHOICES = (
-    (JANUARY,   _('Sausis')),
-    (FEBRUARY,  _('Vasaris')),
-    (MARCH,     _('Kovas')),
-    (APRIL,     _('Balandis')),
-    (MAY,       _('Gegužė')),
-    (JUNE,      _('Birželis')),
-    (JULY,      _('Liepa')),
-    (AUGUST,    _('Rugpjūtis')),
-    (SEPTEMBER, _('Rugsėjis')),
-    (OCTOBER,   _('Spalis')),
-    (NOVEMBER,  _('Lapkritis')),
-    (DECEMBER,  _('Gruodis')),
+    (JANUARY,   _('January')),
+    (FEBRUARY,  _('February')),
+    (MARCH,     _('March')),
+    (APRIL,     _('April')),
+    (MAY,       _('May')),
+    (JUNE,      _('June')),
+    (JULY,      _('July')),
+    (AUGUST,    _('August')),
+    (SEPTEMBER, _('September')),
+    (OCTOBER,   _('October')),
+    (NOVEMBER,  _('November')),
+    (DECEMBER,  _('December')),
 )

@@ -49,14 +49,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'django_select2',
-    'admin_reorder',
     'parler',
+    'wkhtmltopdf',
     'djauth',
     'inventory',
     'general',
     'receivables',
     'salary',
+    'reports'
 ]
+
+APP_ORDER = [
+        'djauth',
+        'general',
+        'salary',
+        'inventory',
+        'receivables',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,22 +77,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'co_manager.urls'
 
 AUTH_USER_MODEL = 'djauth.User'
-
-
-ADMIN_REORDER = (
-    {'app': 'auth', 'models': ('auth.Group', 'djauth.User', 'salary.Employee')},
-    {'app': 'general', 'models': ('general.Company',)},
-    {'app': 'inventory', 'models': ('inventory.Item', 'inventory.ItemGroup')},
-    {'app': 'receivables', 'models': ('receivables.Customer', 'receivables.Project')},
-    {'app': 'general', 'label':_('Supplementary lists'), 'models': ('general.UnitOfMeasure',)},
-)
-
 
 TEMPLATES = [
     {
@@ -101,7 +99,11 @@ TEMPLATES = [
         },
     },
 ]
-
+'''
+TEMPLATE_LOADERS = (
+    'django.template.loaders.app_directories.load_template_source',
+)
+'''
 WSGI_APPLICATION = 'conf.wsgi.application'
 
 # Database
@@ -136,7 +138,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'nb'
+LANGUAGE_CODE = 'lt'
 
 TIME_ZONE = 'Europe/Oslo'
 
@@ -159,7 +161,7 @@ PARLER_LANGUAGES = {
         {'code': 'en',},
     ),
     'default': {
-        'fallback': 'nb',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        'fallback': 'lt',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
         'hide_untranslated': False,   # the default; let .active_translations() return fallbacks too.
     }
 }
@@ -185,8 +187,14 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_REDIRECT_URL = '/'
-
-
+'''
+if DEBUG:
+    def ABS_DIR(rel):
+        return os.path.join(BASE_DIR, rel.replace('/', os.path.sep))
+    STATICFILES_DIRS = (
+        ABS_DIR('static'),
+        )
+'''
 try:
     if LOCAL_ENV:
         from .settings_local import *

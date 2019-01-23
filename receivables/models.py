@@ -120,6 +120,7 @@ class Project(models.Model):
     class Meta:
         verbose_name = _('Project')
         verbose_name_plural = _('Projects')
+        #app_label = 'reports' Just make sure to adapt the FK and M2M fields accordingly.
     
     def __str__(self):
         return self.name
@@ -302,6 +303,8 @@ class RelatedEmployee(models.Model):
         )
         verbose_name = _('Related employee')
         verbose_name_plural = _('Related employees')
+        managed = False # Disable migrations
+        auto_created = True
 
 
 class WorkTimeJournal(models.Model):
@@ -326,6 +329,18 @@ class WorkTimeJournal(models.Model):
                                     decimal_places = 2, 
                                     verbose_name = _('Work time')
                                     )
+    overtime_50 = models.DecimalField(max_digits = 4,
+                                     decimal_places = 2,
+                                     blank = True,
+                                     null = True,
+                                     verbose_name = _('Overtime 50%')
+                                     )
+    overtime_100 = models.DecimalField(max_digits = 4,
+                                       decimal_places = 2,
+                                       blank = True,
+                                       null = True,
+                                       verbose_name = _('Overtime 100%')
+                                       )
     distance = models.PositiveSmallIntegerField(blank = True,
                                                 null = True,
                                                 verbose_name = _('Distance')

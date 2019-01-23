@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from shared.snippets import MultiFieldSortableModelAdmin
 from .models import Employee
+from co_manager.admin import admin_site
+from django.apps import apps
 
 
 class IsActiveFilter(admin.SimpleListFilter):
@@ -78,5 +80,6 @@ class EmployeeAdmin(MultiFieldSortableModelAdmin):
     def has_add_permission(self, request):
         return False
 
-
-admin.site.register(Employee, EmployeeAdmin)
+Employee = apps.get_model('salary.Employee')
+Employee._meta.app_name = 'djauth'
+admin_site.register(Employee, EmployeeAdmin)
