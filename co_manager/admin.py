@@ -11,10 +11,18 @@ class CoAdminSite(AdminSite):
         from django.conf.urls import url
         urls = super(CoAdminSite, self).get_urls()
         urls += [
-            url(r'^timelist_pdf/$', TimelistPDFView.as_view()),
             url(r'^timelist_html/$', TimelistHTMLView.as_view()),
+            url(r'^timelist_html/(?P<project_id>[0-9]+)/$', TimelistHTMLView.as_view()),
+            #PDF timelist URLs
+            #url(r'^timelist_pdf/$', TimelistPDFView.as_view()),
+            url(r'^timelist_pdf/(?P<project_id>[0-9]+)/$', TimelistPDFView.as_view()),
+            #url(r'^timelist_pdf/(?P<project_ids>[0-9]+)/(?P<date_from>\d{4}-\d{2}-\d{2})$', TimelistPDFView.as_view()),
+            #url(r'^timelist_pdf/(?P<project_ids>[0-9]+)/(?P<date_to>\d{4}-\d{2}-\d{2})$', TimelistPDFView.as_view()),
+            #url(r'^timelist_pdf/(?P<project_ids>[0-9]+)/(?P<date_from>\d{4}-\d{2}-\d{2})/(?P<date_to>\d{4}-\d{2}-\d{2})$', TimelistPDFView.as_view()),          
         ]
         return urls
+
+#url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})$', WorkTimeJournalView.as_view(), name='tjournal'),
 
 def get_site_header():
 #    if DEBUG:

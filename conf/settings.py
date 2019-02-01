@@ -187,14 +187,9 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_REDIRECT_URL = '/'
-'''
-if DEBUG:
-    def ABS_DIR(rel):
-        return os.path.join(BASE_DIR, rel.replace('/', os.path.sep))
-    STATICFILES_DIRS = (
-        ABS_DIR('static'),
-        )
-'''
+
+TIMELIST_LINES_PER_PAGE = 28
+
 try:
     if LOCAL_ENV:
         from .settings_local import *

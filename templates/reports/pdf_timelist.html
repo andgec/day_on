@@ -83,6 +83,7 @@
 				<th>Transport Nok</th>
 			</thead>
 			<tbody>
+				{% for line in line_list %}
 				<tr>
 					<td>12 08 2018</td>
 					<td>Fre</td>
@@ -90,12 +91,13 @@
 					<td>Sparkle vegg</td>
 					<td>1.75</td>
 					<td>14:30-16:15</td>
-					<td>0</td>
+					<td>{{ company.name }}</td>
 					<td>0</td>
 					<td>0</td>
 					<td>0</td>
 					<td>0</td>
 				</tr>
+				{%endfor%}
 				<tr>
 					<td>12 08 2018</td>
 					<td>Fre</td>

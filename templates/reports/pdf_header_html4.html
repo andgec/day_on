@@ -12,14 +12,14 @@
 	            /*background-color: lightgray;*/
 	        }
 			hr { 
-			  display: block;
-			  margin-top: 0px;
-			  margin-bottom: 0px;
-			  margin-left: 0px;
-			  margin-right: 0px;
-			  border-style: solid;
-			  border-width: 1px;
-			  border-color: black;
+			  	display: block;
+			  	margin-top: 0px;
+			  	margin-bottom: 0px;
+			  	margin-left: 0px;
+			  	margin-right: 0px;
+			  	border-style: solid;
+			  	border-width: 1px;
+			  	border-color: black;
 			}
 			div.header {
 				width: 100%;
@@ -62,7 +62,7 @@
 			</div>
 			<div class="dsection">
 				<div class="companyinfo">
-					<div><b>VitasBygg AS</b></div>
+					<div><b>{{company.name}}</b></div>
 					<div class="companyinforow">
 						<div class="titles">
 							Org nr:
@@ -71,10 +71,10 @@
 							<br>Adresse:
 						</div>
 						<div class="data">
-							NO998 210 569MVA
-							<br>+47 46 22 82 98
-							<br>info@vitasbygg.no
-							<br>Sleipnersvei 16, 1400 Ski
+							NO{{company.number}}MVA
+							<br>{{company.phone_no|default:company.mobile_no}}
+							<br>{{company.email}}
+							<br>{{company.full_address}}
 						</div>
 					</div>
 				</div>

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	    <style type="text/css">
+	        body 
+	        {
+	            border:0; 
+	            margin: 0;
+	            padding: 0;
+	            height: 10mm;
+	            /*background-color: green;*/
+	        }
+			div.pagenum{
+				right: 0px;
+				position: absolute;
+				display: table;
+			}
+			div.companyname{
+				left: 0px;
+				position: absolute;
+				display: table;
+				font-weight: bold;
+			}
+			hr { 
+			  	display: block;
+			  	margin-top: 0px;
+			  	margin-bottom: 4px;
+			  	margin-left: 0px;
+			  	margin-right: 0px;
+			  	border-style: solid;
+			  	border-width: 1px;
+			  	border-color: black;
+			
+	    </style>
+	</head>
+	<body>
+		<hr>
+		<div class = "companyname">
+			{{company.name}}
+		</div> 
+		<div class = "pagenum">
+			Side <span id='page'></span> av
+    		<span id='topage'></span>
+		</div>    		
+	    <script>
+      		var vars={};
+      		var x=window.location.search.substring(1).split('&');
+      		for (var i in x) {
+        		var z=x[i].split('=',2);
+        		vars[z[0]] = unescape(z[1]);
+      		}
+      		document.getElementById('page').innerHTML = vars.page; 
+      		document.getElementById('topage').innerHTML = vars.topage; 
+    	</script>	
+	</body>
+</html>

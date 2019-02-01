@@ -8,12 +8,14 @@
 	        {
 	            border:0; 
 	            margin: 0;
-	            padding-top: 40px;
+	            padding-top: 0px;
+	            /*background-color: lightgray;*/
 	        }
 			div.project {
 				width: 100%;
 				text-align: center;
-				padding-top: 0px;
+				padding-top: 55px;
+				padding-bottom: 12px;
 				font-family: Arial;
 				/*background-color: lightgreen;*/
 			}
@@ -49,72 +51,76 @@
 				border: 1px solid black;
 				font-weight: bold;
 			}
+			@media print {
+  				.new-page {
+    			page-break-before: always;
+  				}
+			}
+			.page-break{
+				page-break-before: always;
+			}
 		</style>
 	</head>
 	<body>
+	    {% for page in pages %}
 		<!-- -- Project name section --- -->
 		<div class="project">
-			<h2>Prinsdal skole</h2>
+			<h2>{{project.name}}</h2>
 		</div>
 		<!-- -- Timelist data section --- -->
 		<div class="timelist">
 			<table class="timelist">
 				<thead>
 					<tr>
-						<th style="width:60px">Dato</th>
-						<th style="width:34px">Dag</th>
-						<th style="width:180px">Ansatt</th>
-						<th>Beskrivelse</th>
-						<th style="width:40px">Timer</th>
-						<th style="width:80px">Fra kl.-Til kl.</th>
-						<th style="width:24px">50%</th>
-						<th style="width:24px">100%</th>
-						<th style="width:24px">Km</th>
-						<th style="width:40px">Diet</th>
-						<th style="width:40px">Transport Nok</th>
+						<th style="width:60px">{{ _('Date') }}</th>
+						<th style="width:34px">{{ _('Day') }}</th>
+						<th style="width:180px">{{ _('Employee') }}</th>
+						<th>{{ _('Description') }}</th>
+						<th style="width:40px">{{ _('Hours') }}</th>
+						<th style="width:80px">{{ _('From h. - To h.') }}</th>
+						<th style="width:35px">50%</th>
+						<th style="width:35px">100%</th>
+						<th style="width:35px">Km</th>
+						<th style="width:40px">{{ _('Diet') }}</th>
+						<th style="width:40px">{{ _('Transport Nok') }}</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>12 08 2018</td>
-						<td>Fre</td>
-						<td>Stasys Perminas</td>
-						<td>Sparkle vegg</td>
-						<td>1.75</td>
-						<td style="text-align:center">14:30-16:15</td>
-						<td class="num">0</td>
-						<td class="num">0</td>
-						<td class="num">0</td>
-						<td class="num">0</td>
-						<td class="num">0</td>
-					</tr>
-					<tr>
-						<td>12 08 2018</td>
-						<td>Fre</td>
-						<td>Stasys Perminas</td>
-						<td>Sparkle vegg</td>
-						<td>1.75</td>
-						<td>14:30-16:15</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
-					</tr>
+					{% for line in page.lines %}
+					<!--  https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2997 -->
+						<tr>
+							<td>{{line.work_date}}</td>
+							<td>{{line.work_week_day}}</td>
+							<td>Stasys Perminas</td>
+							<!-- td>{{line.employee}}</td>  -->
+							<td>{{line.item}}</td>
+							<td class="num">{{line.work_time}}</td>
+							<td style="text-align:center">{{line.work_time_from}} - {{line.work_time_to}}</td>
+							<td class="num">{{ line.overtime_50|default:"" }}</td>
+							<td class="num">{{ line.overtime_100|default:"" }}</td>
+							<td class="num">{{ line.distance|default:"" }}</td>
+							<!-- td class="num">{{ line.toll_ring|default:"" }}</td> -->
+							<td class="num">{{ line.diet|default:"" }}</td>
+							<td class="num">{{ line.transport|default:"" }}</td>
+						</tr>
+					{%endfor%}
 					<tfoot>
 						<tr>
 							<td colspan="4">Totals</td>
+							<td class="num">{{ totals.total_work_time|default:"" }}</td>
 							<td></td>
-							<td></td>
-							<td class="num"></td>
-							<td class="num"></td>
-							<td class="num"></td>
-							<td class="num"></td>
-							<td class="num"></td>
+							<td class="num">{{ totals.total_overtime_50|default:"" }}</td>
+							<td class="num">{{ totals.total_overtime_100|default:"" }}</td>
+							<td class="num">{{ totals.total_distance|default:"" }}</td>
+							<td class="num">{{ totals.total_diet|default:"" }}</td>
+							<td class="num">{{ totals.total_transport|default:"" }}</td>
 						</tr>					
 					</tfoot>
 				</tbody>
 			</table>
 		</div>
+    	<div class="page-break"/>
+		{%endfor%}
+		
 	</body>
 </html>
