@@ -1,0 +1,62 @@
+.main-container {
+	width: 100%;
+	max-width: 1400px;
+	display: block;
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+th, td{
+	padding: 3px;
+}
+
+td{
+	border-right: 1px solid black;
+	border-left: 1px solid black;
+}
+
+tr:nth-child(even){
+	background-color: #ffbcbd;
+}
+thead:{
+	background-color: #f5f5f5; 
+}
+tr{
+	background-color: #ffbcbd;
+}			
+
+th {
+	border-left: 1px solid #dedede;
+	border-right: 1px solid #dedede;
+	border-spacing: 0px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	background-color: #f5f5f5;
+}
+table {
+	border-radius: 4px;
+}			
+
+			
+td {
+	border-left: 1px solid #dedede;
+	border-right: 1px solid #dedede;
+	border-spacing: 0px;
+	padding: 4px;
+}
+
+.tb {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #dedede; 
+	border-collapse: collapse;
+}
+
+.scont {
+	padding-bottom: 18;
+	padding-top: 18
+}
+

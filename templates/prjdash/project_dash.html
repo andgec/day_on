@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block linked_files %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/buttons.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash-accordion.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+		<div class="breadcrumbs">
+			{{ _('Project dashboard') }}
+		</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="main-container">
+	{% for customer in customers %}
+	<button class="accordion">{{customer.name}}</button>
+	<div class="panel">
+		<div class="scont">
+			<table class = "tb">
+				<thead class="tb">
+					<th></th>
+					<th class="tb">Project</th>
+					<th>Comment</th>
+					<th>Date created</th>
+					<th>Actions</th>
+				</thead>
+				{% for project in customer.projects %}
+				<tr class="tb">
+					<td>
+					<a href="#" class="btn-detail">Details</a>
+					</td>
+					<td>{{project.name}}</td>
+					<td>{{project.description}}</td>
+					<td>{{project.datetime_created}}</td>
+					<td>
+					<a href="#" class="btn-edit">Edit</a>
+					<a href="#" class="btn-open">Open</a>
+					<a href="#" class="btn-close">Close</a>
+					</td>
+				</tr>
+				{% endfor %}
+				<tfoot>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+	{% endfor %}
+   <script>
+		var acc = document.getElementsByClassName("accordion");
+		var i;
+		
+		for (i = 0; i < acc.length; i++) {
+		  acc[i].addEventListener("click", function() {
+			 //this.style.borderBottomRightRadius = 0;			 
+		    this.classList.toggle("active");
+		    var panel = this.nextElementSibling;
+		    panel.classList.toggle("panel-active")
+		    if (panel.style.maxHeight){
+		      panel.style.maxHeight = null;
+		    } else {
+		      panel.style.maxHeight = panel.scrollHeight + "px";
+		    }
+		    
+		    // Closing all other open sections 
+			 var btns = document.getElementsByClassName("accordion")
+			 for (k = 0; k < btns.length; k++) {
+				var btn = btns[k]			 
+			 	if (btn != this) {
+			 		btn.classList.remove("active")
+			 		var xpanel = btn.nextElementSibling;
+			 		xpanel.style.maxHeight = null;
+			 		xpanel.classList.remove("panel-active")
+			 	}
+			 };
+		  });
+		}		
+	</script>		
+</div>
+{% endblock %}

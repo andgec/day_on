@@ -160,7 +160,7 @@ class TimelistPDFView(View):
         #print(journal_lines.query)
         return context
 
-    
+
     def get(self, request, project_id=None):
         context = self.get_context(request, project_id)
         #print(context)
@@ -187,14 +187,14 @@ class TimelistHTMLView(View):
             }
         context.update(self.get_journal_lines(request, project_id))
         return context
-        
-    
+
+
     def get_journal_lines(self, request, project_id):
         #project_ids = request.GET.get('project_ids')
         date_from = request.GET.get('date_from')
         date_to = request.GET.get('date_to')
         contenttype_project = ContentType.objects.get(model='project')
-        
+
         # Building the query according URL parameters:
         q_list = []
 
@@ -207,14 +207,14 @@ class TimelistHTMLView(View):
         if project_id:
             q_list.append(Q(content_type=contenttype_project))
             q_list.append(Q(object_id=project_id))
-    
+
         if date_from:
             q_list.append(Q(work_date__gte=date_from))
         if date_to:
             q_list.append(Q(work_date__lte=date_to))
-        
+
         print(q_list)
-        
+
         journal_lines = WorkTimeJournal.objects.filter(
             reduce(operator.and_, q_list) if len(q_list) > 1 else q_list[0]).order_by('content_type',
                                                                                       'object_id',

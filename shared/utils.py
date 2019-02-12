@@ -3,6 +3,7 @@ from datetime import datetime, time
 from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import get_template
+from django.contrib.contenttypes.models import ContentType
 #from xhtml2pdf import pisa
 
 def start_of_day(date_time: datetime):
@@ -17,13 +18,9 @@ def start_of_today():
 def end_of_today():
     return end_of_day(timezone.now())
 
-'''
-def render_to_pdf(template_src, context_dict={}):
-    template = get_template(template_src)
-    html = template.render(context_dict)
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode('UTF-8')), result)
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return None
-'''
+def read_contenttypes():
+    content_types = ContentType.objects.all()
+    return {(c.app_label, c.model): c.id for c in content_types}
+
+content_type_id_by_name = read_contenttypes()
+

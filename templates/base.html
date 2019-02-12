@@ -9,27 +9,32 @@
 		{% block linked_files %}
 		{% endblock %}
 	</head>
-	<div id = "container">
-		<div id = "header">
-			<div id = "branding">
-				<h1 id="site-name">{{ _('Vitasbygg AS') }}</h1>
+	<body>
+		<div id = "container">
+			<div id = "header">
+				<div id = "branding">
+					<h1 id="site-name">{{ _('Vitasbygg AS') }}</h1>
+				</div>
+				<div id="user-tools">
+				{{ _('Welcome')}}, <strong>{{user.first_name}}</strong>.
+				{% if user.is_staff or user.is_superuser %}
+					<a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
+				{% endif %}
+				<a href="{% url 'logout' %}">{{ _('Log out')}}</a>
+				</div>
 			</div>
-			<div id="user-tools">
-			{{ _('Welcome')}}, <strong>{{user.first_name}}</strong>.
-			{% if user.is_staff or user.is_superuser %}
-				<a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
-			{% endif %}
-			<a href="{% url 'logout' %}">{{ _('Log out')}}</a>
-			</div>
+			{% block breadcrumbs %}
+			{% endblock %}
+
+			{% block content_top %}
+			{% endblock %}
+			
+			{% block content %}
+			{% endblock %}
+			
+			{% block content_bottom %}
+     		{% endblock %}
+			
 		</div>
-		{% block breadcrumbs %}
-		{% endblock %}
-		<div id="content" class=colMS>
-			<h1>{{ _('Working time registration') }}</h1>
-			<div id="content_main">
-				{% block content %}
-				{% endblock %}
-			</div>
-		</div>
-	</div>
+	</body>
 </html>

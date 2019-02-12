@@ -37,10 +37,10 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
     def get_context(self, request, project_id, date, modify_id, form):
         project = Project.objects.get(id=project_id)
         employee = request.user.employee
-        jr_lines = WorkTimeJournal.objects.filter(work_date=date,
+        jr_lines = WorkTimeJournal.objects.filter(work_date = date,
                                                   employee = employee).order_by('work_time_from').prefetch_related('content_object')
 
-        jr_totals = WorkTimeJournal.objects.filter(work_date=date,
+        jr_totals = WorkTimeJournal.objects.filter(work_date = date,
                                                    employee = employee).aggregate(Sum('work_time'),
                                                                                   Sum('distance'), 
                                                                                   Sum('toll_ring'), 
