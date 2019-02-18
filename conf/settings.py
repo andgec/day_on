@@ -60,6 +60,7 @@ INSTALLED_APPS = [
 ]
 
 APP_ORDER = [
+        'auth',
         'djauth',
         'general',
         'salary',

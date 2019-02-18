@@ -71,7 +71,6 @@ class Customer(AddressMixin, models.Model):
     active = BooleanField(default=True,
                           verbose_name=_('Active')
                           )
-    
     class Meta:
         verbose_name = _('Customer')
         verbose_name_plural = _('Customers')
@@ -84,13 +83,17 @@ class Customer(AddressMixin, models.Model):
 
 
 class Project(models.Model):
-    name = CharField(max_length=60,
+    name = CharField(max_length=100,
                      verbose_name=_('Name')
                      )
     description = TextField(blank=True,
                             default='',
                             verbose_name=_('Description')
                             )
+    comment = TextField(blank=True,
+                        default='',
+                        verbose_name=_('Comment'),
+                        )
     customer = models.ForeignKey(Customer,
                                  on_delete=PROTECT,
                                  related_name='projects',
@@ -99,7 +102,9 @@ class Project(models.Model):
     active = BooleanField(default=True,
                           verbose_name=_('Active')
                           )
-    
+    visible = BooleanField(default=True,
+                           verbose_name=_('Visible')
+                           )
     employees = ManyToManyField(Employee,
                                 through = 'RelatedEmployee',
                                 related_name = 'projects',

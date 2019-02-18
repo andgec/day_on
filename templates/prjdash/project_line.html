@@ -1,0 +1,14 @@
+				<tr class="tb">
+					<td>
+					<a href="#" class="btn-detail">Details</a>
+					<input type="hidden" id="customer_id" name="customer_id" value="{{customer.id}}">
+					</td>
+					<td>{{project.name}}</td>
+					<td>{{project.description}}</td>
+					<td style="width:80px">{{project.datetime_created}}</td>
+					<td>
+					<a href="{% url 'pdash' pk=project.id %}" class="btn-edit">Edit</a>
+					<a href="{% url 'pdash' pk=project.id %}/?action=open" class="btn-open">Open</a>
+					<a href="{% url 'pdash' pk=project.id %}/?action=close" class="btn-close">Close</a>
+					</td>
+				</tr>

@@ -107,7 +107,7 @@ class ProjectAdmin(admin.ModelAdmin):
     filter_horizontal = ('employees',)
     fieldsets = (
         (None, {
-            'fields': ('customer', 'name', 'description', 'active', 'employees',)
+            'fields': ('customer', 'name', 'description', 'comment', 'active', 'visible', 'employees',)
         }),
     )
     #https://stackoverflow.com/questions/10110606/django-admin-many-to-many-intermediary-models-using-through-and-filter-horizont/10203192

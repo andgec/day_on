@@ -1,3 +1,7 @@
+a:focus { 
+    outline: none; 
+}
+
 .btn-close {
 	-moz-box-shadow:inset 0px 1px 0px 0px #f5978e;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #f5978e;
@@ -39,6 +43,10 @@
 .btn-close:active {
 	position:relative;
 	top:1px;
+}
+
+.btn-close::-moz-focus-inner {
+  border: 0;
 }
 
 .btn-edit {
@@ -147,13 +155,18 @@
 	border:1px solid #74b807;
 	display:inline-block;
 	cursor:pointer;
-	color:#ffffff;
+	color:#3f3f3f;
 	font-family:Arial;
 	font-size:15px;
 	font-weight:bold;
 	padding:7px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #528009;
+	/*
+	height: 32px;
+	position: relative;
+	top: 1px;
+	*/
 }
 
 .btn-open:hover {
@@ -165,12 +178,52 @@
 	background:linear-gradient(to bottom, #77a809 5%, #89c403 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77a809', endColorstr='#89c403',GradientType=0);
 	background-color:#77a809;
+	color:#000000;
 }
 /*
-.btn-open:hover {
-	background-color:#77a809;
-}*/
+button.btn-open {
+	position: relative;
+	top: 1px;
+	padding:7px 24px;
+	height: 32px;
+	
+}
+*/
 .btn-open:active {
 	position:relative;
 	top:1px;
+}
+
+a.btn-edit {
+	color: #3f3f3f;
+}
+
+a.btn-open {
+	color: #3f3f3f;
+}
+
+a.btn-close {
+	position: relative;
+	top: 0px;
+	color: #3f3f3f;
+}
+
+a.btn-detail {
+	color: #3f3f3f;
+}
+
+a.btn-edit:hover {
+	color: #000000;
+}
+
+a.btn-open:hover {
+	color: #000000;
+}
+
+a.btn-close:hover {
+	color: #000000;
+}
+
+a.btn-detail:hover {
+	color: #000000;
 }

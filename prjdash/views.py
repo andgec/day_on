@@ -1,14 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from receivables.models import Customer, Project
 from shared.utils import content_type_id_by_name
 from django.db import connection
+from .forms import PDashProjectForm
 
 
 class ProjectDashboardView(LoginRequiredMixin, View):
     template = 'prjdash/project_dash.html'
-
+    form_class = PDashProjectForm
+    
     proj_sql = ''' 
         SELECT
           "receivables_customer"."id" as "customer_id",
@@ -45,7 +48,7 @@ class ProjectDashboardView(LoginRequiredMixin, View):
             dict(zip(columns, row))
             for row in cursor.fetchall()
     ]
-        
+
     def build_resul_list(self, result_dicts):
         customers = []
         projects = []
@@ -80,16 +83,38 @@ class ProjectDashboardView(LoginRequiredMixin, View):
         return customers
 
 
-    def get_context(self, request):
+    def get_context(self,
+                    request,
+                    pk,
+                    form = None):
         with connection.cursor() as cursor:
             cursor.execute(self.proj_sql, [content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)]])
             result_dicts = self.dictfetchall(cursor)
 
+        print(pk)
 
-        context = {'customers': self.build_resul_list(result_dicts)}
-        
-        return context;
-    
+        if not form:
+            form = self.form_class(initial={'customer_id': 2})
+
+        modify = request.GET.get('modify') == 'true'
+
+        if pk:
+            project = Project.objects.get(id=pk)
+            customer_id = project.customer_id
+        else:
+            customer_id = None
+
+        context = {'modify': modify,
+                   'focus': {'customer_id': customer_id,
+                             'project_id': pk,
+                            },
+                   'form': form,
+                   'customers': self.build_resul_list(result_dicts),
+                  }
+
+        print(context)
+        return context
+
     '''
     def get_context(self, request):
         customers = Customer.objects.filter(active=True).order_by('name')
@@ -127,13 +152,32 @@ class ProjectDashboardView(LoginRequiredMixin, View):
         }
         return context
     '''    
-    def get(self, request):
+    def get(self, request, pk=None):
         return render(request,
                       self.template,
-                      self.get_context(request)
+                      self.get_context(request, pk)
                       )
         
+    def post(self, request, pk=None):
+        project = None
+        print(pk)
+        if pk:
+            project = Project.objects.get(id=pk)
+            
         
+        form = self.form_class(request.POST, instance=project, request=request)
+        if form.is_valid():
+            project = form.save(commit=True)
+            #project = form.save()
+            print('reverse(pdash) = %s' % reverse('pdash'))
+            return redirect(reverse('pdash'), args = [pk,])
+        else:
+            return render(request,
+                          self.template,
+                          self.get_context(request, pk=pk, form=form)
+                          )
+        
+        pass
     
 
 '''----------------------------------------------

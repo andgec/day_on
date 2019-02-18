@@ -48,5 +48,5 @@ def setup_admin_site():
 admin_site = setup_admin_site()
 
 Group = apps.get_model('auth.Group')
-Group._meta.app_label = 'djauth'
+#Group._meta.app_label = 'djauth'
 admin_site.register(Group, GroupAdmin)
