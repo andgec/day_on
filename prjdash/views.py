@@ -18,7 +18,7 @@ class ProjectDashboardView(LoginRequiredMixin, View):
           "receivables_customer"."name" as "customer_name",
           Proj."project_id", 
           Proj."project_name", 
-          Proj."project_description", 
+          Proj."project_comment", 
           Proj."project_active",
           Proj."datetime_created"
         FROM "receivables_customer"
@@ -28,7 +28,7 @@ class ProjectDashboardView(LoginRequiredMixin, View):
                 "receivables_project"."customer_id",
                 "receivables_project"."id" as "project_id", 
                 "receivables_project"."name" as "project_name",
-                "receivables_project"."description" as "project_description", 
+                "receivables_project"."comment" as "project_comment", 
                 "receivables_project"."active" as "project_active",
                 "django_admin_log"."action_time" as "datetime_created"
             FROM "receivables_project"
@@ -73,7 +73,7 @@ class ProjectDashboardView(LoginRequiredMixin, View):
             if line['project_id']:
                 projects.append({'id': line['project_id'],
                                  'name': line['project_name'],
-                                 'description': line['project_description'],
+                                 'comment': line['project_comment'],
                                  'active': line['project_active'],
                                  'datetime_created': line['datetime_created'],
                                  })
@@ -93,10 +93,10 @@ class ProjectDashboardView(LoginRequiredMixin, View):
 
         print(pk)
 
-        if not form:
-            form = self.form_class(initial={'customer_id': 2})
+        #if not form:
+        #   form = self.form_class(initial={'customer_id': 2})
 
-        modify = request.GET.get('modify') == 'true'
+        edit = request.GET.get('action') == 'edit'
 
         if pk:
             project = Project.objects.get(id=pk)
@@ -104,9 +104,14 @@ class ProjectDashboardView(LoginRequiredMixin, View):
         else:
             customer_id = None
 
-        context = {'modify': modify,
-                   'focus': {'customer_id': customer_id,
-                             'project_id': pk,
+        if edit:
+            form = self.form_class(instance = project)
+        else:
+            form = self.form_class()
+
+        context = {'edit': edit,
+                   'focus': {'customer_id': int(customer_id) if customer_id else None,
+                             'project_id': int(pk) if pk else None,
                             },
                    'form': form,
                    'customers': self.build_resul_list(result_dicts),
@@ -168,13 +173,13 @@ class ProjectDashboardView(LoginRequiredMixin, View):
         form = self.form_class(request.POST, instance=project, request=request)
         if form.is_valid():
             project = form.save(commit=True)
-            #project = form.save()
-            print('reverse(pdash) = %s' % reverse('pdash'))
-            return redirect(reverse('pdash'), args = [pk,])
+
+            #print('reverse(pdash) = %s' % reverse('pdash')+str(project.pk))
+            return redirect(reverse('pdash')+str(project.pk))
         else:
             return render(request,
                           self.template,
-                          self.get_context(request, pk=pk, form=form)
+                          self.get_context(request, pk=pk, form=form) #???
                           )
         
         pass

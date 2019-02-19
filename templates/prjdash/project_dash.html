@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block linked_files %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/buttons.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash-accordion.css' %}">
@@ -17,10 +18,11 @@
 {% block content %}
 
 <div class="main-container">
+	<div id="debug"></div>
 	{% for customer in customers %}
 	  {% if customer.id == focus.customer_id %}
-		<button class="accordion active" value="{{customer.id}}">{{customer.name}}</button>
-		<div class="panel panel-active">
+		<button class="accordion active" id="accordion_active" value="{{customer.id}}">{{customer.name}}</button>
+		<div class="panel panel-active" id="panel_active">
 	  {% else %}	
 		<button class="accordion" value="{{customer.id}}">{{customer.name}}</button>
 		<div class="panel">
@@ -29,18 +31,18 @@
 			<div class="scont">
 				<table class = "tb">
 					<thead class="tb">
-						<th></th>
+						<th class="tb"></th>
 						<th class="tb">Project</th>
-						<th>Comment</th>
-						<th style="width:80px">Date created</th>
-						<th>Actions</th>
+						<th class="tb">Comment</th>
+						<th style="width:80px" class="tb">Date created</th>
+						<th class="tb">Actions</th>
 					</thead>
-	   			    {% if modify == False %}
+	   			    {% if edit == False %}
 						{% include 'prjdash/project_form.html' %}
 					{% endif %}
 					
 					{% for project in customer.projects %}
-						{% if modify == True %}
+						{% if edit == True and focus.project_id == project.id %}
 							{% include 'prjdash/project_form.html' %}
 						{% else %}
 							{% include 'prjdash/project_line.html' %}
@@ -56,9 +58,16 @@
 		var acc = document.getElementsByClassName("accordion");
 		var i;
 		
+		panel_active = document.getElementById("panel_active") 
+		if (panel_active) {
+		  panel_active.style.maxHeight = panel_active.scrollHeight + "px";
+		}
+		
 		for (i = 0; i < acc.length; i++) {
 		  acc[i].addEventListener("click", function() {
-			 //this.style.borderBottomRightRadius = 0;			 
+		    
+		    document.getElementById("debug").innerHTML = "click " + this.value;
+			
 		    this.classList.toggle("active");
 		    var panel = this.nextElementSibling;
 		    panel.classList.toggle("panel-active")
@@ -67,13 +76,17 @@
 		    } else {
 		      panel.style.maxHeight = panel.scrollHeight + "px";
 		    }
+		    
+		    //Setting customer_id value to the hidden form element 
 		    anchor = document.getElementById("cust_" + this.value)
 		    anchor.nextElementSibling.value = this.value
 		    
-		    // Closing all other open sections 
-			 var btns = document.getElementsByClassName("accordion")
-			 for (k = 0; k < btns.length; k++) {
-				var btn = btns[k]			 
+		    document.getElementById("debug").innerHTML = this.value;
+		    
+		    // Closing all other open sections
+			var btns = document.getElementsByClassName("accordion")
+			for (k = 0; k < btns.length; k++) {
+			  var btn = btns[k]			 
 			 	if (btn != this) {
 			 		btn.classList.remove("active")
 			 		var xpanel = btn.nextElementSibling;

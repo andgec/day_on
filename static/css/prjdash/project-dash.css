@@ -9,24 +9,32 @@
 
 th, td{
 	padding: 3px;
+	height: 35px;
+	vertical-align: middle;
+	font-size: 14px;
 }
 
-td{
-	border-right: 1px solid black;
-	border-left: 1px solid black;
+td.actions {
+	text-align: center
 }
 
 tr:nth-child(even){
+	background-color: #fafafa;
+}
+
+tr.closed{
 	background-color: #ffbcbd;
 }
-thead:{
-	background-color: #f5f5f5; 
+
+tr.closed:nth-child(even){
+	background-color: #ecaeaf;
 }
+
 tr{
-	background-color: #ffbcbd;
+	background-color: #f0f0f0;
 }			
 
-th {
+th.tb {
 	border-left: 1px solid #dedede;
 	border-right: 1px solid #dedede;
 	border-spacing: 0px;
@@ -34,7 +42,7 @@ th {
 	padding-right: 4px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	background-color: #f5f5f5;
+	background-color: #ffffff;
 }
 table {
 	border-radius: 4px;
