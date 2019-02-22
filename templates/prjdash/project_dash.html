@@ -55,14 +55,21 @@
 		</div>
 	{% endfor %}
    	<script>
-		var acc = document.getElementsByClassName("accordion");
-		var i;
-		
-		panel_active = document.getElementById("panel_active") 
+   		var i;
+
+   	    panel_active = document.getElementById("panel_active") 
 		if (panel_active) {
 		  panel_active.style.maxHeight = panel_active.scrollHeight + "px";
 		}
 		
+   	 //Setting customer_id value to the hidden form fields
+		cust_id_anchors = document.getElementsByClassName("cust_id_anchor");
+		for (i = 0; i < cust_id_anchors.length; i++) {
+		  anchor = cust_id_anchors[i];
+		  anchor.nextElementSibling.value = anchor.value;
+		}
+
+		var acc = document.getElementsByClassName("accordion");
 		for (i = 0; i < acc.length; i++) {
 		  acc[i].addEventListener("click", function() {
 		    
@@ -78,8 +85,8 @@
 		    }
 		    
 		    //Setting customer_id value to the hidden form element 
-		    anchor = document.getElementById("cust_" + this.value)
-		    anchor.nextElementSibling.value = this.value
+		    //anchor = document.getElementById("cust_" + this.value)
+		    //anchor.nextElementSibling.value = this.value
 		    
 		    document.getElementById("debug").innerHTML = this.value;
 		    

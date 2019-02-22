@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.utils.translation import ugettext_lazy as _
-from django.forms.widgets import HiddenInput
+#from django.forms.widgets import HiddenInput
 from receivables.models import Project
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.utils import construct_change_message
@@ -10,10 +10,8 @@ class PDashProjectForm(forms.ModelForm):
     name = forms.CharField(label = _('Project name'), widget=forms.TextInput(attrs={'size':'60'}))
     comment = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 1, 'cols': 32}))
     mode = ADDITION
-    #customer = forms.IntegerField()
+    request = None
     #customer_id = forms.IntegerField(required=True, widget=HiddenInput())
-    #customer_id = forms.IntegerField(required=True)
-    #form.fields['field_name'].widget = forms.HiddenInput()
 
     class Meta:
         model = Project

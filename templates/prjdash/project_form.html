@@ -3,7 +3,7 @@
 					<tr class="tb{% if edit == True and not project.active %} closed {% endif %}">
 						<td class="actions">
 							{{form.customer_id.errors}}
-							<input type="hidden" id="cust_{{customer.id}}" name="customer_id" value="{{customer.id}}">
+							<input type="hidden" class="cust_id_anchor" id="cust_{{customer.id}}" name="customer_id" value="{{customer.id}}">
 							{{form.customer_id}}
 							{{form.customer.as_hidden}} <!-- Review this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 							

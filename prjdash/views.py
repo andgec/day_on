@@ -91,7 +91,7 @@ class ProjectDashboardView(LoginRequiredMixin, View):
             cursor.execute(self.proj_sql, [content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)]])
             result_dicts = self.dictfetchall(cursor)
 
-        print(pk)
+        print('get_context.pk = %s' % pk)
 
         #if not form:
         #   form = self.form_class(initial={'customer_id': 2})
@@ -165,12 +165,16 @@ class ProjectDashboardView(LoginRequiredMixin, View):
         
     def post(self, request, pk=None):
         project = None
-        print(pk)
-        if pk:
+        print('pk=%s' % pk)
+        
+        edit = request.GET.get('action') == 'edit'
+        if edit and pk:
+            print('edit and pk')
             project = Project.objects.get(id=pk)
             
         
         form = self.form_class(request.POST, instance=project, request=request)
+        #print(form)
         if form.is_valid():
             project = form.save(commit=True)
 
