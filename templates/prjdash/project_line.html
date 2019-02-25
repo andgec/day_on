@@ -1,20 +1,30 @@
 				<tr class="tb{% if not project.active %} closed {% endif %}">
-					<td class="actions">
+					<td class="actions-left">
 						<a href="#" class="btn-detail">
 							<i class="fas fa-bars"></i>
-							<i class="far fa-address-card"></i>
+							<!-- i class="far fa-address-card"></i>
 							<i class="fas fa-address-card"></i>
 							<i class="far fa-address-book"></i>
 							<i class="fas fa-address-book"></i>
 							<i class="fas fa-pen-alt"></i>
-							
+							-->
+						</a>
+						&nbsp;
+						<a href="#" class="btn-detail">
+							<i class="far fa-address-book"></i>
+							<!-- i class="far fa-address-card"></i>
+							<i class="fas fa-address-card"></i>
+							<i class="far fa-address-book"></i>
+							<i class="fas fa-address-book"></i>
+							<i class="fas fa-pen-alt"></i>
+							-->
 						</a>
 						<input type="hidden" id="customer_id" name="customer_id" value="{{customer.id}}">
 					</td>
 					<td>{{project.name}}</td>
 					<td>{{project.comment}}</td>
 					<td style="width:80px">{{project.datetime_created}}</td>
-					<td class="actions">
+					<td class="actions-right">
 					{% if not edit %}
 					  <a href="{% url 'pdash' pk=project.id %}?action=edit" class="btn-edit">Edit</a>&nbsp&nbsp
 					  {% if project.active %}

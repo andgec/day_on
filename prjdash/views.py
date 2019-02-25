@@ -1,16 +1,32 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.contrib.auth.mixins import LoginRequiredMixin
+#from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 from django.views import View
 from receivables.models import Customer, Project
 from shared.utils import content_type_id_by_name
 from django.db import connection
 from .forms import PDashProjectForm
 
+class RecState:
+    VIEW    = 0
+    CREATE  = 1
+    EDIT    = 2
+    DELETE  = 3
+    OPEN    = 4
+    CLOSE   = 5
+    
+    pk_states = (EDIT, DELETE, OPEN, CLOSE) 
 
-class ProjectDashboardView(LoginRequiredMixin, View):
+
+@method_decorator(staff_member_required, name='dispatch')
+class ProjectDashboardView(View):
     template = 'prjdash/project_dash.html'
     form_class = PDashProjectForm
+    state = RecState.VIEW
+    project = None
+    customer_id = None
     
     proj_sql = ''' 
         SELECT
@@ -38,7 +54,7 @@ class ProjectDashboardView(LoginRequiredMixin, View):
             ) Proj ON (Proj."customer_id" = "receivables_customer"."id")
         WHERE "receivables_customer"."active" = True
         ORDER BY "receivables_customer"."name" ASC,
-                 Proj."project_id" ASC
+                 Proj."project_id" DESC
         '''
 
     def dictfetchall(self, cursor):
@@ -47,9 +63,9 @@ class ProjectDashboardView(LoginRequiredMixin, View):
         return [
             dict(zip(columns, row))
             for row in cursor.fetchall()
-    ]
+        ]
 
-    def build_resul_list(self, result_dicts):
+    def build_result_list(self, result_dicts):
         customers = []
         projects = []
         cust_count = 0;
@@ -78,46 +94,29 @@ class ProjectDashboardView(LoginRequiredMixin, View):
                                  'datetime_created': line['datetime_created'],
                                  })
         # Adding projects for the last custmer
-        customers[cust_count-1]['projects'] = projects
+        if cust_count > 0:
+            customers[cust_count-1]['projects'] = projects
             
         return customers
 
 
-    def get_context(self,
-                    request,
-                    pk,
-                    form = None):
+    def get_context(self, request, pk, form = None):
+
         with connection.cursor() as cursor:
             cursor.execute(self.proj_sql, [content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)]])
             result_dicts = self.dictfetchall(cursor)
 
-        print('get_context.pk = %s' % pk)
+        form = self.form_class(instance = self.project if self.state == RecState.EDIT else None)
 
-        #if not form:
-        #   form = self.form_class(initial={'customer_id': 2})
-
-        edit = request.GET.get('action') == 'edit'
-
-        if pk:
-            project = Project.objects.get(id=pk)
-            customer_id = project.customer_id
-        else:
-            customer_id = None
-
-        if edit:
-            form = self.form_class(instance = project)
-        else:
-            form = self.form_class()
-
-        context = {'edit': edit,
-                   'focus': {'customer_id': int(customer_id) if customer_id else None,
+        context = {'edit': self.state == RecState.EDIT,
+                   'focus': {'customer_id': int(self.customer_id) if self.customer_id else None,
                              'project_id': int(pk) if pk else None,
                             },
                    'form': form,
-                   'customers': self.build_resul_list(result_dicts),
+                   'customers': self.build_result_list(result_dicts),
                   }
 
-        print(context)
+        #print(context)
         return context
 
     '''
@@ -156,44 +155,56 @@ class ProjectDashboardView(LoginRequiredMixin, View):
             'customers': customers,
         }
         return context
-    '''    
+    '''   
+    def setstate(self, request, pk):
+        state_decoder = {
+            '': RecState.VIEW,
+            'edit': RecState.EDIT,
+            'close': RecState.CLOSE,
+            'open': RecState.OPEN,
+        }
+        self.state = state_decoder.get(request.GET.get('action', ''))
+        
+        if self.state in RecState.pk_states and pk:
+            self.project = Project.objects.get(id=pk)
+            self.customer_id = self.project.customer_id
+        elif pk:
+            self.customer_id = Project.objects.get(id=pk).customer_id
+            self.project = None
+        else:
+            self.customer_id = None
+            self.project = None
+    
+    def process(self, request, pk):
+        project = self.project
+        if self.state in RecState.pk_states and not pk:
+            raise Exception('Record ID not provided.')
+
+        if self.state == RecState.CLOSE:
+            project.active = False
+            project.save()
+            
+        elif self.state == RecState.OPEN:
+            project.active = True
+            project.save()
+            
+
     def get(self, request, pk=None):
+        self.setstate(request, pk)
+        self.process(request, pk)
         return render(request,
                       self.template,
                       self.get_context(request, pk)
                       )
         
     def post(self, request, pk=None):
-        project = None
-        print('pk=%s' % pk)
-        
-        edit = request.GET.get('action') == 'edit'
-        if edit and pk:
-            print('edit and pk')
-            project = Project.objects.get(id=pk)
-            
-        
-        form = self.form_class(request.POST, instance=project, request=request)
-        #print(form)
+        self.setstate(request, pk)
+        form = self.form_class(request.POST, instance=self.project, request=request)
         if form.is_valid():
             project = form.save(commit=True)
-
-            #print('reverse(pdash) = %s' % reverse('pdash')+str(project.pk))
             return redirect(reverse('pdash')+str(project.pk))
         else:
             return render(request,
                           self.template,
-                          self.get_context(request, pk=pk, form=form) #???
+                          self.get_context(request, pk=pk, form=form)
                           )
-        
-        pass
-    
-
-'''----------------------------------------------
-from django.contrib.admin.views.decorators import staff_member_required
-from django.utils.decorators import method_decorator
-
-
-@method_decorator(staff_member_required, name='dispatch')
-class ExampleTemplateView(TemplateView):
-'''

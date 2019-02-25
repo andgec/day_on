@@ -14,20 +14,26 @@ th, td{
 	font-size: 14px;
 }
 
-td.actions {
-	text-align: center
+td.actions-right {
+	text-align: left;
+	padding-left: 11px;
 }
+td.actions-left {
+	text-align: center;
+	padding-left: 11px;
+}
+
 
 tr:nth-child(even){
 	background-color: #fafafa;
 }
 
 tr.closed{
-	background-color: #ffbcbd;
+	background-color: #ecaeaf;
 }
 
 tr.closed:nth-child(even){
-	background-color: #ecaeaf;
+	background-color: #ffbcbd;
 }
 
 tr{

@@ -1,7 +1,7 @@
 				<form action = "" method = "post">
 					{% csrf_token %}
 					<tr class="tb{% if edit == True and not project.active %} closed {% endif %}">
-						<td class="actions">
+						<td class="actions-left">
 							{{form.customer_id.errors}}
 							<input type="hidden" class="cust_id_anchor" id="cust_{{customer.id}}" name="customer_id" value="{{customer.id}}">
 							{{form.customer_id}}
@@ -23,7 +23,7 @@
 						</td>
 						<td>
 							{{project.datetime_created}}</td>
-						<td class="actions">
+						<td class="actions-right">
 							<button class="btn-open" title="{{ _('Save') }}" type="submit">{{ _('Save') }}</button>
 							{% if edit == True %}
 								<a href="{% url 'pdash' pk=project.id %}" class="btn-close">{{ _('Cancel') }}</a>

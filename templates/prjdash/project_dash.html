@@ -18,7 +18,7 @@
 {% block content %}
 
 <div class="main-container">
-	<div id="debug"></div>
+	<!-- div id="debug"></div> -->
 	{% for customer in customers %}
 	  {% if customer.id == focus.customer_id %}
 		<button class="accordion active" id="accordion_active" value="{{customer.id}}">{{customer.name}}</button>
@@ -59,9 +59,10 @@
 
    	    panel_active = document.getElementById("panel_active") 
 		if (panel_active) {
+		  panel_active.style.transition = 'none'
 		  panel_active.style.maxHeight = panel_active.scrollHeight + "px";
 		}
-		
+
    	 //Setting customer_id value to the hidden form fields
 		cust_id_anchors = document.getElementsByClassName("cust_id_anchor");
 		for (i = 0; i < cust_id_anchors.length; i++) {
@@ -72,23 +73,16 @@
 		var acc = document.getElementsByClassName("accordion");
 		for (i = 0; i < acc.length; i++) {
 		  acc[i].addEventListener("click", function() {
-		    
-		    document.getElementById("debug").innerHTML = "click " + this.value;
-			
 		    this.classList.toggle("active");
 		    var panel = this.nextElementSibling;
 		    panel.classList.toggle("panel-active")
 		    if (panel.style.maxHeight){
 		      panel.style.maxHeight = null;
+		      panel.style.transition = 'max-height 0.2s ease-out';
 		    } else {
 		      panel.style.maxHeight = panel.scrollHeight + "px";
+		      setTimeout(function(panel){panel.style.transition='none'}, 200);
 		    }
-		    
-		    //Setting customer_id value to the hidden form element 
-		    //anchor = document.getElementById("cust_" + this.value)
-		    //anchor.nextElementSibling.value = this.value
-		    
-		    document.getElementById("debug").innerHTML = this.value;
 		    
 		    // Closing all other open sections
 			var btns = document.getElementsByClassName("accordion")
