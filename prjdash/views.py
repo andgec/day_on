@@ -4,8 +4,8 @@ from django.urls import reverse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from django.views import View
-from receivables.models import Customer, Project
-from shared.utils import content_type_id_by_name
+from receivables.models import Project
+from shared.utils import get_contenttypes
 from django.db import connection
 from .forms import PDashProjectForm
 
@@ -27,6 +27,7 @@ class ProjectDashboardView(View):
     state = RecState.VIEW
     project = None
     customer_id = None
+    content_type_id_by_name = None
     
     proj_sql = ''' 
         SELECT
@@ -56,6 +57,9 @@ class ProjectDashboardView(View):
         ORDER BY "receivables_customer"."name" ASC,
                  Proj."project_id" DESC
         '''
+    def __init__(self, **kwargs):
+        self.content_type_id_by_name = get_contenttypes()        
+        super(ProjectDashboardView, self).__init__(**kwargs)
 
     def dictfetchall(self, cursor):
         "Return all rows from a cursor as a dict"
@@ -101,9 +105,8 @@ class ProjectDashboardView(View):
 
 
     def get_context(self, request, pk, form = None):
-
         with connection.cursor() as cursor:
-            cursor.execute(self.proj_sql, [content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)]])
+            cursor.execute(self.proj_sql, [self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)]])
             result_dicts = self.dictfetchall(cursor)
 
         form = self.form_class(instance = self.project if self.state == RecState.EDIT else None)
