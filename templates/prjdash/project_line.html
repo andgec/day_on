@@ -1,4 +1,4 @@
-				<tr class="tb{% if not project.active %} closed {% endif %}">
+				<tr class="tb{% if not project.active %} closed {% endif %}" {% if focus.project_id == project.id  %} id="proj_{{project.id}}" {% endif %}>
 					<td class="actions-left">
 						<a href="#" class="btn-detail">
 							<i class="fas fa-bars"></i>

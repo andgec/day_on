@@ -1,6 +1,6 @@
 				<form action = "" method = "post">
 					{% csrf_token %}
-					<tr class="tb{% if edit == True and not project.active %} closed {% endif %}">
+					<tr class="tb{% if edit == True and not project.active %} closed {% endif %}" {% if focus.project_id and edit  %} id="proj_{{focus.project_id}}"{% endif %}>
 						<td class="actions-left">
 							{{form.customer_id.errors}}
 							<input type="hidden" class="cust_id_anchor" id="cust_{{customer.id}}" name="customer_id" value="{{customer.id}}">

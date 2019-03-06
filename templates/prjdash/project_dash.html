@@ -56,8 +56,8 @@
 	{% endfor %}
    	<script>
    		var i;
-
-   	    panel_active = document.getElementById("panel_active") 
+   		
+   	    panel_active = document.getElementById("panel_active");
 		if (panel_active) {
 		  panel_active.style.transition = 'none'
 		  panel_active.style.maxHeight = panel_active.scrollHeight + "px";
@@ -96,7 +96,10 @@
 			 	}
 			 };
 		  });
-		}		
+		}
+ 		{% if focus.project_id %}
+		  document.getElementById("proj_{{focus.project_id}}").scrollIntoView();
+		{% endif %}
 	</script>		
 </div>
 {% endblock %}
