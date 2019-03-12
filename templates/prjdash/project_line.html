@@ -10,7 +10,7 @@
 							-->
 						</a>
 						&nbsp;
-						<a href="#" class="btn-detail">
+						<a href="{% url 'pdash-assign-employees' pk=project.id %}" class="btn-detail">
 							<i class="far fa-address-book"></i>
 							<!-- i class="far fa-address-card"></i>
 							<i class="fas fa-address-card"></i>
@@ -26,7 +26,7 @@
 					<td style="width:80px">{{project.datetime_created}}</td>
 					<td class="actions-right">
 					{% if not edit %}
-					  <a href="{% url 'pdash' pk=project.id %}?action=edit" class="btn-edit">Edit</a>&nbsp&nbsp
+					  <a href="{% url 'pdash' pk=project.id mode='edit'%}" class="btn-edit">Edit</a>&nbsp&nbsp
 					  {% if project.active %}
 					  	<a href="{% url 'pdash' pk=project.id %}?action=close" class="btn-close">Close</a>
 					  {% else %}

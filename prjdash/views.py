@@ -8,10 +8,11 @@ from receivables.models import Project
 from shared.utils import get_contenttypes
 from django.db import connection
 from .forms import PDashProjectForm
+from botocore.vendored.requests.api import request
 
 class RecState:
     VIEW    = 0
-    CREATE  = 1
+    NEW     = 1
     EDIT    = 2
     DELETE  = 3
     OPEN    = 4
@@ -95,9 +96,9 @@ class ProjectDashboardView(View):
                                  'name': line['project_name'],
                                  'comment': line['project_comment'],
                                  'active': line['project_active'],
-                                 'datetime_created': line['datetime_created'],
+                                 'datetime_created': line['datetime_created'].strftime("%Y-%m-%d"),
                                  })
-        # Adding projects for the last custmer
+        # Adding projects for the last customer
         if cust_count > 0:
             customers[cust_count-1]['projects'] = projects
             
@@ -159,14 +160,20 @@ class ProjectDashboardView(View):
         }
         return context
     '''   
-    def setstate(self, request, pk):
+    def setstate(self, request, pk, mode):
         state_decoder = {
             '': RecState.VIEW,
-            'edit': RecState.EDIT,
+            #  'edit': RecState.EDIT,
             'close': RecState.CLOSE,
             'open': RecState.OPEN,
         }
-        self.state = state_decoder.get(request.GET.get('action', ''))
+        
+        if mode == 'edit':
+            self.state = RecState.EDIT
+        elif request.method == 'POST':
+            self.state = RecState.NEW 
+        elif request.method == 'GET':
+            self.state = state_decoder.get(request.GET.get('action', ''))
         
         if self.state in RecState.pk_states and pk:
             self.project = Project.objects.get(id=pk)
@@ -192,16 +199,16 @@ class ProjectDashboardView(View):
             project.save()
             
 
-    def get(self, request, pk=None):
-        self.setstate(request, pk)
+    def get(self, request, pk=None, mode=None):
+        self.setstate(request, pk, mode)
         self.process(request, pk)
         return render(request,
                       self.template,
                       self.get_context(request, pk)
                       )
         
-    def post(self, request, pk=None):
-        self.setstate(request, pk)
+    def post(self, request, pk=None, mode=None):
+        self.setstate(request, pk, mode)
         form = self.form_class(request.POST, instance=self.project, request=request)
         if form.is_valid():
             project = form.save(commit=True)
@@ -211,3 +218,20 @@ class ProjectDashboardView(View):
                           self.template,
                           self.get_context(request, pk=pk, form=form)
                           )
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class ProjectDashboardAssignEmployeesView(View):
+    template = 'prjdash/assign_employees.html'
+
+    def get_context(self, request, pk):
+        return None;
+
+    def get(self, request, pk=None):
+        return render(request,
+                      self.template,
+                      self.get_context(request, pk)
+                      )
+
+        
+    

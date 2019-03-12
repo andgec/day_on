@@ -15,7 +15,7 @@ class PDashProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ('customer', 'name', 'comment',)
+        fields = ('customer', 'name', 'comment', 'description')
     
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)

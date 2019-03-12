@@ -4,9 +4,8 @@
 						<td class="actions-left">
 							{{form.customer_id.errors}}
 							<input type="hidden" class="cust_id_anchor" id="cust_{{customer.id}}" name="customer_id" value="{{customer.id}}">
-							{{form.customer_id}}
-							{{form.customer.as_hidden}} <!-- Review this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-							
+							<!-- {{form.customer_id}}  -->  <!-- Review this !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+							{{form.customer.as_hidden}}
 							{% if edit == True %}
 								<i class="far fa-edit"></i>
 							{% else %}
