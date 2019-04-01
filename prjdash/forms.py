@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from receivables.models import Project
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.utils import construct_change_message
+from salary.models import Employee 
 
 class PDashProjectForm(forms.ModelForm):
     name = forms.CharField(label = _('Project name'), widget=forms.TextInput(attrs={'size':'60'}))
@@ -38,4 +39,19 @@ class PDashProjectForm(forms.ModelForm):
                 change_message  = construct_change_message(self, formsets=None, add=(self.mode==ADDITION)),
                 )
         return obj
-    
+
+class PDashAssignEmployees(forms.Form):
+    fields = {}
+
+    def __init__(self, *args, **kwargs):
+        super(PDashAssignEmployees, self).__init__(*args, **kwargs)
+        self._init_fields()        
+
+    def _init_fields(self):
+        employees = Employee.objects.filter(user__is_active=True).order_by('user__first_name', 'user__last_name').select_related('user')
+        for employee in employees:
+            self.fields['empl_%s' % employee.user_id] = forms.BooleanField(label=employee.full_name())
+
+    def save(self):
+        pass        
+        

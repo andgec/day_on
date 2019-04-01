@@ -4,6 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
+babel==2.6.0
 boto3==1.9.61
 boto==2.49.0
 botocore==1.12.62         # via boto3, s3transfer
@@ -14,6 +15,7 @@ django-parler==1.9.2
 django-s3-folder-storage==0.5
 django-select2==6.3.1
 django-storages==1.7.1
+django-wkhtmltopdf==3.2.0
 django==2.1.4
 docutils==0.14            # via botocore
 html5lib==1.0.1

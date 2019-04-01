@@ -7,7 +7,7 @@ from django.views import View
 from receivables.models import Project
 from shared.utils import get_contenttypes
 from django.db import connection
-from .forms import PDashProjectForm
+from .forms import PDashProjectForm, PDashAssignEmployees
 from botocore.vendored.requests.api import request
 
 class RecState:
@@ -223,9 +223,15 @@ class ProjectDashboardView(View):
 @method_decorator(staff_member_required, name='dispatch')
 class ProjectDashboardAssignEmployeesView(View):
     template = 'prjdash/assign_employees.html'
+    form_class = PDashAssignEmployees
 
     def get_context(self, request, pk):
-        return None;
+        form = self.form_class();
+        context = {
+                'form': form,
+                }
+        print(context)
+        return context
 
     def get(self, request, pk=None):
         return render(request,
