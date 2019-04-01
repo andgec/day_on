@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_select2',
     'parler',
-    'wkhtmltopdf',
+    'wkhtmltopdf', #HowTo: https://www.jeremydaly.com/how-to-install-wkhtmltopdf-on-amazon-linux/
     'djauth',
     'inventory',
     'general',
