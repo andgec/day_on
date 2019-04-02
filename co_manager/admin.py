@@ -1,6 +1,6 @@
 from django.contrib.admin import AdminSite
 from django.utils.translation import ugettext_lazy as _
-from reports.views import TimelistPDFView, TimelistHTMLView
+from reports.views import TimelistHTMLView
 from django.contrib.auth.admin import GroupAdmin
 from django.apps import apps
 
@@ -15,7 +15,6 @@ class CoAdminSite(AdminSite):
             url(r'^timelist_html/(?P<project_id>[0-9]+)/$', TimelistHTMLView.as_view()),
             #PDF timelist URLs
             #url(r'^timelist_pdf/$', TimelistPDFView.as_view()),
-            url(r'^timelist_pdf/(?P<project_id>[0-9]+)/$', TimelistPDFView.as_view()),
             #url(r'^timelist_pdf/(?P<project_ids>[0-9]+)/(?P<date_from>\d{4}-\d{2}-\d{2})$', TimelistPDFView.as_view()),
             #url(r'^timelist_pdf/(?P<project_ids>[0-9]+)/(?P<date_to>\d{4}-\d{2}-\d{2})$', TimelistPDFView.as_view()),
             #url(r'^timelist_pdf/(?P<project_ids>[0-9]+)/(?P<date_from>\d{4}-\d{2}-\d{2})/(?P<date_to>\d{4}-\d{2}-\d{2})$', TimelistPDFView.as_view()),          

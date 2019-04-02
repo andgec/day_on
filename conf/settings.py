@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_select2',
     'parler',
-    'wkhtmltopdf', #HowTo: https://www.jeremydaly.com/how-to-install-wkhtmltopdf-on-amazon-linux/
+    'wkhtmltopdf', # HowTo: https://www.jeremydaly.com/how-to-install-wkhtmltopdf-on-amazon-linux/
+                   # https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos6.x86_64.rpm
+                   # sudo yum install wkhtmltox-0.12.5-1.centos6.x86_64.rpm
     'djauth',
     'inventory',
     'general',

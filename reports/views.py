@@ -35,8 +35,8 @@ class TimelistPDFView(View):
         return context
         
     
-    def get_journal_lines(self, request, project_id):
-        
+    def get_journal_lines(self, request, pk):
+        project_id = pk
         #project_ids = request.GET.get('project_ids')
         filter_date_from = request.GET.get('date_from')
         filter_date_to = request.GET.get('date_to')
@@ -161,8 +161,8 @@ class TimelistPDFView(View):
         return context
 
 
-    def get(self, request, project_id=None):
-        context = self.get_context(request, project_id)
+    def get(self, request, pk=None):
+        context = self.get_context(request, pk)
         #print(context)
         response = PDFTemplateResponse(request = request,
                                        template = self.template,

@@ -9,7 +9,7 @@ from django.db.models import Sum
 #from django.views.generic import ListView
 from .models import Project, SalesOrderHeader, WorkTimeJournal
 from .forms import WorkTimeJournalForm
-from shared import utils
+#from shared import utils
 from django.http.response import Http404
 
 '''

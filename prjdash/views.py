@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.db.models import Sum
 from django.urls import reverse
 #from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.admin.views.decorators import staff_member_required
@@ -8,7 +9,9 @@ from receivables.models import Project
 from shared.utils import get_contenttypes
 from django.db import connection
 from .forms import PDashProjectForm, PDashAssignEmployees
-from botocore.vendored.requests.api import request
+#from botocore.vendored.requests.api import request
+from receivables.models import Project, WorkTimeJournal
+
 
 class RecState:
     VIEW    = 0
@@ -81,7 +84,7 @@ class ProjectDashboardView(View):
                 customers.append({'id': line['customer_id'],
                                   'name': line['customer_name'],
                                   })
-                
+
                 #adding projects for the previous customer
                 if cust_count > 0:
                     customers[cust_count-1]['projects'] = projects
@@ -90,7 +93,7 @@ class ProjectDashboardView(View):
                 cust_count += 1
 
             prev_cust_id = line['customer_id']
-                                
+
             if line['project_id']:
                 projects.append({'id': line['project_id'],
                                  'name': line['project_name'],
@@ -240,4 +243,42 @@ class ProjectDashboardAssignEmployeesView(View):
                       )
 
         
+@method_decorator(staff_member_required, name='dispatch')
+class ProjectDashboardPostedTimeReview(View):
+    template = 'prjdash/posted_time_review.html'
+    content_type_id_by_name = None
+    #form_class = PDashAssignEmployees
+    
+    def __init__(self, **kwargs):
+        self.content_type_id_by_name = get_contenttypes()
+        super(ProjectDashboardPostedTimeReview, self).__init__(**kwargs)
+
+    def get_context(self, request, pk):
+        #form = self.form_class();
+        form = None
+        project = Project.objects.select_related('customer').get(id=pk)
+        journal_lines = WorkTimeJournal.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
+                                                       object_id = pk)
+
+        journal_totals = WorkTimeJournal.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
+                                                       object_id = pk).aggregate(Sum('work_time'),
+                                                                                 Sum('distance'), 
+                                                                                 Sum('toll_ring'), 
+                                                                                 Sum('ferry'), 
+                                                                                 Sum('diet'))
+        context = {
+                'project': project,
+                'customer': project.customer,
+                'form': form,
+                'journal_lines': journal_lines,
+                'journal_totals': journal_totals,
+                }
+        print(context)
+        return context
+
+    def get(self, request, pk=None):
+        return render(request,
+                      self.template,
+                      self.get_context(request, pk)
+                      )
     

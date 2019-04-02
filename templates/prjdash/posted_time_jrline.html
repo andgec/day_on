@@ -1,0 +1,10 @@
+						<tr>
+							<td>{{journal_line.item}}</td>
+							<td>{{journal_line.work_date|date:'Y-m-d'}}</td>
+							<td>{{journal_line.work_time_from}} - {{journal_line.work_time_to}}</td>
+							<td id="num-col" >{{journal_line.work_time}}</td>
+							<td id="num-col">{{journal_line.distance|default_if_none:""}}</td>
+							<td id="num-col">{{journal_line.toll_ring|default_if_none:""}}</td>
+							<td id="num-col">{{journal_line.ferry|default_if_none:""}}</td>
+							<td id="num-col">{{journal_line.diet|default_if_none:""}}</td>
+						</tr>
