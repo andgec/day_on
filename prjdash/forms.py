@@ -42,16 +42,26 @@ class PDashProjectForm(forms.ModelForm):
 
 class PDashAssignEmployees(forms.Form):
     fields = {}
+    request = None
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
         super(PDashAssignEmployees, self).__init__(*args, **kwargs)
-        self._init_fields()        
+        self._init_fields() 
+
 
     def _init_fields(self):
         employees = Employee.objects.filter(user__is_active=True).order_by('user__first_name', 'user__last_name').select_related('user')
         for employee in employees:
-            self.fields['empl_%s' % employee.user_id] = forms.BooleanField(label=employee.full_name())
+            self.fields['empl_%s' % employee.user_id] = forms.BooleanField(label=employee.full_name(),
+                                                                           required=False
+                                                                           )
+    
+    def get_employee_fields(self):
+        for field_name in self.fields:
+            yield self[field_name]
 
-    def save(self):
-        pass        
+    def save(self, commit=False):
+        print('RUN form.save() %s', self.request)
+
         

@@ -241,6 +241,21 @@ class ProjectDashboardAssignEmployeesView(View):
                       self.template,
                       self.get_context(request, pk)
                       )
+    def post(self, request, pk=None):
+        data = request.POST.copy()
+        print('Save employee list. request=%s', data)
+        form = self.form_class(request)
+        if form.is_valid():
+            print(form.cleaned_data)
+            form.save(commit=True)
+            return redirect(reverse('pdash')+str(pk))
+        else:
+            return render(request,
+                          self.template,
+                          self.get_context(request, pk)
+                          )
+            
+        
 
         
 @method_decorator(staff_member_required, name='dispatch')

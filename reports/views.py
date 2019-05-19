@@ -1,6 +1,8 @@
 import operator
 import datetime
 from functools import reduce
+from django.utils.decorators import method_decorator
+from django.contrib.admin.views.decorators import staff_member_required
 from django.views.generic import View
 from django.template.loader import get_template
 from wkhtmltopdf.views import PDFTemplateResponse
@@ -18,6 +20,7 @@ from conf.settings import TIMELIST_LINES_PER_PAGE
 
 #URL:
 #http://127.0.0.1:8000/admin/timelist_pdf/?project_ids=1,2,3,4,5,6,7,8,9,10&date_from=2018-10-20&date_to=2019-01-30
+@method_decorator(staff_member_required, name='dispatch')
 class TimelistPDFView(View):
     template = get_template('reports/pdf_timelist_html4.html')
     header_template = get_template('reports/pdf_header_html4.html')
