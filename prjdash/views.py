@@ -229,7 +229,7 @@ class ProjectDashboardAssignEmployeesView(View):
     form_class = PDashAssignEmployees
 
     def get_context(self, request, pk):
-        form = self.form_class();
+        form = self.form_class(request=request, project_id=pk)
         context = {
                 'form': form,
                 }
@@ -242,11 +242,8 @@ class ProjectDashboardAssignEmployeesView(View):
                       self.get_context(request, pk)
                       )
     def post(self, request, pk=None):
-        data = request.POST.copy()
-        print('Save employee list. request=%s', data)
-        form = self.form_class(request)
+        form = self.form_class(request.POST, request=request, project_id=pk)
         if form.is_valid():
-            print(form.cleaned_data)
             form.save(commit=True)
             return redirect(reverse('pdash')+str(pk))
         else:
