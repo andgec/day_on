@@ -4,6 +4,7 @@
 
 {% block linked_files %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/controls.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/assign-employees.css' %}">
     <!-- link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <!-- link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/buttons.css' %}">
@@ -17,21 +18,26 @@
 		<div class="breadcrumbs">
 			{{ _('Project dashboard') }} › {{_('Assign employees')}}
 		</div>
+		
 {% endblock %}
 
 {% block content %}
     <form action = "" method = "post">
     {% csrf_token %}
-    <div>
+    <div class="employee-container">
       	<ul class="ks-cboxtags">
       	{% for field in form.get_employee_fields %}
  	    	<li>{{ field.errors }}{{ field }}<label for="id_{{field.name}}">{{ field.label }}</label></li>
 	  	{% endfor %}
 	  	</ul>
-	  	<button class="btn-create" title = {{ _('Register') }} type="submit">
-	  	<!-- i class="fa fa-plus-circle"></i>  -->
-		<i class="fa fa-save"></i>
-		</button>
+	  	<div class="employee-save-cancel-container">
+	  		<button class="btn-create" title = {{ _('Register') }} type="submit">
+	  		<!-- i class="fa fa-plus-circle"></i>  -->
+			<i class="fa fa-save"></i>
+			</button>
+		</div>
 	</div>
+
 	</form>
+	
 {% endblock %}

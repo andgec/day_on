@@ -44,6 +44,7 @@ class PDashAssignEmployees(forms.Form):
     fields = {}
     request = None
     project = None
+    assigned_empl_ids = []
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -55,19 +56,31 @@ class PDashAssignEmployees(forms.Form):
     def _init_fields(self):
         employees = Employee.objects.filter(user__is_active=True).order_by('user__first_name', 'user__last_name').select_related('user')
         assigned_employees = self.project.employees.all();
-        assigned_empl_ids = [assigned_employee.user_id for assigned_employee in assigned_employees]
-        print(assigned_empl_ids)
+        self.assigned_empl_ids = [assigned_employee.user_id for assigned_employee in assigned_employees]
         for employee in employees:
             self.fields['empl_%s' % employee.user_id] = forms.BooleanField(label=employee.full_name(),
                                                                            required=False,
-                                                                           initial=employee.user_id in assigned_empl_ids
+                                                                           initial=employee.user_id in self.assigned_empl_ids
                                                                            )
     
     def get_employee_fields(self):
         for field_name in self.fields:
             yield self[field_name]
-
+            
+    def get_add_value_list(self):
+        empl_id_list = []
+        for key, value in self.cleaned_data.items():
+            if value:
+                empl_id_list.append(int(key.replace('empl_', '')))
+        return empl_id_list
+    
+    def get_remove_value_list(self):
+        old_list = self.assigned_empl_ids
+        new_list = self.get_add_value_list()
+        return [id for id in old_list if id not in new_list]
+            
     def save(self, commit=False):
-        print('RUN form.save() %s', self.cleaned_data)
+        self.project.employees.add(*self.get_add_value_list())
+        self.project.employees.remove(*self.get_remove_value_list())
 
         
