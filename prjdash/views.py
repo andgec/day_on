@@ -228,20 +228,27 @@ class ProjectDashboardAssignEmployeesView(View):
     template = 'prjdash/assign_employees.html'
     form_class = PDashAssignEmployees
 
-    def get_context(self, request, pk):
-        form = self.form_class(request=request, project_id=pk)
+    def get_context(self, request, project):
+        form = self.form_class(request=request, project=project)
         context = {
                 'form': form,
+                'customer': project.customer,
+                'project': project
                 }
         return context
 
     def get(self, request, pk=None):
+        if pk:
+            project = project = Project.objects.select_related('customer').get(id=pk)
         return render(request,
                       self.template,
-                      self.get_context(request, pk)
+                      self.get_context(request, project)
                       )
+
     def post(self, request, pk=None):
-        form = self.form_class(request.POST, request=request, project_id=pk)
+        if pk:
+            project = project = Project.objects.select_related('customer').get(id=pk)
+        form = self.form_class(request.POST, request=request, project=project)
         if form.is_valid():
             form.save(commit=True)
             return redirect(reverse('pdash')+str(pk))
@@ -250,8 +257,6 @@ class ProjectDashboardAssignEmployeesView(View):
                           self.template,
                           self.get_context(request, pk)
                           )
-            
-        
 
         
 @method_decorator(staff_member_required, name='dispatch')

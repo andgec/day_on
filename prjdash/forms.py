@@ -48,8 +48,8 @@ class PDashAssignEmployees(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        project_id = kwargs.pop('project_id', None)
-        self.project = Project.objects.get(pk=project_id)
+        self.project = kwargs.pop('project', None)
+        #self.project = Project.objects.get(pk=project_id)
         super(PDashAssignEmployees, self).__init__(*args, **kwargs)
         self._init_fields()
 

@@ -5,9 +5,9 @@
 {% block linked_files %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/controls.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/assign-employees.css' %}">
+    <!-- link rel="stylesheet" type="text/css" href="{% static 'css/buttons.css' %}">
     <!-- link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <!-- link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/buttons.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash-accordion.css' %}">
 	
@@ -16,12 +16,15 @@
 
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
-			{{ _('Project dashboard') }} › {{_('Assign employees')}}
+			<a href={% url 'pdash' pk=project.id %}>{{ _('Project dashboard') }}</a> › {{customer.name}} › {{project.name}} › {{_('Assign employees')}}
 		</div>
-		
+
 {% endblock %}
 
 {% block content %}
+	<div id="content" class=colMS>
+		<h1>{{ _('Assign employees for project ') }}&nbsp<b>{{project.name}}</b> </h1>
+    </div>
     <form action = "" method = "post">
     {% csrf_token %}
     <div class="employee-container">
@@ -31,7 +34,9 @@
 	  	{% endfor %}
 	  	</ul>
 	  	<div class="employee-save-cancel-container">
-	  		<button class="btn-create" title = {{ _('Register') }} type="submit">
+	  	    <a class="btn-edit" title = {{ _('Cancel') }} href="{% url 'pdash' pk=project.id %}"><i class="fa fa-window-close"></i></i></a>
+	  		&nbsp&nbsp&nbsp&nbsp
+	  		<button class="btn-create" title = {{ _('Save') }} type="submit">
 	  		<!-- i class="fa fa-plus-circle"></i>  -->
 			<i class="fa fa-save"></i>
 			</button>
