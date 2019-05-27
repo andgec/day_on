@@ -34,11 +34,12 @@
 	  	{% endfor %}
 	  	</ul>
 	  	<div class="employee-save-cancel-container">
-	  	    <a class="btn-edit" title = {{ _('Cancel') }} href="{% url 'pdash' pk=project.id %}"><i class="fa fa-window-close"></i></i></a>
-	  		&nbsp&nbsp&nbsp&nbsp
-	  		<button class="btn-create" title = {{ _('Save') }} type="submit">
+	  	    <a class="btn-cancel" title = {{ _('Cancel') }} href="{% url 'pdash' pk=project.id %}">{{ _('Cancel') }}<!-- i class="fa fa-window-close" --> </i></i></a>
+	  		&nbsp&nbsp&nbsp
+	  		<button class="btn-save" title = {{ _('Assign') }} type="submit">
 	  		<!-- i class="fa fa-plus-circle"></i>  -->
-			<i class="fa fa-save"></i>
+			<!-- i class="fa fa-save"></i>  -->
+			{{_('Assign')}}
 			</button>
 		</div>
 	</div>
