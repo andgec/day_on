@@ -192,7 +192,7 @@ class ProjectDashboardView(View):
     def process(self, request, pk):
         project = self.project
         if self.state in RecState.pk_states and not pk:
-            raise Exception('Record ID not provided.')
+            raise Exception(_('Record ID not provided.'))
 
         if self.state == RecState.CLOSE:
             project.active = False
@@ -238,7 +238,7 @@ class ProjectDashboardAssignEmployeesView(View):
                 }
         return context
 
-    def get(self, request, pk=None):
+    def get(self, request, pk=None, mode=None):
         if pk:
             project = project = Project.objects.select_related('customer').get(id=pk)
         return render(request,
@@ -265,40 +265,84 @@ class ProjectDashboardPostedTimeReview(View):
     template = 'prjdash/posted_time_review.html'
     content_type_id_by_name = None
     form_class = WorkTimeJournalForm
-    
+    model = WorkTimeJournal
+    state = RecState.VIEW
+    jr_line = None
+        
     def __init__(self, **kwargs):
         self.content_type_id_by_name = get_contenttypes()
         super(ProjectDashboardPostedTimeReview, self).__init__(**kwargs)
 
-    def get_context(self, request, project_id, pk=None, mode=None):
-        form = self.form_class();
+    def get_context(self, request, project_id, pk=None, mode=None, form=None):
+        if not form:
+            form = self.form_class(instance = self.jr_line if self.state == RecState.EDIT else None)
         project = Project.objects.select_related('customer').get(id=project_id)
-        journal_lines = WorkTimeJournal.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                       object_id = project_id).select_related('item')
+        journal_lines = self.model.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
+                                                  object_id = project_id).select_related('item').select_related('employee').select_related('employee__user').order_by('employee_id', 'work_date', 'work_time_from')
 
-        journal_totals = WorkTimeJournal.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                       object_id = project_id).aggregate(Sum('work_time'),
+        journal_totals = self.model.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
+                                                   object_id = project_id).aggregate(Sum('work_time'),
                                                                                  Sum('distance'), 
                                                                                  Sum('toll_ring'), 
                                                                                  Sum('ferry'), 
                                                                                  Sum('diet'))
         context = {
                 'mode': mode,
+                'pk': int(pk) if pk is not None else None,
                 'project': project,
                 'customer': project.customer,
                 'form': form,
                 'journal_lines': journal_lines,
                 'journal_totals': journal_totals,
                 }
-        print(context)
+        #print(context)
         return context
 
-    def get(self, request, project_id=None, pk=None, mode=None):
+    def get(self, request, project_id=None, pk=None, mode='view'):
+        self.setstate(request, pk, mode)
+        self.process(request, pk)
+
         return render(request,
                       self.template,
                       self.get_context(request, project_id, pk, mode)
                       )
+
     def post(self, request, project_id=None, pk=None, mode=None):
-        print('save journal line')
-        pass
+        self.setstate(request, pk, mode)
+        form = self.form_class(request.POST, instance=self.jr_line)
+        if form.is_valid():
+            jr_line = form.save(commit=True)
+            return redirect('pdash-time-review', project_id=project_id)
+        else:
+            return render(request,
+                          self.template,
+                          self.get_context(request, project_id, pk, mode, form)
+                          )
+    
+    
+    def setstate(self, request, pk, mode):
+        state_decoder = {
+            'view': RecState.VIEW,
+            'edit': RecState.EDIT,
+            'delete': RecState.DELETE,
+        }
+       
+        self.state = state_decoder.get(mode)
+        
+        if self.state in RecState.pk_states and pk:
+            try:
+                self.jr_line = self.model.objects.get(id=pk)
+            except:
+                self.jr_line = None
+        else:
+            self.jr_line = None
+    
+    def process(self, request, pk):
+        jr_line = self.jr_line
+        if self.state in RecState.pk_states and not pk:
+            raise Exception(_('Record ID not provided.'))
+
+        if self.state == RecState.DELETE:
+            if jr_line:
+                jr_line.delete()
         

@@ -34,12 +34,13 @@
 		<div class="project">
 			<!-- h3>{{employee.full_name}}</h3>  -->
 			<!--  h3>{{project.name}}</h3>  -->
-			{{project.description}}
+			<!-- {{project.description}}   -->
 			<div class="results" style="overflow-x:auto;">
 				<table class="time-register">
 					<thead>
 						<tr>
 							
+							<th scope="col">{{ _('Employee') }}</th>
 							<th scope="col">{{ _('Item') }}</th>
 							<th scope="col">{{ _('Date') }}</th>
 							<th scope="col">{{ _('Time') }}</th>
@@ -52,10 +53,15 @@
 						</tr>
 					</thead>
 					{% for journal_line in journal_lines %}
-					    {% include 'prjdash/posted_time_jrline.html' %}
+					    {% if mode == 'edit' and pk == journal_line.id %}
+							{% include 'prjdash/posted_time_form.html' %}
+						{% else %}
+						    {% include 'prjdash/posted_time_jrline.html' %}
+						{% endif %}
 					{% endfor %}
 					<tr style="font-weight:bold">
 						
+						<td></td>
 						<td></td>
 						<td></td>
 						<td style="text-align:right">{{ _('Total') }}:</td>

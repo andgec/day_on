@@ -1,0 +1,48 @@
+				<form action = "" method = "post">
+				{% csrf_token %}
+					<tr class="edit-row">
+						<td style = "vertical-align:middle;padding-left: 8px">{{journal_line.employee}}</td>
+						<td>
+							{{ form.item.errors }}
+							{{ form.item }}
+						</td>
+						<td>
+							{{ form.work_date.errors }}
+							{{ form.work_date }}
+						</td>
+						<td>
+							{{ form.work_time_from.errors }}
+							{{ form.work_time_from }} {{ _('to') }} 
+							{{ form.work_time_to.errors }}
+							{{ form.work_time_to }}
+						</td>
+						<td></td>
+						<td id="num-col">
+							{{ form.distance.errors }}
+							{{ form.distance }}
+						</td>
+						<td id="num-col">
+							{{ form.toll_ring.errors }}
+							{{ form.toll_ring }}
+						</td>
+						<td id="num-col">
+							{{ form.ferry.errors }}
+							{{ form.ferry }}
+						</td>
+						<td id="num-col">
+							{{ form.diet.errors }}
+							{{ form.diet }}
+						</td>
+						<!-- td>  -->
+						<td id="button-save-col">
+							<button class="btn-create" title = {{ _('Register') }} type="submit">
+								<!-- i class="fa fa-plus-circle"></i>  -->
+								<i class="fa fa-save"></i>
+							</button>
+							&nbsp&nbsp
+							<!-- a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' project_id=project.id %}><i class="fa fa-times"></i></a>  -->
+							<a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
+						</td>
+
+					</tr>
+				</form>
