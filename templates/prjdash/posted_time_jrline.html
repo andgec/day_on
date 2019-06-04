@@ -7,4 +7,11 @@
 							<td id="num-col">{{journal_line.toll_ring|default_if_none:""}}</td>
 							<td id="num-col">{{journal_line.ferry|default_if_none:""}}</td>
 							<td id="num-col">{{journal_line.diet|default_if_none:""}}</td>
+							<td id="button-edit-col">
+							{% if mode != 'edit' %}
+								<a class="btn-edit" title = {{ _('Modify') }} href={% url 'pdash-time-review' project_id=project.id pk=journal_line.id mode='edit' %}><i class="fa fa-edit"></i></a>
+								&nbsp&nbsp
+								<a class="btn-edit" title = {{ _('Delete') }} href={% url 'pdash-time-review' project_id=project.id pk=journal_line.id mode='delete' %}><i class="fas fa-minus"></i></a>
+                            {% endif %} 								
+							</td>
 						</tr>

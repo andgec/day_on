@@ -11,6 +11,7 @@ from django.db import connection
 from .forms import PDashProjectForm, PDashAssignEmployees
 #from botocore.vendored.requests.api import request
 from receivables.models import Project, WorkTimeJournal
+from receivables.forms import WorkTimeJournalForm
 
 
 class RecState:
@@ -263,26 +264,26 @@ class ProjectDashboardAssignEmployeesView(View):
 class ProjectDashboardPostedTimeReview(View):
     template = 'prjdash/posted_time_review.html'
     content_type_id_by_name = None
-    #form_class = PDashAssignEmployees
+    form_class = WorkTimeJournalForm
     
     def __init__(self, **kwargs):
         self.content_type_id_by_name = get_contenttypes()
         super(ProjectDashboardPostedTimeReview, self).__init__(**kwargs)
 
-    def get_context(self, request, pk):
-        #form = self.form_class();
-        form = None
-        project = Project.objects.select_related('customer').get(id=pk)
+    def get_context(self, request, project_id, pk=None, mode=None):
+        form = self.form_class();
+        project = Project.objects.select_related('customer').get(id=project_id)
         journal_lines = WorkTimeJournal.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                       object_id = pk)
+                                                       object_id = project_id).select_related('item')
 
         journal_totals = WorkTimeJournal.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                       object_id = pk).aggregate(Sum('work_time'),
+                                                       object_id = project_id).aggregate(Sum('work_time'),
                                                                                  Sum('distance'), 
                                                                                  Sum('toll_ring'), 
                                                                                  Sum('ferry'), 
                                                                                  Sum('diet'))
         context = {
+                'mode': mode,
                 'project': project,
                 'customer': project.customer,
                 'form': form,
@@ -292,9 +293,12 @@ class ProjectDashboardPostedTimeReview(View):
         print(context)
         return context
 
-    def get(self, request, pk=None):
+    def get(self, request, project_id=None, pk=None, mode=None):
         return render(request,
                       self.template,
-                      self.get_context(request, pk)
+                      self.get_context(request, project_id, pk, mode)
                       )
-    
+    def post(self, request, project_id=None, pk=None, mode=None):
+        print('save journal line')
+        pass
+        
