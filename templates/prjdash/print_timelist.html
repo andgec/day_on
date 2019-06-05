@@ -1,0 +1,51 @@
+{% load i18n %}
+  	<script>
+	  	$( function() {
+	  	  	$.datepicker.setDefaults($.datepicker.regional["lt"]);
+	  	  	$( "#datepicker-from" ).datepicker({maxDate: "+1D", onSelect: set_date_from});
+	  	} );
+	  	 
+	  	$( function() {
+			$.datepicker.setDefaults($.datepicker.regional["lt"]);	  	  
+	    	$( "#datepicker-to" ).datepicker({maxDate: "+1D", onSelect: set_date_to});
+	  	} );
+	  	
+	  	function set_print_url(){
+	  	  //alert(document.date_from);
+	  	  //alert(document.date_to);
+	  	  print_button = document.getElementById("print_timelist");
+	  	  if (document.date_from && document.date_to) {
+	  	    print_button.href = "{% url 'timelist-pdf' pk=project.id %}?date_from=" + document.date_from + "&date_to=" + document.date_to;
+	  	  }
+	  	  else if (document.date_from) {
+		  	print_button.href = "{% url 'timelist-pdf' pk=project.id %}?date_from=" + document.date_from;
+		  }
+	  	  else if (document.date_to) {
+			print_button.href = "{% url 'timelist-pdf' pk=project.id %}?date_to=" + document.date_to;
+		  }
+	  	  else {
+	  	    print_button.href = "{% url 'timelist-pdf' pk=project.id %}";
+	  	  }
+	  	};
+
+	  	function set_date_from(value){
+	  	  document.date_from = value;
+	  	  set_print_url();
+	  	};
+	  	
+	  	function set_date_to(value){
+	  	  document.date_to = value;
+	  	  set_print_url();
+	  	};
+  	</script>
+	<div>
+		{{ _('Date from') }} <input type="text" id="datepicker-from"> {{ _('to') }}  <input type="text" id="datepicker-to">&nbsp&nbsp
+		<a class="btn-cancel" 
+		   id="print_timelist" 
+		   style = "text-decoration: none"
+		   title = {{ _('Print timelist') }} {% language 'nb' %}
+		   href={% url 'timelist-pdf' pk=project.id %}{% endlanguage %}>
+		   		<i class="fa fa-print"></i> &nbsp {{ _('Print') }}</i>
+		</a>
+		<br><br>
+	</div>

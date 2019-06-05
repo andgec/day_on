@@ -72,12 +72,12 @@
 			<table class="timelist">
 				<thead>
 					<tr>
-						<th style="width:60px">{{ _('Date') }}</th>
+						<th style="width:65px">{{ _('Date') }}</th>
 						<th style="width:34px">{{ _('Day') }}</th>
-						<th style="width:180px">{{ _('Employee') }}</th>
+						<th style="width:170px">{{ _('Employee') }}</th>
 						<th>{{ _('Description') }}</th>
 						<th style="width:40px">{{ _('Hours') }}</th>
-						<th style="width:80px">{{ _('From h. - To h.') }}</th>
+						<th style="width:85px">{{ _('From h. - To h.') }}</th>
 						<th style="width:35px">50%</th>
 						<th style="width:35px">100%</th>
 						<th style="width:35px">Km</th>
@@ -89,7 +89,7 @@
 					{% for line in page.lines %}
 					<!--  https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2997 -->
 						<tr>
-							<td>{{line.work_date}}</td>
+							<td style="text-align:center">{{line.work_date}}</td>
 							<td>{{line.work_week_day}}</td>
 							<td>{{line.employee}}</td>
 							<td>{{line.item}}</td>

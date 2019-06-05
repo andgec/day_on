@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load i18n %}
 
 {% block linked_files %}
 	<!-- link rel="stylesheet" href="jquery-ui.css">
@@ -26,11 +25,10 @@
 
 {% block content %}
 	<div id="content" class=colMS>
-		<h1>{{ _('Time review and approval') }}</h1>
+		<h1>{{ _('Review and approve time for project ') }}&nbsp<b>{{project.name}}</b></h1>
+		<br>
     	<div id="content_main">
-    	{% language 'nb' %}
-		  <a href={% url 'timelist-pdf' pk=project.id %}>{{ _('Print') }}</a><br><br>
-		{% endlanguage %}
+    		{% include 'prjdash/print_timelist.html' %}
 		<div class="project">
 			<!-- h3>{{employee.full_name}}</h3>  -->
 			<!--  h3>{{project.name}}</h3>  -->
