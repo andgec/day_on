@@ -9,6 +9,7 @@
 	            border:0; 
 	            margin: 0;
 	            padding-top: 0px;
+	            font-family: Arial;
 	            /*background-color: lightgray;*/
 	        }
 			div.project {
@@ -16,12 +17,10 @@
 				text-align: center;
 				padding-top: 55px;
 				padding-bottom: 12px;
-				font-family: Arial;
 				/*background-color: lightgreen;*/
 			}
 			.timelist {
 				width: 100%;
-			   font-family: Arial;
 			}
 			table {
 				border-collapse: collapse;
@@ -31,6 +30,7 @@
 				padding: 3px;
 				padding-left: 5px;
 				padding-right: 5px;
+				font-size: 12px;
 			}
 			td{
 				border-right: 1px solid black;
@@ -76,11 +76,11 @@
 						<th style="width:34px">{{ _('Day') }}</th>
 						<th style="width:170px">{{ _('Employee') }}</th>
 						<th>{{ _('Description') }}</th>
-						<th style="width:40px">{{ _('Hours') }}</th>
-						<th style="width:85px">{{ _('From h. - To h.') }}</th>
-						<th style="width:35px">50%</th>
-						<th style="width:35px">100%</th>
-						<th style="width:35px">Km</th>
+						<th style="width:55px">{{ _('Hours') }}</th>
+						<th style="width:95px">{{ _('From h. - To h.') }}</th>
+						<th style="width:40px">50%</th>
+						<th style="width:40px">100%</th>
+						<th style="width:40px">Km</th>
 						<th style="width:40px">{{ _('Diet') }}</th>
 						<th style="width:40px">{{ _('Transport Nok') }}</th>
 					</tr>
@@ -91,7 +91,7 @@
 						<tr>
 							<td style="text-align:center">{{line.work_date}}</td>
 							<td>{{line.work_week_day}}</td>
-							<td>{{line.employee}}</td>
+							<td style="vertical-align: middle">{{line.employee}}</td>
 							<td>{{line.item}}</td>
 							<td class="num">{{line.work_time}}</td>
 							<td style="text-align:center">{{line.work_time_from}} - {{line.work_time_to}}</td>
