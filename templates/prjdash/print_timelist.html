@@ -9,7 +9,7 @@
 			$.datepicker.setDefaults($.datepicker.regional["lt"]);	  	  
 	    	$( "#datepicker-to" ).datepicker({maxDate: "+1D", onSelect: set_date_to});
 	  	} );
-	  	
+	  	{% language 'nb' %}
 	  	function set_print_url(){
 	  	  //alert(document.date_from);
 	  	  //alert(document.date_to);
@@ -27,6 +27,7 @@
 	  	    print_button.href = "{% url 'timelist-pdf' pk=project.id %}";
 	  	  }
 	  	};
+	  	{% endlanguage %}
 
 	  	function set_date_from(value){
 	  	  document.date_from = value;
@@ -43,8 +44,10 @@
 		<a class="btn-cancel" 
 		   id="print_timelist" 
 		   style = "text-decoration: none"
-		   title = {{ _('Print timelist') }} {% language 'nb' %}
-		   href={% url 'timelist-pdf' pk=project.id %}{% endlanguage %}>
+		   title = {{ _('Print timelist') }} 
+		   {% language 'nb' %}
+		   href={% url 'timelist-pdf' pk=project.id %}
+		   {% endlanguage %}>
 		   		<i class="fa fa-print"></i> &nbsp {{ _('Print') }}</i>
 		</a>
 		<br><br>
