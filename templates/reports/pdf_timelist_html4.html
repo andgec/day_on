@@ -38,6 +38,10 @@
 			}
 			td.num{
 				text-align: right;
+				vertical-align: middle;
+			}
+			td.text{
+				vertical-align: middle;
 			}
 			tr:nth-child(even){
 				background-color: #f2f2f2;
@@ -89,12 +93,12 @@
 					{% for line in page.lines %}
 					<!--  https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2997 -->
 						<tr>
-							<td style="text-align:center">{{line.work_date}}</td>
-							<td>{{line.work_week_day}}</td>
-							<td style="vertical-align: middle">{{line.employee}}</td>
-							<td>{{line.item}}</td>
+							<td style="text-align:center" class="text">{{line.work_date}}</td>
+							<td class = "text">{{line.work_week_day}}</td>
+							<td class = "text">{{line.employee}}</td>
+							<td class = "text">{{line.item}}</td>
 							<td class="num">{{line.work_time}}</td>
-							<td style="text-align:center">{{line.work_time_from}} - {{line.work_time_to}}</td>
+							<td style="text-align:center" class="text">{{line.work_time_from}} - {{line.work_time_to}}</td>
 							<td class="num">{{ line.overtime_50|default:"" }}</td>
 							<td class="num">{{ line.overtime_100|default:"" }}</td>
 							<td class="num">{{ line.distance|default:"" }}</td>
