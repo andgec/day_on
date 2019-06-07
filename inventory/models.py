@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.deletion import PROTECT
-from parler.models import TranslatableModel, TranslatedFields
+from parler.models import TranslatableModel, TranslatedField, TranslatedFields
 from general.models import UnitOfMeasure
 from django.utils.translation import ugettext_lazy as _
 
@@ -19,6 +19,9 @@ class ItemGroup(TranslatableModel):
                               )
         )
     
+    name = TranslatedField(any_language=True)
+    description = TranslatedField(any_language=True)
+
     class Meta:
         verbose_name = _('Item group')
         verbose_name_plural = _('Item groups')
@@ -41,6 +44,10 @@ class Item(TranslatableModel):
                               verbose_name = _('Description')
                           )
     )
+
+    name = TranslatedField(any_language=True)
+    description = TranslatedField(any_language=True)
+
     item_group      = models.ForeignKey(
                           ItemGroup,
                           on_delete=PROTECT,

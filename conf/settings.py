@@ -34,7 +34,7 @@ LOCAL_ENV = RUNTIME_ENV not in ('PROD', 'PRODUCTION', 'PROD-DEBUG', 'STAGING', '
 # DEBUG = True
 DEBUG = str(os.environ.get('DEBUG', RUNTIME_ENV not in ('PROD', 'PRODUCTION'))).lower() in ('true', '1')
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.0.0.111', os.environ.get('WEB_HOST', 'localhost')]
+ALLOWED_HOSTS = ['127.0.0.1', '10.0.0.111', '10.189.88.155', os.environ.get('WEB_HOST', 'localhost')]
 
 INTERNAL_IPS=['127.0.0.1']
 
@@ -154,14 +154,12 @@ USE_TZ = True
 LANGUAGES=(
     ('nb', 'Norwegian Bokmål'),
     ('lt', 'Lithuanian'),
-    ('en', 'English'),
 )
 
 PARLER_LANGUAGES = {
     None: (
         {'code': 'nb',},
         {'code': 'lt',},
-        {'code': 'en',},
     ),
     'default': {
         'fallback': 'lt',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
