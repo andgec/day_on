@@ -18,7 +18,7 @@ class ItemGroup(TranslatableModel):
                               verbose_name = _('Description')
                               )
         )
-    
+
     name = TranslatedField(any_language=True)
     description = TranslatedField(any_language=True)
 

@@ -1,6 +1,6 @@
 				<tr class="tb{% if not project.active %} closed {% endif %}" {% if focus.project_id == project.id  %} id="proj_{{project.id}}" {% endif %}>
 					<td class="actions-left">
-						<a href="{% url 'pdash-time-review' project_id=project.id %}" class="btn-detail">
+						<a href="{% url 'pdash-time-review' project_id=project.id %}" title = "{{ _('Time review and approval') }}" class="btn-detail">
 							<i class="fas fa-bars"></i>
 							<!-- i class="far fa-address-card"></i>
 							<i class="fas fa-address-card"></i>
@@ -10,7 +10,7 @@
 							-->
 						</a>
 						&nbsp;
-						<a href="{% url 'pdash-assign-employees' pk=project.id %}" class="btn-detail">
+						<a href="{% url 'pdash-assign-employees' pk=project.id %}" title = "{{ _('Assign employees') }}" class="btn-detail">
 							<i class="far fa-address-book"></i>
 							<!-- i class="far fa-address-card"></i>
 							<i class="fas fa-address-card"></i>
@@ -23,14 +23,14 @@
 					</td>
 					<td>{{project.name}}</td>
 					<td>{{project.comment}}</td>
-					<td style="width:80px">{{project.datetime_created}}</td>
+					<td style="text-align:center">{{project.datetime_created}}</td>
 					<td class="actions-right">
 					{% if not edit %}
-					  <a href="{% url 'pdash' pk=project.id mode='edit'%}" class="btn-edit">Edit</a>&nbsp&nbsp
+					  <a href="{% url 'pdash' pk=project.id mode='edit'%}" class="btn-edit">{{_('Edit')}}</a>&nbsp&nbsp
 					  {% if project.active %}
-					  	<a href="{% url 'pdash' pk=project.id %}?action=close" class="btn-close">Close</a>
+					  	<a href="{% url 'pdash' pk=project.id %}?action=close" class="btn-close">{{_('Close')}}</a>
 					  {% else %}
-					  	<a href="{% url 'pdash' pk=project.id %}?action=open" class="btn-open">Open</a>
+					  	<a href="{% url 'pdash' pk=project.id %}?action=open" class="btn-open">{{_('Open')}}</a>
 					  {% endif %}
 					{% endif %}
 					</td>
