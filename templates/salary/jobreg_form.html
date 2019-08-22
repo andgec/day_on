@@ -13,10 +13,14 @@
 							{{ form.work_date }}
 						</td -->
 						<td>
+							<div style="width: 130px; float: left">
 							{{ form.work_time_from.errors }}
-							{{ form.work_time_from }} {{ _('to') }} 
+							{{ form.work_time_from }} {{ _('to') }}
+							</div>
+							<div style="width: 130px; float: left">
 							{{ form.work_time_to.errors }}
 							{{ form.work_time_to }}
+							</div>
 						</td>
 						<td></td>
 						<td id="num-col">
