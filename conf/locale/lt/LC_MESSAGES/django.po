@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-07 23:09+0200\n"
+"POT-Creation-Date: 2019-08-22 11:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,7 +164,7 @@ msgstr "Kaina"
 
 #: inventory/models.py:74 receivables/models.py:230 receivables/models.py:328
 #: templates/prjdash/posted_time_review.html:42
-#: templates/salary/registration_journal.html:57
+#: templates/salary/registration_journal.html:54
 msgid "Item"
 msgstr "Darbas"
 
@@ -194,7 +194,7 @@ msgstr "Įplaukos"
 
 #: receivables/forms.py:42 receivables/models.py:126 receivables/models.py:145
 #: templates/prjdash/project_dash.html:35
-#: templates/salary/registration_journal.html:56
+#: templates/salary/registration_journal.html:53
 msgid "Project"
 msgstr "Projektas"
 
@@ -284,7 +284,7 @@ msgstr "Priskirti darbuotojai"
 
 #: receivables/models.py:330 templates/prjdash/posted_time_review.html:43
 #: templates/reports/pdf_timelist_html4.html:79
-#: templates/salary/registration_journal.html:58
+#: templates/salary/registration_journal.html:55
 msgid "Date"
 msgstr "Data"
 
@@ -313,18 +313,18 @@ msgid "Distance"
 msgstr "Atstumas"
 
 #: receivables/models.py:357 templates/prjdash/posted_time_review.html:47
-#: templates/salary/registration_journal.html:62
+#: templates/salary/registration_journal.html:59
 msgid "Toll ring"
 msgstr "BOM"
 
 #: receivables/models.py:363 templates/prjdash/posted_time_review.html:48
-#: templates/salary/registration_journal.html:63
+#: templates/salary/registration_journal.html:60
 msgid "Ferry"
 msgstr "Keltas"
 
 #: receivables/models.py:369 templates/prjdash/posted_time_review.html:49
 #: templates/reports/pdf_timelist_html4.html:88
-#: templates/salary/registration_journal.html:64
+#: templates/salary/registration_journal.html:61
 msgid "Diet"
 msgstr "Maistas"
 
@@ -524,12 +524,12 @@ msgstr "Priskirti"
 
 #: templates/prjdash/posted_time_form.html:15
 #: templates/prjdash/print_timelist.html:43
-#: templates/salary/jobreg_form.html:17
+#: templates/salary/jobreg_form.html:18
 msgid "to"
 msgstr "iki"
 
 #: templates/prjdash/posted_time_form.html:38
-#: templates/salary/jobreg_form.html:40
+#: templates/salary/jobreg_form.html:44
 msgid "Register"
 msgstr "Registruoti"
 
@@ -552,23 +552,23 @@ msgid "Review and approve time for project "
 msgstr "Peržiūrėti ir patvirtinti laiką projektui "
 
 #: templates/prjdash/posted_time_review.html:44
-#: templates/salary/registration_journal.html:59
+#: templates/salary/registration_journal.html:56
 msgid "Time"
 msgstr "Laikas"
 
 #: templates/prjdash/posted_time_review.html:45
 #: templates/reports/pdf_timelist_html4.html:83
-#: templates/salary/registration_journal.html:60
+#: templates/salary/registration_journal.html:57
 msgid "Hours"
 msgstr "Valandos"
 
 #: templates/prjdash/posted_time_review.html:46
-#: templates/salary/registration_journal.html:61
+#: templates/salary/registration_journal.html:58
 msgid "Distance (km)"
 msgstr "Atstumas (km)"
 
 #: templates/prjdash/posted_time_review.html:65
-#: templates/salary/registration_journal.html:82
+#: templates/salary/registration_journal.html:79
 msgid "Total"
 msgstr "Viso"
 
@@ -647,8 +647,8 @@ msgid "Transport Nok"
 msgstr "Transportas NOK"
 
 #: templates/salary/base_wtr.html:5
-msgid "Working time registration"
-msgstr "Darbo laiko registravimas"
+msgid "Working time registration in project "
+msgstr "Darbo laiko registravimas projekte"
 
 #: templates/salary/registration_journal.html:39
 #: templates/salary/registration_list.html:5
