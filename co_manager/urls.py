@@ -6,10 +6,11 @@ from django.urls import include
 from .admin import admin_site
 from conf import settings
 from . import views
-from receivables.wiews import WorkTimeJournalView
+from receivables.views import WorkTimeJournalView
 
 #----- Refactor all above as under -----
 from prjdash import urls as prjdash_urls
+from reports import urls as reports_urls
 
 
 urlpatterns = i18n_patterns(
@@ -20,6 +21,7 @@ urlpatterns = i18n_patterns(
     url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})$', WorkTimeJournalView.as_view(), name='tjournal'),
     url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})/(?P<modify_id>[0-9]+)$', WorkTimeJournalView.as_view(), name='tjournal'),
     url(r'^v1/pdash/', include(prjdash_urls.urlpatterns)),
+    url(r'^reports/', include(reports_urls.urlpatterns)),
     prefix_default_language=False
 )
 

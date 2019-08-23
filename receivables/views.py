@@ -81,6 +81,7 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
         request.POST['work_date_day'] = work_date.day
         request.POST['work_date_month'] = work_date.month
         request.POST['work_date_year'] = work_date.year
+        request.POST['employee'] = request.user.employee
         
         form =  self.form_class(request.POST, instance = journal)
         

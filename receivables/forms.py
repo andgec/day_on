@@ -91,6 +91,7 @@ class WorkTimeJournalForm(forms.ModelForm):
         model = WorkTimeJournal
         readonly_fields = ['empty',]
         fields = ['item',
+                  'employee',
                   'work_date',
                   'work_time_from',
                   'work_time_to',
@@ -102,7 +103,7 @@ class WorkTimeJournalForm(forms.ModelForm):
 
         widgets = {
             'work_date': SelectDateWidget(years = range(2010, 2030)),
-            'employee': forms.Select(attrs={'disabled': True}),
+            'employee': forms.Select(attrs={'hidden': True}),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'distance': forms.NumberInput(attrs={'class': 'timereg_num_field'}),

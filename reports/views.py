@@ -265,3 +265,31 @@ class TimelistHTMLView(View):
         context = self.get_context(request, project_id)
         html = template.render(context)
         return HttpResponse(html)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class TimeSummaryXLSXView(View):
+    
+    def get_context(self, request):
+        context = self.get_report_lines(request)
+        return context
+        
+    def get_report_lines(self, request):
+        filter_date_from = request.GET.get('date_from')
+        filter_date_to = request.GET.get('date_to')
+        filter_project = request.GET.get('project')
+        
+        # Building the query according URL parameters:
+        q_list = []
+
+        context = {
+            'date_from': filter_date_from,
+            'date_to': filter_date_to,
+            'project': filter_project,
+        }
+        
+        return context
+    
+    def get(self, request, *args, **kwagrs):
+        return HttpResponse('Atsakymas gautas: ' + str(self.get_context(request)))
+        
