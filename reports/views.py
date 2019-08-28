@@ -1,6 +1,8 @@
 import operator
 import datetime
 from functools import reduce
+from django.db import connection
+from django.utils.translation import gettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.generic import View
@@ -12,7 +14,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.models import model_to_dict
 from babel.dates import format_date
 
+from shared.utils import dictfetchall, start_of_current_month, end_of_current_month
 from receivables.models import Project, WorkTimeJournal
+#from salary.models import Employee
 #from botocore.vendored.requests.api import request
 from conf.settings import TIMELIST_LINES_PER_PAGE
 
@@ -269,23 +273,103 @@ class TimelistHTMLView(View):
 
 @method_decorator(staff_member_required, name='dispatch')
 class TimeSummaryXLSXView(View):
+    default_start_date = start_of_current_month()
+    default_end_date = end_of_current_month()
+    msql = "SELECT id FROM receivables_customer"
+    sql = """               
+             SELECT
+                usr.id as employee_id,
+                CONCAT(usr.first_name, ' ', usr.last_name) as empl_name,
+                object_id as project_id,
+                proj.name as project_name,
+                total_time,
+                work_date
+            FROM
+                (SELECT
+                  content_type_id,
+                  object_id,
+                  employee_id,
+                  work_date,
+                  sum(work_time) as total_time
+                FROM
+                  receivables_worktimejournal wtj
+                WHERE
+                  content_type_id = (SELECT dct.id FROM django_content_type dct WHERE app_label = 'receivables' and model = 'project')
+                GROUP BY
+                  content_type_id,
+                  object_id,
+                  employee_id,
+                  work_date
+                ) AS ts
+                RIGHT OUTER JOIN djauth_user usr ON usr.id = ts.employee_id
+                LEFT OUTER JOIN receivables_project proj on proj.id = ts.object_id
+            ORDER BY
+              ts.content_type_id,
+              ts.object_id,
+              ts.employee_id,
+              ts.work_date
+          """ 
     
     def get_context(self, request):
         context = self.get_report_lines(request)
         return context
         
-    def get_report_lines(self, request):
-        filter_date_from = request.GET.get('date_from')
-        filter_date_to = request.GET.get('date_to')
-        filter_project = request.GET.get('project')
+    def run_sql_query(self, **kwargs):
+        with connection.cursor() as cursor:
+            #try
+            cursor.execute(self.sql)
+            #except
+            result_dict = dictfetchall(cursor)
+        return result_dict
+    
+    def make_day_matrix(self, header, **kwargs):
+        print(kwargs)
+        date_from = kwargs.get('date_from')
+        date_to = kwargs.get('date_to')
+        loopdate = date_from
+        while loopdate <= date_to:
+            header[len(header)] = {'type': 'decimal',
+                                   'caption': loopdate
+                                   }
+            loopdate = loopdate + datetime.timedelta(days=1)
+    
+    def make_report_header(self, **kwargs):
+        header = {
+            0: {'type': 'str',
+                'caption': _('Employee')
+                },
+            1: {'type': 'decimal',
+               'caption': _('Total hours')
+                },
+            2: {'type': 'str',
+               'caption': _('Remarks')
+                }
+            }
+        self.make_day_matrix(header, **kwargs)
         
-        # Building the query according URL parameters:
-        q_list = []
+        return header
 
+    def get_report_lines(self, request):
+        print(request.GET.get('date_from', self.default_start_date.strftime("%Y-%m-%d")))
+        filters = {
+            #Addind default values and converting strings dates into date format.
+            'date_from': datetime.datetime.strptime(
+                request.GET.get('date_from', self.default_start_date.strftime("%Y-%m-%d")),
+                "%Y-%m-%d").date(),
+            'date_to': datetime.datetime.strptime(
+                request.GET.get('date_to', self.default_end_date.strftime("%Y-%m-%d")),
+                "%Y-%m-%d").date(),
+            'project_id': request.GET.get('project'),
+            'employee_id': request.GET.get('employee'),
+        }
+        
+        self.make_report_header(**filters)
+        
+        result_dict = self.run_sql_query(**filters)
+        
+        print(result_dict)
         context = {
-            'date_from': filter_date_from,
-            'date_to': filter_date_to,
-            'project': filter_project,
+            'filters': filters
         }
         
         return context
