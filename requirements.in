@@ -1,4 +1,4 @@
-django==2.1.4
+django==2.2.4
 psycopg2-binary==2.7.6.1
 pytz==2018.5
 django-countries==5.3.2
@@ -17,7 +17,6 @@ webencodings==0.5.1
 xhtml2pdf==0.2.3
 babel==2.6.0
 django-wkhtmltopdf==3.2.0
+urllib3==1.24.2
 
 #django-autocomplete-light 3.3.0 documentation
-
-
