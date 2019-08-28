@@ -2,6 +2,7 @@ import operator
 import datetime
 from functools import reduce
 from django.db import connection
+from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
@@ -275,6 +276,7 @@ class TimelistHTMLView(View):
 class TimeSummaryXLSXView(View):
     default_start_date = start_of_current_month()
     default_end_date = end_of_current_month()
+    
     msql = "SELECT id FROM receivables_customer"
     sql = """               
              SELECT
@@ -323,7 +325,6 @@ class TimeSummaryXLSXView(View):
         return result_dict
     
     def make_day_matrix(self, header, **kwargs):
-        print(kwargs)
         date_from = kwargs.get('date_from')
         date_to = kwargs.get('date_to')
         loopdate = date_from
@@ -348,26 +349,56 @@ class TimeSummaryXLSXView(View):
         self.make_day_matrix(header, **kwargs)
         
         return header
+    
+    def get_timelist_data(self, **kwargs):
+        q_list = []
+
+        q_list.append(Q(work_date__gte=kwargs.get('date_from')))
+        q_list.append(Q(work_date__lte=kwargs.get('date_to')))
+
+        project_ids = kwargs.get('project_ids')
+        if project_ids:
+            contenttype_project = ContentType.objects.get(model='project')
+            project_ids_list = project_ids.split(',')
+            q_list.append(Q(content_type=contenttype_project))
+            q_list.append(Q(object_id__in=project_ids_list))
+        
+        if kwargs.get('split_by_project') == 'true':
+            timelist_data = WorkTimeJournal.objects.filter(
+                reduce(operator.and_, q_list)).values(
+                    'object_id', 'employee_id', 'work_date').order_by(
+                        'object_id', 'employee_id', 'work_date').annotate(
+                            work_time = Sum('work_time'))
+        else: 
+            timelist_data = WorkTimeJournal.objects.filter(
+                reduce(operator.and_, q_list)).values(
+                    'employee_id', 'work_date').order_by(
+                        'employee_id', 'work_date').annotate(
+                            work_time = Sum('work_time'))
+
+        print(timelist_data.query)
+        
+        print(timelist_data)
+        return timelist_data
+        
 
     def get_report_lines(self, request):
-        print(request.GET.get('date_from', self.default_start_date.strftime("%Y-%m-%d")))
         filters = {
-            #Addind default values and converting strings dates into date format.
+            #Addind default values and converting string dates to date data type.
             'date_from': datetime.datetime.strptime(
                 request.GET.get('date_from', self.default_start_date.strftime("%Y-%m-%d")),
                 "%Y-%m-%d").date(),
             'date_to': datetime.datetime.strptime(
                 request.GET.get('date_to', self.default_end_date.strftime("%Y-%m-%d")),
                 "%Y-%m-%d").date(),
-            'project_id': request.GET.get('project'),
+            'project_ids': request.GET.get('projects'),
             'employee_id': request.GET.get('employee'),
+            'split_by_project': request.GET.get('split_by_project'),
         }
         
-        self.make_report_header(**filters)
-        
-        result_dict = self.run_sql_query(**filters)
-        
-        print(result_dict)
+        header_data = self.make_report_header(**filters)
+        timelist_data = self.get_timelist_data(**filters)
+
         context = {
             'filters': filters
         }
