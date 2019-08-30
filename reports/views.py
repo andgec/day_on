@@ -17,19 +17,17 @@ from babel.dates import format_date
 
 from shared.utils import dictfetchall, start_of_current_month, end_of_current_month
 from receivables.models import Project, WorkTimeJournal
-#from salary.models import Employee
-#from botocore.vendored.requests.api import request
+from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
-
 
 
 #URL:
 #http://127.0.0.1:8000/admin/timelist_pdf/?project_ids=1,2,3,4,5,6,7,8,9,10&date_from=2018-10-20&date_to=2019-01-30
 @method_decorator(staff_member_required, name='dispatch')
 class TimelistPDFView(View):
-    template = get_template('reports/pdf_timelist_html4.html')
-    header_template = get_template('reports/pdf_header_html4.html')
-    footer_template = get_template('reports/pdf_footer_html4_page_number_right.html')
+    template = get_template('reports/pdf_timelist/pdf_timelist_html4.html')
+    header_template = get_template('reports/pdf_timelist/pdf_header_html4.html')
+    footer_template = get_template('reports/pdf_timelist/pdf_footer_html4_page_number_right.html')
 
     def get_context(self, request, project_id):
         company = request.user.company;
@@ -274,43 +272,10 @@ class TimelistHTMLView(View):
 
 @method_decorator(staff_member_required, name='dispatch')
 class TimeSummaryXLSXView(View):
+    template = get_template('reports/time_summary/time_summary.html')
+    
     default_start_date = start_of_current_month()
     default_end_date = end_of_current_month()
-    
-    msql = "SELECT id FROM receivables_customer"
-    sql = """               
-             SELECT
-                usr.id as employee_id,
-                CONCAT(usr.first_name, ' ', usr.last_name) as empl_name,
-                object_id as project_id,
-                proj.name as project_name,
-                total_time,
-                work_date
-            FROM
-                (SELECT
-                  content_type_id,
-                  object_id,
-                  employee_id,
-                  work_date,
-                  sum(work_time) as total_time
-                FROM
-                  receivables_worktimejournal wtj
-                WHERE
-                  content_type_id = (SELECT dct.id FROM django_content_type dct WHERE app_label = 'receivables' and model = 'project')
-                GROUP BY
-                  content_type_id,
-                  object_id,
-                  employee_id,
-                  work_date
-                ) AS ts
-                RIGHT OUTER JOIN djauth_user usr ON usr.id = ts.employee_id
-                LEFT OUTER JOIN receivables_project proj on proj.id = ts.object_id
-            ORDER BY
-              ts.content_type_id,
-              ts.object_id,
-              ts.employee_id,
-              ts.work_date
-          """ 
     
     def get_context(self, request):
         context = self.get_report_lines(request)
@@ -324,32 +289,43 @@ class TimeSummaryXLSXView(View):
             result_dict = dictfetchall(cursor)
         return result_dict
     
-    def make_day_matrix(self, header, **kwargs):
+    def make_report_header(self, **kwargs):
+        header = {
+            0: {'name': 'employee',
+                'type': 'str',
+                'caption': _('Employee')
+                },
+            1: {'name': 'total_hours',
+                'type': 'decimal',
+                'caption': _('Total hours')
+                },
+            2: {'name': 'remarks',
+                'type': 'str',
+                'caption': _('Remarks')
+                }
+            }
+        self.make_day_header(header, **kwargs)
+        
+        return header
+
+    def make_day_header(self, header, **kwargs):
         date_from = kwargs.get('date_from')
         date_to = kwargs.get('date_to')
         loopdate = date_from
         while loopdate <= date_to:
-            header[len(header)] = {'type': 'decimal',
-                                   'caption': loopdate
+            header[len(header)] = {'name': loopdate,
+                                   'type': 'date',
+                                   'caption': str(loopdate)
                                    }
             loopdate = loopdate + datetime.timedelta(days=1)
-    
-    def make_report_header(self, **kwargs):
-        header = {
-            0: {'type': 'str',
-                'caption': _('Employee')
-                },
-            1: {'type': 'decimal',
-               'caption': _('Total hours')
-                },
-            2: {'type': 'str',
-               'caption': _('Remarks')
-                }
-            }
-        self.make_day_matrix(header, **kwargs)
+            
+            
+    def get_employee_data(self, empl_ids, **kwargs):
+        users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('id')
+        employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
+        return employee_data
         
-        return header
-    
+        
     def get_timelist_data(self, **kwargs):
         q_list = []
 
@@ -376,12 +352,67 @@ class TimeSummaryXLSXView(View):
                         'employee_id', 'work_date').annotate(
                             work_time = Sum('work_time'))
 
-        print(timelist_data.query)
-        
-        print(timelist_data)
         return timelist_data
         
 
+    def get_distinct_empl_ids(self, timelist_data):
+        #get employee ids from 
+        empl_ids = []
+        prev_empl_id = 0
+
+        for line in timelist_data:
+            if line['employee_id'] != prev_empl_id:
+                empl_ids.append(line['employee_id'])
+                prev_empl_id = line['employee_id']
+                
+        empl_ids.append(line['employee_id'])
+        print(empl_ids)
+        return empl_ids        
+        
+
+    def build_employee_time_matrix(self, header_data, employee_data, **kwargs):
+        # makes an empty matrix with rows for employees and columns for dates
+        time_matrix = {}
+        if kwargs.get('split_by_project') == 'true':
+            pass
+        else:
+            for employee_id in employee_data.keys():
+                time_matrix_line = {}
+                for col in header_data.keys():
+                    time_matrix_line[header_data[col]['name']] = ''
+                    
+                time_matrix[employee_id] = time_matrix_line
+                    
+        print(time_matrix)
+        return time_matrix
+
+
+    def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, timelist_data, **kwargs):
+        for employee_id in employee_data.keys():
+            time_matrix[employee_id]['employee'] = employee_data[employee_id]
+        
+        loop_empl_id = 0
+        empl_total_work_time = 0
+        
+        for line in timelist_data:
+            time_matrix[line['employee_id']][line['work_date']] = line['work_time']
+            
+            if loop_empl_id == 0:
+                loop_empl_id = line['employee_id']
+                 
+            #calculating and adding total hours worked
+            if loop_empl_id == line['employee_id']:
+                empl_total_work_time += line['work_time']
+            else:
+                time_matrix[loop_empl_id]['total_hours'] = empl_total_work_time
+                empl_total_work_time = 0
+                loop_empl_id = line['employee_id']
+        
+        #adding total hours worked for the last employee
+        time_matrix[loop_empl_id]['total_hours'] = empl_total_work_time                
+            
+        return time_matrix
+            
     def get_report_lines(self, request):
         filters = {
             #Addind default values and converting string dates to date data type.
@@ -397,14 +428,39 @@ class TimeSummaryXLSXView(View):
         }
         
         header_data = self.make_report_header(**filters)
+        #print(header_data)
         timelist_data = self.get_timelist_data(**filters)
+        
+        distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
+        #print(timelist_data)
+        employee_data = self.get_employee_data(distinct_empl_ids, **filters)
+        
+        time_matrix = self.build_employee_time_matrix(
+            header_data, 
+            employee_data, 
+            **filters)
+
+        time_matrix = self.fill_employee_time_matrix(
+            time_matrix,
+            header_data,
+            employee_data,
+            timelist_data, 
+            **filters)
 
         context = {
-            'filters': filters
+            'filters': filters,
+            'header': header_data,
+            'timelist': time_matrix 
         }
         
         return context
     
-    def get(self, request, *args, **kwagrs):
-        return HttpResponse('Atsakymas gautas: ' + str(self.get_context(request)))
+    def get(self, request, *args, **kwargs):
+        context = self.get_context(request)
+        html = self.template.render(context)
+        return HttpResponse(html)
+    
+    
+    #def get(self, request, *args, **kwagrs):
+    #    return HttpResponse('Atsakymas gautas: ' + str(self.get_context(request)))
         

@@ -13,7 +13,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'vitasbygg_dev'),
+        'NAME': os.environ.get('DB_NAME', 'vitasbygg-dev-drift'),
         'USER': os.environ.get('DB_USER', 'postgres'),
         'PASSWORD': os.environ.get('DB_PASSWORD', None),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
