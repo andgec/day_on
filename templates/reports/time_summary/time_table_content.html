@@ -1,0 +1,15 @@
+{% for empl_id, timeline in timelist.items %}
+	<tr>
+	{% for col, data in timeline.items %}		
+		{% with weekday=col|date:"w" %}
+			{%if weekday == '6' or weekday == '0' %}
+				<td bgcolor="red">
+			{% else %}
+				<td>
+			{% endif %}
+			{{data}}
+			</td>
+		{% endwith %}
+	{% endfor %}		
+	</tr>
+{% endfor %}

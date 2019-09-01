@@ -1,0 +1,15 @@
+<tr>
+	{% for col in header %}
+		{% ifchanged col.caption_month %} 
+			<th>{{col.caption_month}}</th>
+		{% else %}
+		    <th></th>
+		{% endifchanged %}
+	{% endfor %}
+</tr>
+<tr>
+{% for col in header %}
+		<th>{{col.caption}}<!--  {{col.name | date:"D"}}  --></th>
+		 
+{% endfor %}
+</tr>

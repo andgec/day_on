@@ -7,6 +7,9 @@ from django.template.loader import get_template
 from django.contrib.contenttypes.models import ContentType
 #from xhtml2pdf import pisa
 
+def str2bool(value):
+    return value.lower() in ('true', 'yes', 't', 'y', '1')
+
 def start_of_day(date_time: datetime):
     return datetime.combine(date_time.date(), time.min)
 
