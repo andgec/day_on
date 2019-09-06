@@ -3,7 +3,8 @@
 {% load static %}
 
 {% block linked_files %}
-
+	<link rel="stylesheet" type="text/css" href="{% static 'css/dialogs.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -12,15 +13,17 @@
 		</div>
 {% endblock %}
 {% block content %}
-    <h2>{{ _('Filters: ') }}<b>{{filters}}</b></h2>
-    <br><br>
+    {% include 'reports/time_summary/time_table_filters.html' %}
+    <br>text<br>more<br>text<br>here
+    <p>
+     <br>text<br>more<br>text<br>here
 	{% if timelist%}
 		<table border=1>
 			{% include 'reports/time_summary/time_table_header.html' %}
 			{% include 'reports/time_summary/time_table_content.html' %}
 		</table>
 		
-		<br><br><br>{{timelist}}
+		<!-- br><br><br>{{timelist}}  -->
 	{% else %}
 		{{message}}
 	{% endif %}		

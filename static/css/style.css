@@ -104,6 +104,7 @@ tr:edit-line {background-color: #e2f2e2;}
 	-moz-border-radius:10px;
 	-webkit-border-radius:10px;
 	border-radius:16px;
+	border:0px;
 	display:inline-block;
 	cursor:pointer;
 	color:#3a8a9e;
@@ -229,6 +230,7 @@ tr:edit-line {background-color: #e2f2e2;}
 	-moz-border-radius:10px;
 	-webkit-border-radius:10px;
 	border-radius:16px;
+	border:0px;
 	display:inline-block;
 	cursor:pointer;
 	color:#3a8a9e;
@@ -257,6 +259,9 @@ tr:edit-line {background-color: #e2f2e2;}
 	top:1px;
 }
 
+:focus {
+    outline: 0;
+}
 
 .timereg_num_field {
 	width:70px;
