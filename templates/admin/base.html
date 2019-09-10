@@ -15,7 +15,8 @@
 	{% block userlinks %}
 	  <div id = "dropdown">
 	    &nbsp&nbsp|&nbsp&nbsp 
-	    <strong class="dropbtn"> {{_('Profile')}}</strong>				    
+	    <input type="checkbox" class="dropbtn" id="dbtn"></input>
+        <label for="dbtn"><strong>{{_('Profile')}}</strong></label>
 	    <div class="dropdown-content">
           <a href="{% url 'index' %}">{{ _('Time registration') }}</a>
 	      <a href="{% url 'pdash' %}">{{ _('Project management') }}</a>

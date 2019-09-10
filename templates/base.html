@@ -20,12 +20,14 @@
 				<div id="user-tools">
 				  {{ _('Welcome')}}, <strong>{{user.first_name}}</strong> &nbsp&nbsp|&nbsp&nbsp
                   <div id = "dropdown">
-					<strong class="dropbtn">{{_('Profile')}}</strong>
+					<input type="checkbox" class="dropbtn" id="dbtn"></input>
+					<label for="dbtn"><strong>{{_('Profile')}}</strong></label>
                     <div class="dropdown-content">
 				      {% if user.is_staff or user.is_superuser %}
 				        <a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
 				        <a href="{% url 'pdash' %}" class='top-menu'>{{ _('Project management') }}</a>
 				      {% endif %}
+                      <a href="{% url 'index' %}">{{ _('Time registration') }}</a>
 				      <a href="{% url 'password_change' %}">{{ _('Change password')}}</a>
                       <a href="{% url 'logout' %}">{{ _('Log out')}}</a>
                     </div>
