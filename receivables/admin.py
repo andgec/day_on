@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 from django.contrib.admin import widgets
 from django.db import models
 from django.forms import Textarea
@@ -9,7 +10,8 @@ from .forms import SalesOrderAdminForm
 from general.models import Contact
 from django.forms.widgets import CheckboxSelectMultiple
 from co_manager.admin import admin_site
-#from salary.models import Employee
+from salary.models import Employee
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 class AssignedSalesOrderEmployeeAdminInline(admin.TabularInline):
@@ -99,17 +101,35 @@ class AssignedProjectEmployeeAdminInline(admin.TabularInline):
     fields = ('employee',)
     extra = 0
 
+# Form for sorting employees in filter_horizontal by first_name and last_name
+class ProjectAdminForm(forms.ModelForm):
+    employees = forms.ModelMultipleChoiceField(Employee.objects.all().order_by('user__first_name', 'user__last_name'), widget=FilteredSelectMultiple(_('Employees'), False))
+    employees.label = _('Employees')
+    class Meta:
+        model = Project
+        '''
+        widgets = {
+            'employees': FilteredSelectMultiple(_("Employees"), False),
+            }
+        '''
+        fields = '__all__'
+
+
 class ProjectAdmin(admin.ModelAdmin):
+    form = ProjectAdminForm
+
     list_display = ('name', 'description', 'customer', 'active',)
     list_filter = ('active',)
     search_fields   = ('name', 'description', 'customer__name',)
     RelatedEmployee._meta.auto_created = True
-    filter_horizontal = ('employees',)
+    #filter_horizontal = ('employees',)
+
     fieldsets = (
         (None, {
             'fields': ('customer', 'name', 'description', 'comment', 'active', 'visible', 'employees',)
         }),
     )
+
     #https://stackoverflow.com/questions/10110606/django-admin-many-to-many-intermediary-models-using-through-and-filter-horizont/10203192
     '''
     inlines = [

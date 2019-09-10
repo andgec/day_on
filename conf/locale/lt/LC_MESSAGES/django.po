@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-05 09:53+0200\n"
+"POT-Creation-Date: 2019-09-10 11:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,46 +20,46 @@ msgstr ""
 "11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? "
 "1 : n % 1 != 0 ? 2: 3);\n"
 
-#: co_manager/admin.py:30
+#: co_manager/admin.py:27 templates/admin/base_site.html:16
 msgid "Company administration"
 msgstr "VitasBygg administravimas"
 
-#: co_manager/admin.py:37
+#: co_manager/admin.py:34
 msgid "Company site admin"
 msgstr "VitasBygg administravimas"
 
-#: co_manager/admin.py:43
+#: co_manager/admin.py:40
 msgid "Site administration"
 msgstr "Įmonės administravimas"
 
-#: djauth/admin.py:19 receivables/admin.py:67 receivables/admin.py:86
+#: djauth/admin.py:20 receivables/admin.py:69 receivables/admin.py:88
 #: salary/admin.py:55
 msgid "Address information"
 msgstr "Adresas"
 
-#: djauth/admin.py:28 receivables/models.py:324 reports/views.py:298
+#: djauth/admin.py:29 receivables/models.py:324 reports/views.py:298
 #: salary/models.py:36 templates/prjdash/posted_time_review.html:42
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
 msgstr "Darbuotojas"
 
-#: djauth/admin.py:33 salary/admin.py:17
+#: djauth/admin.py:34 salary/admin.py:17
 msgid "Yes"
 msgstr "Taip"
 
-#: djauth/admin.py:34 salary/admin.py:18
+#: djauth/admin.py:35 salary/admin.py:18
 msgid "No"
 msgstr "Ne"
 
-#: djauth/admin.py:58
+#: djauth/admin.py:59
 msgid "Personal info"
 msgstr "Asmeninė informacija"
 
-#: djauth/admin.py:59
+#: djauth/admin.py:60
 msgid "Permissions"
 msgstr "Leidimai"
 
-#: djauth/admin.py:60
+#: djauth/admin.py:61
 msgid "Important dates"
 msgstr "Svarbios datos"
 
@@ -75,7 +75,7 @@ msgstr "Darbuotojas"
 msgid "Address"
 msgstr "Adresas"
 
-#: general/admin.py:26 receivables/admin.py:70 salary/admin.py:52
+#: general/admin.py:26 receivables/admin.py:72 salary/admin.py:52
 msgid "Contact information"
 msgstr "Kontaktinė informacija"
 
@@ -181,13 +181,18 @@ msgstr "Projekto pavadinimas"
 msgid "Record ID not provided."
 msgstr "Nenurodytas objekto ID."
 
-#: receivables/admin.py:31
+#: receivables/admin.py:33
 msgid "Amounts"
 msgstr "Sumos"
 
-#: receivables/admin.py:89
+#: receivables/admin.py:91
 msgid "Other information"
 msgstr "Kita informacija"
+
+#: receivables/admin.py:106 receivables/admin.py:107 receivables/models.py:111
+#: receivables/models.py:155 salary/models.py:37
+msgid "Employees"
+msgstr "Darbuotojai"
 
 #: receivables/apps.py:7
 msgid "Receivables"
@@ -226,10 +231,6 @@ msgstr "Komentaras"
 #: receivables/models.py:106
 msgid "Visible"
 msgstr "Matomas"
-
-#: receivables/models.py:111 receivables/models.py:155 salary/models.py:37
-msgid "Employees"
-msgstr "Darbuotojai"
 
 #: receivables/models.py:127
 msgid "Projects"
@@ -475,6 +476,41 @@ msgstr "Pilnas adresas"
 msgid "Fax No."
 msgstr "Faksas"
 
+#: templates/admin/base.html:12 templates/base.html:21
+msgid "Welcome"
+msgstr "Sveiki"
+
+#: templates/admin/base.html:18 templates/base.html:23
+msgid "Profile"
+msgstr "Profilis"
+
+#: templates/admin/base.html:20
+msgid "Time registration"
+msgstr "Laiko registravimas"
+
+#: templates/admin/base.html:21 templates/base.html:27
+msgid "Project management"
+msgstr "Projektų valdymas"
+
+#: templates/admin/base.html:22 templates/admin/base.html:28
+#: templates/base.html:29
+msgid "Change password"
+msgstr "Keisti slaptažodį"
+
+#: templates/admin/base.html:23 templates/admin/base.html:30
+#: templates/base.html:30
+msgid "Log out"
+msgstr "Atsijungti"
+
+#: templates/admin/base_site.html:3
+msgid "Site admin"
+msgstr "Įmonės administravimas"
+
+#: templates/admin/base_site.html:9 templates/admin/base_site.html:11
+#: templates/base.html:26
+msgid "Administration"
+msgstr "Administravimas"
+
 #: templates/admin/index.html:11
 #, python-format
 msgid "Models in the %(name)s application"
@@ -492,21 +528,9 @@ msgstr "Pakeisti"
 msgid "You don't have permission to edit anything."
 msgstr "Neturite teisių nieko keisti."
 
-#: templates/base.html:16
+#: templates/base.html:17
 msgid "Vitasbygg AS"
 msgstr "Vitasbygg AS"
-
-#: templates/base.html:19
-msgid "Welcome"
-msgstr "Sveiki"
-
-#: templates/base.html:21
-msgid "Administration"
-msgstr "Administravimas"
-
-#: templates/base.html:23
-msgid "Log out"
-msgstr "Atsijungti"
 
 #: templates/prjdash/assign_employees.html:19
 #: templates/prjdash/posted_time_review.html:23
@@ -667,6 +691,16 @@ msgstr ""
 msgid "Forgotten your password or username?"
 msgstr "Ar užmiršote savo slaptažodį arba vartotojo vardą?"
 
+#: templates/registration/password_change_done.html:7
+#: templates/registration/password_change_form.html:7
+msgid "Home"
+msgstr "Pradinis"
+
+#: templates/registration/password_change_done.html:8
+#: templates/registration/password_change_form.html:8
+msgid "Password change"
+msgstr "Slaptažodžio keitimas"
+
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:80
 msgid "Day"
 msgstr "Diena"
@@ -680,13 +714,13 @@ msgid "Transport Nok"
 msgstr "Transportas NOK"
 
 #: templates/reports/time_summary/base_ts.html:5
-#: templates/reports/time_summary/time_summary.html:11
+#: templates/reports/time_summary/time_summary.html:12
 msgid "Time table"
 msgstr "Laiko žiniaraštis"
 
 #: templates/reports/time_summary/time_table_filters.html:1
-msgid "Filters: "
-msgstr "Filtrai: "
+msgid "Filters"
+msgstr "Filtrai "
 
 #: templates/salary/base_wtr.html:5
 msgid "Working time registration in project "
@@ -702,14 +736,4 @@ msgstr "Projektų sąrašas"
 msgid "Date:"
 msgstr "Data:"
 
-#~ msgid "Supplementary lists"
-#~ msgstr "Papildomi sąrašai"
 
-#~ msgid "Created date / time"
-#~ msgstr "Sukurta (data / laikas)"
-
-#~ msgid "Shipping address"
-#~ msgstr "Pristatymo adresas"
-
-#~ msgid "Login"
-#~ msgstr "Prisijungimas"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-05 09:53+0200\n"
+"POT-Creation-Date: 2019-09-10 11:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: co_manager/admin.py:30
+#: co_manager/admin.py:27 templates/admin/base_site.html:16
 msgid "Company administration"
 msgstr "VitasBygg administrasjon"
 
-#: co_manager/admin.py:37
+#: co_manager/admin.py:34
 msgid "Company site admin"
 msgstr "Vitasbygg administrasjon"
 
-#: co_manager/admin.py:43
+#: co_manager/admin.py:40
 msgid "Site administration"
 msgstr "Selskapsadministrasjon"
 
-#: djauth/admin.py:19 receivables/admin.py:67 receivables/admin.py:86
+#: djauth/admin.py:20 receivables/admin.py:69 receivables/admin.py:88
 #: salary/admin.py:55
 msgid "Address information"
 msgstr "Adresseinformasjon"
 
-#: djauth/admin.py:28 receivables/models.py:324 reports/views.py:298
+#: djauth/admin.py:29 receivables/models.py:324 reports/views.py:298
 #: salary/models.py:36 templates/prjdash/posted_time_review.html:42
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
 msgstr "Ansatt"
 
-#: djauth/admin.py:33 salary/admin.py:17
+#: djauth/admin.py:34 salary/admin.py:17
 msgid "Yes"
 msgstr "Ja"
 
-#: djauth/admin.py:34 salary/admin.py:18
+#: djauth/admin.py:35 salary/admin.py:18
 msgid "No"
 msgstr "Nei"
 
-#: djauth/admin.py:58
+#: djauth/admin.py:59
 msgid "Personal info"
 msgstr "Personlig informasjon"
 
-#: djauth/admin.py:59
+#: djauth/admin.py:60
 msgid "Permissions"
 msgstr "Tillattelser"
 
-#: djauth/admin.py:60
+#: djauth/admin.py:61
 msgid "Important dates"
 msgstr "Viktige datoer"
 
@@ -72,7 +72,7 @@ msgstr "Medarbeiderstatus"
 msgid "Address"
 msgstr "Adresse"
 
-#: general/admin.py:26 receivables/admin.py:70 salary/admin.py:52
+#: general/admin.py:26 receivables/admin.py:72 salary/admin.py:52
 msgid "Contact information"
 msgstr "Kontaktinformasjon"
 
@@ -180,13 +180,18 @@ msgstr "Prosjekt"
 msgid "Record ID not provided."
 msgstr ""
 
-#: receivables/admin.py:31
+#: receivables/admin.py:33
 msgid "Amounts"
 msgstr "Beløp"
 
-#: receivables/admin.py:89
+#: receivables/admin.py:91
 msgid "Other information"
 msgstr "Annet informasjon"
+
+#: receivables/admin.py:106 receivables/admin.py:107 receivables/models.py:111
+#: receivables/models.py:155 salary/models.py:37
+msgid "Employees"
+msgstr "Ansatte"
 
 #: receivables/apps.py:7
 msgid "Receivables"
@@ -225,10 +230,6 @@ msgstr ""
 #: receivables/models.py:106
 msgid "Visible"
 msgstr ""
-
-#: receivables/models.py:111 receivables/models.py:155 salary/models.py:37
-msgid "Employees"
-msgstr "Ansatte"
 
 #: receivables/models.py:127
 msgid "Projects"
@@ -474,6 +475,47 @@ msgstr "Full adresse"
 msgid "Fax No."
 msgstr "Faksnr."
 
+#: templates/admin/base.html:12 templates/base.html:21
+msgid "Welcome"
+msgstr "Velkommen"
+
+#: templates/admin/base.html:18 templates/base.html:23
+msgid "Profile"
+msgstr ""
+
+#: templates/admin/base.html:20
+#, fuzzy
+#| msgid "Site administration"
+msgid "Time registration"
+msgstr "Selskapsadministrasjon"
+
+#: templates/admin/base.html:21 templates/base.html:27
+#, fuzzy
+#| msgid "Project"
+msgid "Project management"
+msgstr "Prosjekt"
+
+#: templates/admin/base.html:22 templates/admin/base.html:28
+#: templates/base.html:29
+msgid "Change password"
+msgstr ""
+
+#: templates/admin/base.html:23 templates/admin/base.html:30
+#: templates/base.html:30
+msgid "Log out"
+msgstr "Logg ut"
+
+#: templates/admin/base_site.html:3
+#, fuzzy
+#| msgid "Site administration"
+msgid "Site admin"
+msgstr "Selskapsadministrasjon"
+
+#: templates/admin/base_site.html:9 templates/admin/base_site.html:11
+#: templates/base.html:26
+msgid "Administration"
+msgstr "Administrasjon"
+
 #: templates/admin/index.html:11
 #, python-format
 msgid "Models in the %(name)s application"
@@ -491,21 +533,9 @@ msgstr "Endre"
 msgid "You don't have permission to edit anything."
 msgstr "Du har ikke tillatelse å endre noe."
 
-#: templates/base.html:16
+#: templates/base.html:17
 msgid "Vitasbygg AS"
 msgstr "Vitasbygg AS"
-
-#: templates/base.html:19
-msgid "Welcome"
-msgstr "Velkommen"
-
-#: templates/base.html:21
-msgid "Administration"
-msgstr "Administrasjon"
-
-#: templates/base.html:23
-msgid "Log out"
-msgstr "Logg ut"
 
 #: templates/prjdash/assign_employees.html:19
 #: templates/prjdash/posted_time_review.html:23
@@ -676,6 +706,16 @@ msgstr ""
 msgid "Forgotten your password or username?"
 msgstr "Har du glemt din passord eller brukernavn?"
 
+#: templates/registration/password_change_done.html:7
+#: templates/registration/password_change_form.html:7
+msgid "Home"
+msgstr ""
+
+#: templates/registration/password_change_done.html:8
+#: templates/registration/password_change_form.html:8
+msgid "Password change"
+msgstr ""
+
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:80
 msgid "Day"
 msgstr "Dag"
@@ -689,12 +729,12 @@ msgid "Transport Nok"
 msgstr "Transport Nok"
 
 #: templates/reports/time_summary/base_ts.html:5
-#: templates/reports/time_summary/time_summary.html:11
+#: templates/reports/time_summary/time_summary.html:12
 msgid "Time table"
 msgstr ""
 
 #: templates/reports/time_summary/time_table_filters.html:1
-msgid "Filters: "
+msgid "Filters"
 msgstr ""
 
 #: templates/salary/base_wtr.html:5
@@ -712,6 +752,16 @@ msgstr "Prosjektliste"
 #: templates/salary/registration_journal.html:44
 msgid "Date:"
 msgstr "Dato:"
+
+#, fuzzy
+#~| msgid "Company administration"
+#~ msgid "***Django administration"
+#~ msgstr "VitasBygg administrasjon"
+
+#, fuzzy
+#~| msgid "Welcome"
+#~ msgid "Welcome,"
+#~ msgstr "Velkommen"
 
 #~ msgid "Supplementary lists"
 #~ msgstr "Supplerende lister"

@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'general',
     'receivables',
     'salary',
-    'reports'
+    'reports',
 ]
 
 APP_ORDER = [

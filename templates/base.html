@@ -23,8 +23,8 @@
 					<strong class="dropbtn">{{_('Profile')}}</strong>
                     <div class="dropdown-content">
 				      {% if user.is_staff or user.is_superuser %}
+				        <a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
 				        <a href="{% url 'pdash' %}" class='top-menu'>{{ _('Project management') }}</a>
-					    <a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
 				      {% endif %}
 				      <a href="{% url 'password_change' %}">{{ _('Change password')}}</a>
                       <a href="{% url 'logout' %}">{{ _('Log out')}}</a>
