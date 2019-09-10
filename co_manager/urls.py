@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 #from django.urls import path
 from django.conf.urls import url
 from django.conf.urls.i18n import i18n_patterns
@@ -24,6 +25,11 @@ urlpatterns = i18n_patterns(
     url(r'^reports/', include(reports_urls.urlpatterns)),
     prefix_default_language=False
 )
+
+#https://stackoverflow.com/questions/6779265/how-can-i-not-use-djangos-admin-login-view
+admin.autodiscover()
+#admin.site.login = login_required(admin.site.login)
+admin.site.login = login_required(login_url='/accounts/login/')
 
 if settings.DEBUG:
     #from django.contrib.staticfiles.urls import staticfiles_urlpatterns

@@ -1,0 +1,18 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+<a href="{% url 'admin:index' %}">
+  {% if user.company.name %}
+    {{user.company.name}}<!--  {% filter lower %} {{_('Administration')}} {% endfilter %}  -->
+  {% else %} 
+    {{_('Administration')}}
+  {% endif %}  
+</a>
+</h1>
+{% endblock %}
+{{ site_header|default:_('***Django administration') }}
+
+{% block nav-global %}{% endblock %}

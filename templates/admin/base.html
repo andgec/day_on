@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/menus.css' %}">
+{% endblock %}
+
+{% block usertools %}
+{% if has_permission %}
+<div id="user-tools">
+    {% block welcome-msg %}
+        {% trans 'Welcome,' %}
+        <strong>{% firstof user.get_short_name user.get_username %}</strong>
+    {% endblock %}
+	{% block userlinks %}
+	  <div id = "dropdown">
+	    &nbsp&nbsp|&nbsp&nbsp 
+	    <strong class="dropbtn"> {{_('Profile')}}</strong>				    
+	    <div class="dropdown-content">
+	      {% if user.is_staff or user.is_superuser %}
+	        <a href="{% url 'pdash' %}">{{ _('Project management') }}</a>
+	        <a href="{% url 'index' %}">{{ _('Time registration') }}</a>
+	      {% endif %}
+	      <a href="{% url 'password_change' %}">{{ _('Change password')}}</a>                    
+	      <a href="{% url 'logout' %}">{{ _('Log out')}}</a>
+	    </div>
+	  </div>				
+	  <!--
+	   {% if site_url %}
+	       <a href="{{ site_url }}">{% trans '**** View site' %}</a> /
+	   {% endif %}
+	   {% if user.has_usable_password %}
+	   <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+	   {% endif %}
+	   <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+	  -->    
+	{% endblock %}</div>
+{% endif %}
+<script>
+  document.getElementById("header").style.overflow = "visible";
+</script>
+{% endblock %}

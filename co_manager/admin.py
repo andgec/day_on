@@ -24,9 +24,6 @@ class CoAdminSite(AdminSite):
 #url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})$', WorkTimeJournalView.as_view(), name='tjournal'),
 
 def get_site_header():
-#    if DEBUG:
-#       return _('Marketwell administration') + ' (' + RUNTIME_ENV + ')'
-#    else:
     return _('Company administration')
 
 

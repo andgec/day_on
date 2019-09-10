@@ -4,37 +4,47 @@
 		<title>Time registration</title>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<link rel="stylesheet" href="{% static 'css/menus.css' %}">
 		<link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
-		<link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
+		<!-- link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">  -->
 		{% block linked_files %}
 		{% endblock %}
 	</head>
 	<body>
 		<div id = "container">
-			<div id = "header">
-				<div id = "branding">
-					<h1 id="site-name">{{ _('Vitasbygg AS') }}</h1>
+			<div id = "header" style="overflow: visible;">
+			    <div id = "branding">
+					<!-- h1 id="site-name">{{ _('Vitasbygg AS') }}</h1> -->
+					<h1 id="site-name">{{user.company.name}}</h1>
 				</div>
 				<div id="user-tools">
-				{{ _('Welcome')}}, <strong>{{user.first_name}}</strong>.
-				{% if user.is_staff or user.is_superuser %}
-					<a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
-				{% endif %}
-				<a href="{% url 'logout' %}">{{ _('Log out')}}</a>
+				  {{ _('Welcome')}}, <strong>{{user.first_name}}</strong> &nbsp&nbsp|&nbsp&nbsp
+                  <div id = "dropdown">
+					<strong class="dropbtn">{{_('Profile')}}</strong>
+                    <div class="dropdown-content">
+				      {% if user.is_staff or user.is_superuser %}
+				        <a href="{% url 'pdash' %}" class='top-menu'>{{ _('Project management') }}</a>
+					    <a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
+				      {% endif %}
+				      <a href="{% url 'password_change' %}">{{ _('Change password')}}</a>
+                      <a href="{% url 'logout' %}">{{ _('Log out')}}</a>
+                    </div>
+                  </div>
 				</div>
 			</div>
+
 			{% block breadcrumbs %}
 			{% endblock %}
 
 			{% block content_top %}
 			{% endblock %}
-			
+
 			{% block content %}
 			{% endblock %}
-			
+
 			{% block content_bottom %}
      		{% endblock %}
-			
+
 		</div>
 	</body>
 </html>

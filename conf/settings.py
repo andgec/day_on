@@ -187,7 +187,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
+LOGIN_URL = '/accounts/login/?next=/'
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 TIMELIST_LINES_PER_PAGE = 28
 
