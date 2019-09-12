@@ -16,10 +16,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.models import model_to_dict
 from babel.dates import format_date
 
-from shared.utils import dictfetchall, start_of_current_month, end_of_current_month, str2bool
+from shared.utils import dictfetchall, start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str
 from receivables.models import Project, WorkTimeJournal
 from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
+from dateutil.relativedelta import relativedelta
 
 
 #URL:
@@ -283,6 +284,25 @@ class TimeSummaryXLSXView(View):
         context = self.get_report_lines(request)
         return context
         
+    def get_meta(self, **kwargs):
+        def get_month_meta(date):
+            return {
+                'num': date.strftime("%m"),
+                'name': _(date.strftime('%B')),
+                'start': date2str(start_of_month(date)),
+                'end': date2str(end_of_month(date)),
+            }
+        
+        meta = {
+            'date_filter_ctrls': {
+                'this_month': get_month_meta(self.default_start_date),
+                'prev_month': get_month_meta(self.default_start_date + relativedelta(months=-1)),
+                'pprev_month': get_month_meta(self.default_start_date + relativedelta(months=-2)),
+            },
+        }
+        
+        return meta
+        
     def run_sql_query(self, **kwargs):
         with connection.cursor() as cursor:
             #try
@@ -308,7 +328,7 @@ class TimeSummaryXLSXView(View):
             ]
         self.make_day_header(header, **kwargs)
         
-        print(header)
+        #print(header)
         
         return header
 
@@ -327,7 +347,7 @@ class TimeSummaryXLSXView(View):
             
             
     def get_employee_data(self, empl_ids, **kwargs):
-        users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('id')
+        users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
         employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
         return employee_data
         
@@ -427,7 +447,7 @@ class TimeSummaryXLSXView(View):
                 request.GET.get('date-to', self.default_end_date.strftime("%Y-%m-%d")),
                 "%Y-%m-%d").date(),
             'project_ids': request.GET.get('projects'),
-            'employee_id': request.GET.get('employee'),
+            'employee_ids': request.GET.get('employees'),
             'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
         }
         time_matrix = None
@@ -448,9 +468,12 @@ class TimeSummaryXLSXView(View):
                 employee_data,
                 timelist_data,
                 **filters)
+            
+        meta = self.get_meta(**filters)
 
         context = {
             'filters': filters,
+            'meta': meta,
             'header': header_data,
             'timelist': time_matrix,
             'message': _('No timelist entries for given period.') if time_matrix is None else ''

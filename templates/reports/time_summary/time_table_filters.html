@@ -1,12 +1,27 @@
-<!-- h2>{{ _('Filters') }}: <b>{{filters}}</b></h2>  -->
+<h2>{{ _('Filters') }}: <b>{{filters}}</b></h2>
 
 <!-- Filter box -->
 <div class="filter-box" style="max-width: 730px;">
   <div class="inner-box">
-    <div class="left-section" style="width: 200px;">
+    <div class="left-section" style="width: 250px;">
       <div class="fbs-header">
-        DATOS *
-        <span id="df-edit" class="filter-edit"><i class="fas fa-edit"></i></span>
+        {{_('Dates')|upper}}
+        <div class="fctrl">
+          <span class="filter-edit qf-box" title = "{{meta.date_filter_ctrls.pprev_month.name}}"
+                onClick="setQuickFilterDate('{{meta.date_filter_ctrls.pprev_month.start}}','{{meta.date_filter_ctrls.pprev_month.end}}')">
+            &nbsp{{meta.date_filter_ctrls.pprev_month.num}}&nbsp
+          </span>&nbsp
+          
+          <span class="filter-edit qf-box" title = "{{meta.date_filter_ctrls.prev_month.name}}"
+          onClick="setQuickFilterDate('{{meta.date_filter_ctrls.prev_month.start}}','{{meta.date_filter_ctrls.prev_month.end}}')">
+          &nbsp{{meta.date_filter_ctrls.prev_month.num}}&nbsp
+          </span>&nbsp
+          
+          <span class="filter-edit qf-box" title = "{{meta.date_filter_ctrls.this_month.name}}"
+          onClick="setQuickFilterDate('{{meta.date_filter_ctrls.this_month.start}}','{{meta.date_filter_ctrls.this_month.end}}')">
+          &nbsp{{meta.date_filter_ctrls.this_month.num}}&nbsp</span>&nbsp&nbsp
+          <span id="df-edit" class="filter-edit" onClick="showDateFilterDialog()" title = "{{ _('Edit date filter') }}">&nbsp<i class="fas fa-edit"></i></span>
+        </div>
       </div>
       <div class="fbs-body">
         Nuo: 2019-09-01<br>
@@ -15,14 +30,14 @@
     </div>
     <div class="middle-section" style="width: 300px;">
       <div class="fbs-header">
-        DARBUOTOJAI *
-        <span id="ef-edit" class="filter-edit"><i class="fas fa-edit"></i></span>
+        {{_('Employees')|upper}}
+        <div class="fr">
+          <span id="ef-clear" class="filter-edit" onClick="showEmplFilterDialog()" title = "{{ _('Clear employee filter') }}">&nbsp<i class="fas fa-times"></i>&nbsp</span>&nbsp
+          <span id="ef-edit" class="filter-edit" onClick="showEmplFilterDialog()" title = "{{ _('Edit employee filter') }}">&nbsp<i class="fas fa-edit"></i></span>
+        </div>          
       </div>
       <div class="fbs-body">
         <ul>
-          <li>Andrius Gečys</li>
-          <li>Andrius Gečys</li>
-          <li>Andrius Gečys</li>
           <li>Andrius Gečys</li>
           <li>Andrius Gečys</li>
           <li>Andrius Gečys</li>
@@ -32,8 +47,8 @@
     
     <div class="right-section"  style="width: 300px;">
       <div class="fbs-header">
-        PROJEKTAI *
-        <span id="pf-edit" class="filter-edit"><i class="fas fa-edit"></i></span>        
+        {{_('Projects')|upper}}
+        <span id="pf-edit" class="filter-edit fr" onClick="showProjFilterDialog()" title = "{{ _('Edit project filter') }}">&nbsp<i class="fas fa-edit"></i></span>        
       </div>
       <div class="fbs-body">
 		508: Solberg skole
@@ -41,6 +56,9 @@
     </div>
   </div>
   <div class="fb-footer">
-    <button class="btn-save" style="width:150px;"> Skaičuoti * </button>
+    <button class="btn-save" style="width:150px;"> {{_('Calculate')}} </button>
   </div>
 </div>
+{% include 'reports/time_summary/dialog_date_filter.html' %}
+{% include 'reports/time_summary/dialog_employee_filter.html' %}
+{% include 'reports/time_summary/dialog_project_filter.html' %}

@@ -1,0 +1,35 @@
+  <div id="empl-dialog" class="modal-dialog">
+	 <div class="dialog-content">
+	   <div class="dialog-title"> {{_('Set employee filter')}} <span class="close" id="clempl">&times;</span></div>
+	   <div class="dialog-body">
+	     <p><h2>{{_('Do you really want to delete this record?')}}</h2></p>
+	     <h3>{{_('If you will confirm, the record will be irrecoverably deleted.')}}</h3>
+	   </div>
+	   <div class="dialog-footer">
+	     <button id="btn-conf-empl" class="btn-save" title = "{{ _('Confirm') }}">
+		   {{_('Confirm')}}
+         </button>
+         <span class="btn-spacing"/>
+	     <button id="btn-cnc-empl" class="btn-cancel" title = "{{ _('Cancel') }}">
+		   {{_('Cancel')}}
+         </button>
+	   </div>
+	 </div>
+  </div>
+  <script>
+    var empl_dialog = document.getElementById("empl-dialog");
+    
+    showEmplFilterDialog = function() {
+      empl_dialog.style.display = "block";
+    }
+
+    closeEmplDialog = function() {
+      empl_dialog.style.display = "none";
+    };
+
+    var spanEmpl = document.getElementById("clempl");
+    spanEmpl.onclick = closeEmplDialog;
+
+    var btnCancelEmpl = document.getElementById("btn-cnc-empl");
+    btnCancelEmpl.onclick = closeEmplDialog;
+  </script>

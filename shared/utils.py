@@ -10,6 +10,9 @@ from django.contrib.contenttypes.models import ContentType
 def str2bool(value):
     return value.lower() in ('true', 'yes', 't', 'y', '1')
 
+def date2str(value):
+    return value.strftime("%Y-%m-%d")
+
 def start_of_day(date_time: datetime):
     return datetime.combine(date_time.date(), time.min)
 

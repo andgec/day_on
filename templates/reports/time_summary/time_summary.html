@@ -3,6 +3,13 @@
 {% load static %}
 
 {% block linked_files %}
+	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+
+	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+
 	<link rel="stylesheet" type="text/css" href="{% static 'css/dialogs.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 {% endblock %}
