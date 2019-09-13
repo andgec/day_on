@@ -1,4 +1,4 @@
-<h2>{{ _('Filters') }}: <b>{{filters}}</b></h2>
+<h2>{{ _('Filters') }}: <!-- b>{{filters}}</b> --></h2>
 
 <!-- Filter box -->
 <div class="filter-box" style="max-width: 730px;">
@@ -8,24 +8,32 @@
         {{_('Dates')|upper}}
         <div class="fctrl">
           <span class="filter-edit qf-box" title = "{{meta.date_filter_ctrls.pprev_month.name}}"
-                onClick="setQuickFilterDate('{{meta.date_filter_ctrls.pprev_month.start}}','{{meta.date_filter_ctrls.pprev_month.end}}')">
+                onClick="setFilterDate('{{meta.date_filter_ctrls.pprev_month.start}}','{{meta.date_filter_ctrls.pprev_month.end}}')">
             &nbsp{{meta.date_filter_ctrls.pprev_month.num}}&nbsp
           </span>&nbsp
           
           <span class="filter-edit qf-box" title = "{{meta.date_filter_ctrls.prev_month.name}}"
-          onClick="setQuickFilterDate('{{meta.date_filter_ctrls.prev_month.start}}','{{meta.date_filter_ctrls.prev_month.end}}')">
+          onClick="setFilterDate('{{meta.date_filter_ctrls.prev_month.start}}','{{meta.date_filter_ctrls.prev_month.end}}')">
           &nbsp{{meta.date_filter_ctrls.prev_month.num}}&nbsp
           </span>&nbsp
           
           <span class="filter-edit qf-box" title = "{{meta.date_filter_ctrls.this_month.name}}"
-          onClick="setQuickFilterDate('{{meta.date_filter_ctrls.this_month.start}}','{{meta.date_filter_ctrls.this_month.end}}')">
+          onClick="setFilterDate('{{meta.date_filter_ctrls.this_month.start}}','{{meta.date_filter_ctrls.this_month.end}}')">
           &nbsp{{meta.date_filter_ctrls.this_month.num}}&nbsp</span>&nbsp&nbsp
           <span id="df-edit" class="filter-edit" onClick="showDateFilterDialog()" title = "{{ _('Edit date filter') }}">&nbsp<i class="fas fa-edit"></i></span>
         </div>
       </div>
       <div class="fbs-body">
-        Nuo: 2019-09-01<br>
-        Iki: 2019-09-30<br>
+        <div style="display:table;width:150;">
+		  <div class="f-row">
+            <div class="f-cell title">{{_('From')}}</div>
+            <div class="f-cell data" id="fd-from"></div>
+          </div>
+          <div class="f-row">
+            <div class="f-cell title">{{_('To')}}</div>
+            <div class="f-cell data" id="fd-to"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="middle-section" style="width: 300px;">
@@ -56,7 +64,7 @@
     </div>
   </div>
   <div class="fb-footer">
-    <button class="btn-save" style="width:150px;"> {{_('Calculate')}} </button>
+    <button onClick="runFilters()" class="btn-save" style="width:150px;"> {{_('Calculate')}} </button>
   </div>
 </div>
 {% include 'reports/time_summary/dialog_date_filter.html' %}

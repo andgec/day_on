@@ -298,9 +298,10 @@ class TimeSummaryXLSXView(View):
                 'this_month': get_month_meta(self.default_start_date),
                 'prev_month': get_month_meta(self.default_start_date + relativedelta(months=-1)),
                 'pprev_month': get_month_meta(self.default_start_date + relativedelta(months=-2)),
+                'str_from': date2str(kwargs['date_from']),
+                'str_to': date2str(kwargs['date_to']),
             },
         }
-        
         return meta
         
     def run_sql_query(self, **kwargs):

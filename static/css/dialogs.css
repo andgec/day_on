@@ -126,8 +126,6 @@
   height: 18px;
   padding: 4px 8px 2px 10px;
   background-color: #f5f5f5;
-  /*background-color: #79aec8;*/
-  /*color: #79aec8;*/
   color: #417690;
   font-weight: bold;
 }
@@ -145,8 +143,30 @@
 .filter-box .fbs-body {
   background-color: #FFFFFF;
   min-height: 60px;
-  padding: 10px 10px 10px 10px;
+  padding: 8px 10px 10px 20px;
 }
+
+.filter-box .fbs-body .f-row{
+  display: table-row;
+}
+
+.filter-box .fbs-body .f-row .f-cell{
+  display: table-cell;
+  vertical-align: bottom;
+  padding-top: 12px;
+  border-bottom: 1px solid #CCC;
+}
+
+.filter-box .fbs-body .f-row .title{
+  color: #777;
+}
+
+.filter-box .fbs-body .f-row .data{
+  text-align: right;
+  font-weight: bold;
+  color: #555;
+}
+
 
 /* Filter box footer */
 .filter-box .fb-footer {

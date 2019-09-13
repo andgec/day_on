@@ -4,7 +4,8 @@
 	   <div class="dialog-title center"> {{_('Select date period')}} <span class="close" id="cldate">&times;</span></div>
 	   <div class="dialog-body center">
 	     <p><h2></h2></p>
-	     <h3>{{_('From')}}&nbsp&nbsp<input type="text" id="datepicker-from">&nbsp&nbsp{{_('to')}}&nbsp&nbsp<input type="text" id="datepicker-to"></h3>
+	     <h3>{{_('From')}}&nbsp&nbsp<input type="text" id="datepicker-from" readonly>&nbsp&nbsp{{_('to')}}&nbsp&nbsp
+	     <input type="text" id="datepicker-to" readonly></h3>
 	   </div>
 	   <div class="dialog-footer">
 	     <button id="btn-conf-date" class="btn-save" title = "{{ _('Confirm') }}">
@@ -19,11 +20,14 @@
   </div>
   <script>
     $.datepicker.setDefaults($.datepicker.regional["lt"]);
-    
+
     var datepicker_from = $( "#datepicker-from" ).datepicker({onSelect: set_date_from});
     var datepicker_to = $( "#datepicker-to" ).datepicker({onSelect: set_date_to});
-    
-  	function set_print_url(){
+    var display_from = document.getElementById("fd-from");
+    var display_to = document.getElementById("fd-to");
+
+  	function get_url(){
+  	  return '{% url 'report-time-summary' %}' + '?date-from=' + filters['date']['from'] + '&date-to=' + filters['date']['to']
   	};
 
   	var filters = {
@@ -31,24 +35,23 @@
   	  'employees': [],
   	  'projects': [],
   	}
-  	
+
   	function set_date_from(value){
   	  filters['date']['tmp-from'] = value;
   	};
-  	
+
   	function set_date_to(value){
   	  filters['date']['tmp-to'] = value;
   	};
 
-    
     var date_dialog = document.getElementById("date-dialog");
-    
+
     showDateFilterDialog = function() {
       date_dialog.style.display = "block";
       drawDateFilterValues();
     }
-    
-    setQuickFilterDate = function(date_from, date_to) {
+
+    setFilterDate = function(date_from, date_to) {
       set_date_from(date_from);
       set_date_to(date_to);
       confirmDateFilter();
@@ -57,20 +60,25 @@
     closeDateDialog = function() {
       date_dialog.style.display = "none";
     };
-    
+
     drawDateFilterValues = function() {
       //Changing values on datepickers
       datepicker_from.datepicker('setDate', new Date(filters['date']['from']));
       datepicker_to.datepicker('setDate', new Date(filters['date']['to']));
       //Changing values in filter filter window
-      //****
+      display_from.innerHTML = filters['date']['from'];
+      display_to.innerHTML = filters['date']['to'];
     }
-    
+
     confirmDateFilter = function() {
       filters['date']['from'] = filters['date']['tmp-from'];
       filters['date']['to'] = filters['date']['tmp-to'];
       drawDateFilterValues();
       closeDateDialog();
+    }
+
+    runFilters = function() {
+      window.location.replace(get_url());
     }
 
     var spanDate = document.getElementById("cldate");
@@ -82,4 +90,5 @@
     var btnConfirmDate = document.getElementById("btn-conf-date");
     btnConfirmDate.onclick = confirmDateFilter;
     
+    setFilterDate('{{meta.date_filter_ctrls.str_from}}', '{{meta.date_filter_ctrls.str_to}}')
   </script>
