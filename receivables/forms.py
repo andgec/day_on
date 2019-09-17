@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django import forms
+from django_select2.forms import Select2Widget
 from .models import Project, SalesOrderHeader, WorkTimeJournal
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
@@ -68,13 +69,13 @@ class WorkTimeJournalForm(forms.ModelForm):
             self._errors["password"] = ["Password do not match"] # Will raise a error message
             del form_data['password']
         return form_data
-    '''     
+    '''
     def __init__(self, *args, **kwargs):
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
         self.work_date = kwargs.get('work_date', timezone.now())
         self.fields['work_date'].initial = self.work_date
         self.fields['item'].choices = self.items_as_choices()
-        
+
     def items_as_choices(self):
         item_group_list = []
         for itemgroup in ItemGroup.objects.all():
@@ -102,6 +103,7 @@ class WorkTimeJournalForm(forms.ModelForm):
                   ]
 
         widgets = {
+            'item': Select2Widget,
             'work_date': SelectDateWidget(years = range(2010, 2030)),
             'employee': forms.Select(attrs={'hidden': True}),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),

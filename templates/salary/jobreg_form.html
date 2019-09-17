@@ -38,9 +38,12 @@
 						<!-- td>  -->
 						<td id="button-save-col">
 							<button class="btn-create" title = {{ _('Register') }} type="submit">
-								<!-- i class="fa fa-plus-circle"></i>  -->
 								<i class="fa fa-save"></i>
 							</button>
+							&nbsp&nbsp
+							{% if action == 'edit' %}
+							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'tjournal' project_id=project.id date=date %}><i class="fa fa-undo-alt"></i></a>
+							{% endif %}
 						</td>
 
 					</tr>

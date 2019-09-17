@@ -20,7 +20,8 @@ urlpatterns = i18n_patterns(
     #url(r'^select2/', include('django_select2.urls')),
     url(r'^admin/', admin_site.urls, name='admin'),
     url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})$', WorkTimeJournalView.as_view(), name='tjournal'),
-    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})/(?P<modify_id>[0-9]+)$', WorkTimeJournalView.as_view(), name='tjournal'),
+    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})/(?P<jrline_id>[0-9]+)$', WorkTimeJournalView.as_view(), name='tjournal'),
+    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})/(?P<jrline_id>[0-9]+)/(?P<action>edit|delete+)$', WorkTimeJournalView.as_view(), name='tjournal'),
     url(r'^v1/pdash/', include(prjdash_urls.urlpatterns)),
     url(r'^reports/', include(reports_urls.urlpatterns)),
     prefix_default_language=False

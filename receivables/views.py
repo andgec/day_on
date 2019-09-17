@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -34,7 +34,7 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
     
     form_class = WorkTimeJournalForm
 
-    def get_context(self, request, project_id, date, modify_id, form):
+    def get_context(self, request, project_id, date, jrline_id, action, form):
         project = Project.objects.get(id=project_id)
         employee = request.user.employee
         jr_lines = WorkTimeJournal.objects.filter(work_date = date,
@@ -51,29 +51,45 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
                 'employee': employee,
                 'jr_lines': jr_lines,
                 'jr_totals': jr_totals,
-                'modify_id': int(modify_id),
+                'modify_id': int(jrline_id) if action == 'edit' else 0, #!! messy, rebuild template to fully use 'action' variable.
+                'action': action,
+                'open': self.get_open(date),
                 'form': form
                 }
 
-    def get(self, request, project_id, date, modify_id = 0):
-        if modify_id == 0: 
-            form = self.form_class()
+    def get(self, request, project_id, date, jrline_id = 0, action='edit'):
+        if jrline_id == 0:
+            action = 'view'
         else:
-            jr_line = WorkTimeJournal.objects.get(id=modify_id)
-            form = self.form_class(instance=jr_line)
-        
+            try:
+                jrline = WorkTimeJournal.objects.get(id=jrline_id)
+            except:
+                action = 'view'
+                jrline = None
+
+        if action == 'view':
+            form = self.form_class()
+        elif action == 'delete':
+            form = self.form_class()
+            jrline.delete();
+        elif action == 'edit':
+            form = self.form_class(instance=jrline)
+
         return render(request, 
                       'salary/registration_journal.html',
-                      self.get_context(request, project_id, date, modify_id, form) 
+                      self.get_context(request, project_id, date, jrline_id, action, form)
                       )
 
-    def post(self, request, project_id, date, modify_id = 0, *args, **kwargs):
+    def post(self, request, project_id, date, jrline_id = 0, *args, **kwargs):
         work_date = datetime.strptime(date, '%Y-%m-%d').date()
         
-        if modify_id == 0:
+        if jrline_id == 0:
             journal = None
         else:
-            journal = WorkTimeJournal.objects.get(id=modify_id)
+            try:
+                journal = WorkTimeJournal.objects.get(id=jrline_id)
+            except:
+                journal = None
             
         request.POST = request.POST.copy()
         
@@ -100,10 +116,9 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
             # Stay in POST only if form was not valid.
             return render(request, 
                           'salary/registration_journal.html', 
-                          self.get_context(request, project_id, date, modify_id, form))
-    
-    def delete(self, id=None):
-        try:
-            WorkTimeJournal.objects.get(id=id).delete()
-        except:
-            return Http404
+                          self.get_context(request, project_id, date, jrline_id, 'edit', form))
+
+    def get_open(self, work_date):
+        today = date.today()
+        last_sunday = today + timedelta(days = -today.weekday() - 1)
+        return datetime.strptime(work_date, '%Y-%m-%d').date() > last_sunday

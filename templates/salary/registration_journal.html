@@ -3,17 +3,15 @@
 {% load static %}
 
 {% block linked_files %}
-	<!-- link rel="stylesheet" href="jquery-ui.css">
-	<link rel="stylesheet" href="picker.css">
-	<script src="external/jquery/jquery.js"></script>
-    <script src="jquery-ui.js"></script>
-	-->
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
-	<!-- link rel="stylesheet" href="{% static 'css/jquery/picker.css' %}" -->
+	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
+	{{ form.media.css }}
+	
 	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
     <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+	{{ form.media.js }}
 
 	<script>
 		$( function() {
@@ -69,7 +67,7 @@
 						    {% include 'salary/jobreg_jrline.html' %}
 						{% endif %}
 					{% endfor %}
-					{% if modify_id == 0 %}
+					{% if modify_id == 0 and open %}
 						{% include 'salary/jobreg_form.html' %}
 					{% endif %}
 					<tr style="font-weight:bold">
@@ -87,6 +85,7 @@
 				</table>
 		</div>
 	  </div>
-	</div>  
+	</div>
+	{% include 'salary/jobreg_delete_dialog.html' %}
 {% endblock %}
  
