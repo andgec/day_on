@@ -1,0 +1,86 @@
+				<form action = "" method = "post">
+				{% csrf_token %}
+					<tr class="edit-row">
+						<td style="padding-left:5px;">
+							{{ form.object_id}}
+						    <select id="proj_sel", onChange="onSelProjChange(this)">
+						      {% for proj_item in prj_dropdown %}
+						        <option value={{proj_item.id}}>{{proj_item.name}}</option>
+						      {% endfor %}
+						    </select>
+							<script>
+							  sel = document.getElementById('proj_sel')
+							  obj_id = document.getElementById('id_object_id');
+							  
+							  if ('{{jr_line.content_object.id}}'.length == 0) {
+							    if (sessionStorage.getItem('lastSelectedProject') != null) {
+							      sel.value = sessionStorage.getItem('lastSelectedProject');
+							    }
+							  } else {
+							    sel.value = '{{jr_line.content_object.id}}';
+							  }
+							  
+							  onSelProjChange = function(sel) {
+							    //obj_id.value = sel.options[sel.selectedIndex].value;
+							    obj_id.value = sel.value;
+							    window.sessionStorage.setItem("lastSelectedProject", obj_id.value)
+							  }
+							  
+							  onSelProjChange(sel);
+							</script>
+						</td>
+						<td>
+							{{ form.item.errors }}
+							{{ form.item }}
+						</td>
+						<td>
+							<div style="width: 130px; float: left">
+							{{ form.work_time_from.errors }}
+							{{ form.work_time_from }} {{ _('to') }}
+							</div>
+							<div style="width: 130px; float: left">
+							{{ form.work_time_to.errors }}
+							{{ form.work_time_to }}
+							</div>
+							<script>
+							  if ('{{jr_line.content_object.id}}'.length == 0) {
+							    selHrFrom = document.getElementById('id_work_time_from_hour');
+							    selMinFrom = document.getElementById('id_work_time_from_minute');
+							    selHrTo = document.getElementById('id_work_time_to_hour');
+							    selMinTo = document.getElementById('id_work_time_to_minute');
+							    selHrFrom.value = '{{time_dropdown.hr}}'
+							    selMinFrom.value = '{{time_dropdown.min}}'
+							    selHrTo.value = '{{time_dropdown.hr}}'
+							    selMinTo.value = '{{time_dropdown.min}}'
+							  }  
+							</script>
+						</td>
+						<td></td>
+						<td id="num-col">
+							{{ form.distance.errors }}
+							{{ form.distance }}
+						</td>
+						<td id="num-col">
+							{{ form.toll_ring.errors }}
+							{{ form.toll_ring }}
+						</td>
+						<td id="num-col">
+							{{ form.ferry.errors }}
+							{{ form.ferry }}
+						</td>
+						<td id="num-col">
+							{{ form.diet.errors }}
+							{{ form.diet }}
+						</td>
+						<!-- td>  -->
+						<td id="button-save-col">
+							<button class="btn-create" title = {{ _('Register') }} type="submit">
+								<i class="fa fa-save"></i>
+							</button>
+							&nbsp&nbsp
+							{% if action == 'edit' %}
+							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'tjr-v2' date=date %}><i class="fa fa-undo-alt"></i></a>
+							{% endif %}
+						</td>
+					</tr>
+				</form>

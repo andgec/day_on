@@ -2,7 +2,11 @@
 
 {% block content_top %}
 	<div id="content">
+	  {% if project.name %}
 	  <h1>{{ _('Working time registration in project ') }}
+	  {% else %}
+      <h1>{{ _('Working time registration') }}
+      {% endif %}
 		<b>{{project.name}}
 		  {% if project.description %}
 		    {% filter lower %} ({{project.description}}) {% endfilter %}

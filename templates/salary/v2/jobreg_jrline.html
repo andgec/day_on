@@ -1,0 +1,18 @@
+						<tr>
+							<td>{{jr_line.content_object.name}}</td>
+							<td>{{jr_line.item}}</td>
+							<!-- td>{{jr_line.work_date}}</td>  -->
+							<td>{{jr_line.work_time_from}} - {{jr_line.work_time_to}}</td>
+							<td id="num-col" >{{jr_line.work_time}}</td>
+							<td id="num-col">{{jr_line.distance|default_if_none:""}}</td>
+							<td id="num-col">{{jr_line.toll_ring|default_if_none:""}}</td>
+							<td id="num-col">{{jr_line.ferry|default_if_none:""}}</td>
+							<td id="num-col">{{jr_line.diet|default_if_none:""}}</td>
+							<td>
+							  {% if action != 'edit' and open %}
+							    <a class="btn-edit" title = {{ _('Modify') }} href={% url 'tjr-v2' date=date jrline_id=jr_line.id %}><i class="fa fa-edit"></i></a>
+                        	    &nbsp&nbsp
+							    <button class="btn-edit btn-delete-dialog" style="width:55px;" onClick="showDialog({{jr_line.id}})"; title = {{ _('Delete') }}><i class="fas fa-times"></i></button>
+							  {% endif %}
+                            </td>
+						</tr>

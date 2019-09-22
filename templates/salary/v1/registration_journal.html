@@ -1,0 +1,91 @@
+{% extends 'salary/base_wtr.html' %}
+
+{% load static %}
+
+{% block linked_files %}
+	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
+	{{ form.media.css }}
+
+	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+	{{ form.media.js }}
+
+	<script>
+		$( function() {
+    		$.datepicker.setDefaults($.datepicker.regional["lt"]);
+    		$( "#datepicker" ).datepicker({ minDate: "-2M", 
+        		                            maxDate: "+0D",
+            		                        onSelect: set_date
+                		                  });
+    		$( "#datepicker" ).datepicker('setDate', '{{date}}');
+    		
+    		function set_date(value){
+ 				redirect_url = '{% url 'tjournal' project_id=project.id date='0000-00-00' %}';
+ 				redirect_url = redirect_url.replace('0000-00-00', value);
+    		  	window.location.replace(redirect_url)
+    		};
+    	  } 
+    	 )
+	</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+		<div class="breadcrumbs">
+			<a href={% url 'tjournal' %}>{{ _('Project list') }}</a> › {{project.name}}
+		</div>
+{% endblock %}
+
+{% block content %}
+		{{ _('Date:') }}
+		<div id="datepicker"></div>
+		<p></p>
+
+		<div class="project">
+			<div class="results">
+				<table class="time-register">
+					<thead>
+						<tr>
+							<th scope="col">{{ _('Project') }}</th>
+							<th scope="col">{{ _('Item') }}</th>
+							<!-- th scope="col">{{ _('Date') }}</th>  -->
+							<th scope="col">{{ _('Time') }}</th>
+							<th id="num-col" scope="col">{{ _('Hours') }}</th>
+							<th id="num-col">{{ _('Distance (km)') }}</th>
+							<th id="num-col">{{ _('Toll ring') }}</th>
+							<th id="num-col">{{ _('Ferry') }}</th>
+							<th id="num-col" scope="col">{{ _('Diet') }}</th>
+							<th scope="col">
+						</tr>
+					</thead>
+					{% for jr_line in jr_lines %}
+						{% if modify_id == jr_line.id %}
+							{% include 'salary/v1/jobreg_form.html' %}
+						{% else %}
+						    {% include 'salary/v1/jobreg_jrline.html' %}
+						{% endif %}
+					{% endfor %}
+					{% if modify_id == 0 and open %}
+						{% include 'salary/v1/jobreg_form.html' %}
+					{% endif %}
+					<tr style="font-weight:bold">
+						<td></td>
+						<td></td>
+						<!-- td></td> -->
+						<td style="text-align:right">{{ _('Total') }}:</td>
+						<td id="num-col">{{ jr_totals.work_time__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.distance__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.toll_ring__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.ferry__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.diet__sum|default_if_none:"" }}</td>
+						<td id="num-col"></td>
+					</tr>
+				</table>
+		</div>
+	  </div>
+	</div>
+	{% include 'salary/v1/jobreg_delete_dialog.html' %}
+{% endblock %}
+ 

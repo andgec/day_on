@@ -1,27 +1,24 @@
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-#from django.urls import path
 from django.conf.urls import url
 from django.conf.urls.i18n import i18n_patterns
 from django.urls import include
 from .admin import admin_site
 from conf import settings
-from . import views
-from receivables.views import WorkTimeJournalView
 
-#----- Refactor all above as under -----
-from prjdash import urls as prjdash_urls
-from reports import urls as reports_urls
+from receivables.views import WorkTimeJournalView_V2
+
+from prjdash     import urls as prjdash_urls
+from reports     import urls as reports_urls
+from receivables import urls as receivb_urls
 
 
 urlpatterns = i18n_patterns(
-    url(r'^$', views.index, name='index'),
+    url(r'^$', WorkTimeJournalView_V2.as_view(), name='index'),
+    url(r'^v1/', include(receivb_urls.urlpatterns_v1)),
+    url(r'^v2/', include(receivb_urls.urlpatterns_v2)),
     url(r'^accounts/', include('django.contrib.auth.urls')),
-    #url(r'^select2/', include('django_select2.urls')),
     url(r'^admin/', admin_site.urls, name='admin'),
-    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})$', WorkTimeJournalView.as_view(), name='tjournal'),
-    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})/(?P<jrline_id>[0-9]+)$', WorkTimeJournalView.as_view(), name='tjournal'),
-    url(r'^receivables/tjournal/(?P<project_id>[0-9]+)/(?P<date>\d{4}-\d{2}-\d{2})/(?P<jrline_id>[0-9]+)/(?P<action>edit|delete+)$', WorkTimeJournalView.as_view(), name='tjournal'),
     url(r'^v1/pdash/', include(prjdash_urls.urlpatterns)),
     url(r'^reports/', include(reports_urls.urlpatterns)),
     prefix_default_language=False

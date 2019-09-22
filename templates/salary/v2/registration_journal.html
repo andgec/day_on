@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
 	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
 	{{ form.media.css }}
-	
+
 	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
     <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
@@ -23,7 +23,7 @@
     		$( "#datepicker" ).datepicker('setDate', '{{date}}');
     		
     		function set_date(value){
- 				redirect_url = '{% url 'tjournal' project_id=project.id date='0000-00-00' %}';
+ 				redirect_url = '{% url 'tjr-v2' date='0000-00-00' %}';
  				redirect_url = redirect_url.replace('0000-00-00', value);
     		  	window.location.replace(redirect_url)
     		};
@@ -34,7 +34,7 @@
 
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
-			<a href={% url 'index' %}>{{ _('Project list') }}</a> › {{project.name}}
+			<a href={% url 'index' %}>{{ _('Working time registration') }}</a>
 		</div>
 {% endblock %}
 
@@ -62,13 +62,13 @@
 					</thead>
 					{% for jr_line in jr_lines %}
 						{% if modify_id == jr_line.id %}
-							{% include 'salary/jobreg_form.html' %}
+							{% include 'salary/v2/jobreg_form.html' %}
 						{% else %}
-						    {% include 'salary/jobreg_jrline.html' %}
+						    {% include 'salary/v2/jobreg_jrline.html' %}
 						{% endif %}
 					{% endfor %}
 					{% if modify_id == 0 and open %}
-						{% include 'salary/jobreg_form.html' %}
+						{% include 'salary/v2/jobreg_form.html' %}
 					{% endif %}
 					<tr style="font-weight:bold">
 						<td></td>
@@ -86,6 +86,6 @@
 		</div>
 	  </div>
 	</div>
-	{% include 'salary/jobreg_delete_dialog.html' %}
+	{% include 'salary/v2/jobreg_delete_dialog.html' %}
 {% endblock %}
  

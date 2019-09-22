@@ -18,8 +18,8 @@
 	    <input type="checkbox" class="dropbtn" id="dbtn"></input>
         <label for="dbtn"><strong>{{_('Profile')}}</strong></label>
 	    <div class="dropdown-content">
-          <a href="{% url 'index' %}">{{ _('Time registration') }}</a>
 	      <a href="{% url 'pdash' %}">{{ _('Project management') }}</a>
+          <a href="{% url 'index' %}">{{ _('Time registration') }}</a>
 	      <a href="{% url 'password_change' %}">{{ _('Change password')}}</a>                    
 	      <a href="{% url 'logout' %}">{{ _('Log out')}}</a>
 	    </div>

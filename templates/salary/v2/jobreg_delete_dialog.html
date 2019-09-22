@@ -1,0 +1,57 @@
+  <div id="delete-dialog" class="modal-dialog">
+	 <div class="dialog-content">
+	   <div class="dialog-title center"> {{_('Warning')}} <span class="close">&times;</span></div>
+	   <div class="dialog-body">
+	     <p><h2>{{_('Do you really want to delete this line?')}}</h2></p>
+	     <h3>{{_('If you will confirm, the line will be deleted.')}}</h3>
+	   </div>
+	   <div class="dialog-footer">
+	     <button id="btn-conf" class="btn-save" title = "{{ _('Confirm') }}">
+		   {{_('Confirm')}}
+         </button>
+         <span class="btn-spacing"/>
+	     <button id="btn-canc" class="btn-cancel" title = "{{ _('Cancel') }}">
+		   {{_('Cancel')}}
+         </button>
+	   </div>
+	 </div>
+  </div>
+  <script>
+    var dialog = document.getElementById("delete-dialog");
+    var delete_url = '';
+
+    //var btns = document.getElementsByClassName("btn-delete-dialog");
+    //for (k = 0; k < btns.length; k++) {
+	//  var btn = btns[k];
+    //  btn.onclick = showDialog;
+    //};
+    
+    showDialog = function(jr_line_id) {
+      dialog.style.display = "block";
+	  delete_url = get_delete_url(jr_line_id);
+    }
+
+    delete_rec = function() {
+      closeDialog();
+      window.location.href = delete_url;
+    }
+
+    var btnConfirm = document.getElementById("btn-conf");
+    btnConfirm.onclick = delete_rec;
+
+    closeDialog = function() {
+      dialog.style.display = "none";
+    };
+    
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = closeDialog;
+
+    var btnCancel = document.getElementById("btn-canc");
+    btnCancel.onclick = closeDialog;
+
+    function get_delete_url (jr_line_id) {
+      var url_base = '{% url 'tjr-v2' date=date%}';
+      var url = url_base + '/' + jr_line_id + '/delete';
+      return url
+    }
+  </script>

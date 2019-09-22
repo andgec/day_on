@@ -83,7 +83,7 @@ class WorkTimeJournalForm(forms.ModelForm):
             item_list = []
             for item in itemgroup.items.all():
                 item_list.append([item.id, item.name])
-                
+
             new_itemgroup = [itemgroup.name, item_list]
             item_group_list.append(new_itemgroup)
         return item_group_list
@@ -113,6 +113,51 @@ class WorkTimeJournalForm(forms.ModelForm):
             'ferry': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'diet': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
         }
-        
 
-    
+class WorkTimeJournalForm_V2(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(WorkTimeJournalForm_V2, self).__init__(*args, **kwargs)
+        self.work_date = kwargs.get('work_date', timezone.now())
+        self.fields['work_date'].initial = self.work_date
+        self.fields['item'].choices = self.items_as_choices()
+
+    def items_as_choices(self):
+        item_group_list = []
+        for itemgroup in ItemGroup.objects.all():
+            new_itemgroup = []
+            item_list = []
+            for item in itemgroup.items.all():
+                item_list.append([item.id, item.name])
+                
+            new_itemgroup = [itemgroup.name, item_list]
+            item_group_list.append(new_itemgroup)
+        return item_group_list
+
+    class Meta:
+        model = WorkTimeJournal
+        readonly_fields = ['empty',]
+        fields = ['object_id',
+                  'item',
+                  'employee',
+                  'work_date',
+                  'work_time_from',
+                  'work_time_to',
+                  'distance',
+                  'toll_ring',
+                  'ferry',
+                  'diet',
+                  ]
+
+        widgets = {
+            'object_id': forms.NumberInput(attrs={'hidden': True}),
+            'item': Select2Widget,
+            'work_date': SelectDateWidget(years = range(2010, 2030)),
+            'employee': forms.Select(attrs={'hidden': True}),
+            'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
+            'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
+            'distance': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+            'toll_ring': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+            'ferry': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+            'diet': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+        }
