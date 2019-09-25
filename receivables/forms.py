@@ -1,5 +1,8 @@
 from django.utils import timezone
 from django import forms
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.admin.utils import construct_change_message
+from django.contrib.contenttypes.models import ContentType
 from django_select2.forms import Select2Widget
 from .models import Project, SalesOrderHeader, WorkTimeJournal
 from django.utils.translation import ugettext_lazy as _
@@ -104,8 +107,8 @@ class WorkTimeJournalForm(forms.ModelForm):
 
         widgets = {
             'item': Select2Widget,
+            'employee': Select2Widget,
             'work_date': SelectDateWidget(years = range(2010, 2030)),
-            'employee': forms.Select(attrs={'hidden': True}),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'distance': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
@@ -113,6 +116,7 @@ class WorkTimeJournalForm(forms.ModelForm):
             'ferry': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'diet': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
         }
+
 
 class WorkTimeJournalForm_V2(forms.ModelForm):
 
@@ -153,7 +157,6 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
             'object_id': forms.NumberInput(attrs={'hidden': True}),
             'item': Select2Widget,
             'work_date': SelectDateWidget(years = range(2010, 2030)),
-            'employee': forms.Select(attrs={'hidden': True}),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'distance': forms.NumberInput(attrs={'class': 'timereg_num_field'}),

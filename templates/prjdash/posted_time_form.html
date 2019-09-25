@@ -1,7 +1,31 @@
 				<form action = "" method = "post">
 				{% csrf_token %}
 					<tr class="edit-row">
-						<td style = "vertical-align:middle;padding-left: 8px">{{journal_line.employee}}</td>
+						<td class = "active"
+						  {% if mode == 'edit' %}
+						    title="{{_('This line is being edited. Change values on the right and click Save or Cancel.')}}">
+						    <i class="fas fa-pen-alt fa-lg"></i>
+						  {% else %}
+						    title="{{_('To create a new line fill in values on the right and click Save.')}}">
+						    <i class="fas fa-plus fa-lg"></i>
+						  {% endif %}
+						</td>
+						<td id = employee_cell>
+						  <div id="employee_input">
+						  {{ form.employee.errors }}
+						  {{ form.employee }}
+						  </div>
+						  {% if mode == 'edit' and journal_line.log.action != 1 %}
+						    {{journal_line.employee}}
+						    <script>
+						      // Hide input and style the cell for text output
+						      document.getElementById('employee_input').style.display = 'none';
+						      ec = document.getElementById('employee_cell');
+						      ec.style.verticalAlign = 'middle';
+						      ec.style.paddingLeft = '8px';
+					        </script>
+					      {% endif %}
+						</td>
 						<td>
 							{{ form.item.errors }}
 							{{ form.item }}
@@ -40,8 +64,9 @@
 								<i class="fa fa-save"></i>
 							</button>
 							&nbsp&nbsp
-							<!-- a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' project_id=project.id %}><i class="fa fa-times"></i></a>  -->
-							<a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
+							{% if mode == 'edit' %}
+							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
+							{% endif %}
 						</td>
 
 					</tr>

@@ -1,0 +1,19 @@
+td.info {
+	padding: 11px 1px 1px 8px;
+	color: #9fbfce;
+}
+
+td.info:hover {
+	padding: 11px 1px 1px 8px;
+	color: #79AEC8;
+}
+
+td.active {
+	padding: 12px 1px 1px 8px;
+	color: #417690;
+}
+
+td.active:hover {
+	padding: 12px 1px 1px 8px;
+	color: #11648D;
+}

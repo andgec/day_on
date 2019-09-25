@@ -1,4 +1,21 @@
 						<tr>
+							<td class = "info">
+							  <div class="hdrop">
+							    {% if journal_line.log.action == 1 %}
+  							      <i class="fas fa-user-plus fa-lg"></i>
+							    {% elif journal_line.log.action == 2 %}
+							      <i class="fas fa-user-edit fa-lg"></i>
+							    {% endif %}
+                                <div class="hdrop-content" style="width:400px;">
+                                  <p><b>{{journal_line.log.title}}</b></p>
+                                  <p>{{_('Change history')}}:<p>
+                                  {% for logline in journal_line.log.lines %}
+                                    <hr>
+                                    <p> {{logline}} </p>
+                                  {% endfor %}
+                                </div>
+                              </div>
+							</td>
 							<td>{{journal_line.employee}}</td>
 							<td>{{journal_line.item}}</td>
 							<td>{{journal_line.work_date|date:'Y-m-d'}}</td>

@@ -1,17 +1,19 @@
 from django.shortcuts import render, redirect
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.db.models import Sum
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 #from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.contenttypes.models import ContentType
 from django.utils.decorators import method_decorator
 from django.views import View
 from receivables.models import Project
 from shared.utils import get_contenttypes
 from django.db import connection
-from .forms import PDashProjectForm, PDashAssignEmployees
+from .forms import PDashProjectForm, PDashAssignEmployees, ProjectDashTimeReviewForm
 #from botocore.vendored.requests.api import request
 from receivables.models import Project, WorkTimeJournal
-from receivables.forms import WorkTimeJournalForm
 
 
 class RecState:
@@ -264,7 +266,7 @@ class ProjectDashboardAssignEmployeesView(View):
 class ProjectDashboardPostedTimeReview(View):
     template = 'prjdash/posted_time_review.html'
     content_type_id_by_name = None
-    form_class = WorkTimeJournalForm
+    form_class = ProjectDashTimeReviewForm
     model = WorkTimeJournal
     state = RecState.VIEW
     jr_line = None
@@ -277,8 +279,14 @@ class ProjectDashboardPostedTimeReview(View):
         if not form:
             form = self.form_class(instance = self.jr_line if self.state == RecState.EDIT else None)
         project = Project.objects.select_related('customer').get(id=project_id)
-        journal_lines = self.model.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
+        journal_raw = self.model.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                                   object_id = project_id).select_related('item').select_related('employee').select_related('employee__user').order_by('work_date', 'employee_id', 'work_time_from')
+
+        log_raw = LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(WorkTimeJournal).pk,
+                                          object_id__in=[jr_raw_line.id for jr_raw_line in journal_raw]
+                                          ).select_related('user').order_by('id')
+
+        journal_lines = self.get_journal_lines(journal_raw, log_raw) #Adding log information
 
         journal_totals = self.model.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                                    object_id = project_id).aggregate(Sum('work_time'),
@@ -295,8 +303,52 @@ class ProjectDashboardPostedTimeReview(View):
                 'journal_lines': journal_lines,
                 'journal_totals': journal_totals,
                 }
-        #print(context)
         return context
+
+    def get_journal_lines(self, jr_raw, log_raw):
+        LOG_LINE = 0
+        LOG_TITLE = 1
+
+        def get_log_text(line, ltype=LOG_LINE):
+            params = {
+                'user': line.user.first_name + ' ' + line.user.last_name,
+                'time': line.action_time.strftime("%Y-%m-%d %H:%M:%S"),
+                }
+            if line.action_flag == ADDITION:
+                if ltype == LOG_LINE:
+                    return _('%(time)s created by %(user)s') % params
+                elif ltype == LOG_TITLE:
+                    return _('This record was added by %(user)s') % params
+            elif line.action_flag == CHANGE:
+                if ltype == LOG_LINE:
+                    return _('%(time)s modified by %(user)s') % params
+                elif ltype == LOG_TITLE:
+                    return _('This record was modified by administrator') % params
+
+        log_entries = {}
+        for log_line in log_raw:
+            log_act = log_entries.get(int(log_line.object_id), None)
+            if log_act is None or (log_act.get('action', None) == CHANGE and log_line.action_flag == ADDITION):
+                log_entries[int(log_line.object_id)] = {
+                              'action': log_line.action_flag,
+                              'user': log_line.user.first_name + ' ' + log_line.user.last_name,
+                              'time': log_line.action_time.strftime("%Y-%m-%d %H:%M:%S"),
+                              #'full_history': False,
+                              'title': get_log_text(log_line, LOG_TITLE) ,
+                              'lines': []
+                            }
+
+        for log_line in log_raw:
+            lentry = log_entries[int(log_line.object_id)]
+            lentry['lines'].append(get_log_text(log_line))
+            #lentry['full_history'] = len(lentry['lines']) > 1
+
+        for jr_line in jr_raw:
+            log_entry = log_entries.get(jr_line.id, None)
+            jr_line.log = log_entry
+
+        return jr_raw
+
 
     def get(self, request, project_id=None, pk=None, mode='view'):
         self.setstate(request, pk, mode)
@@ -309,9 +361,25 @@ class ProjectDashboardPostedTimeReview(View):
 
     def post(self, request, project_id=None, pk=None, mode=None):
         self.setstate(request, pk, mode)
-        form = self.form_class(request.POST, instance=self.jr_line)
+
+        '''
+        if self.state == RecState.EDIT:
+            request.POST = request.POST.copy() #Enabling mutability
+            request.POST['employee'] = self.jr_line.employee
+        '''
+
+        form = self.form_class(request.POST, instance=self.jr_line, request=request)
+
+        project = Project.objects.get(id=project_id)
         if form.is_valid():
-            jr_line = form.save(commit=True)
+            jr_line = form.save(commit=False)
+            jr_line.content_type = ContentType.objects.get_for_model(Project)
+            jr_line.content_object = project
+            try:
+                jr_line.save()
+            finally:
+                form.save(commit=True) #this only writes a log action, not the record itself
+            # Redirect to GET.
             return redirect('pdash-time-review', project_id=project_id)
         else:
             return render(request,

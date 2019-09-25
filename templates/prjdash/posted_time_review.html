@@ -10,11 +10,14 @@
 	-->
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
 	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
+	<link rel="stylesheet" href="{% static 'css/prjdash/posted-time.css' %}">
+	{{ form.media.css }}
 	
 	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
     <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+	{{ form.media.js }}
 
 {% endblock %}
 
@@ -38,7 +41,7 @@
 				<table class="time-register">
 					<thead>
 						<tr>
-							
+							<th/>
 							<th scope="col">{{ _('Employee') }}</th>
 							<th scope="col">{{ _('Item') }}</th>
 							<th scope="col">{{ _('Date') }}</th>
@@ -58,8 +61,11 @@
 						    {% include 'prjdash/posted_time_jrline.html' %}
 						{% endif %}
 					{% endfor %}
+					{% if mode != 'edit' %}
+						{% include 'prjdash/posted_time_form.html' %}
+					{% endif %}
 					<tr style="font-weight:bold">
-						
+						<td></td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -70,6 +76,10 @@
 						<td id="num-col">{{ journal_totals.ferry__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.diet__sum|default_if_none:"" }}</td>
 						<td id="num-col"></td>
+					</tr>
+					<!-- Workaround to display edit history popups correctly -->
+					<tr style="background-color: #FFF">
+					  <td style="height:120px;">&nbsp</td>
 					</tr>
 				</table>
 		</div>

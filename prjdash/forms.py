@@ -5,7 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from receivables.models import Project
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.utils import construct_change_message
-from salary.models import Employee 
+from salary.models import Employee
+from receivables.forms import WorkTimeJournalForm
 
 class PDashProjectForm(forms.ModelForm):
     name = forms.CharField(label = _('Project name'), widget=forms.TextInput(attrs={'size':'60'}))
@@ -83,4 +84,29 @@ class PDashAssignEmployees(forms.Form):
         self.project.employees.add(*self.get_add_value_list())
         self.project.employees.remove(*self.get_remove_value_list())
 
+
+class ProjectDashTimeReviewForm(WorkTimeJournalForm):
+    mode = ADDITION
+    request = None
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(ProjectDashTimeReviewForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.mode = CHANGE
+
+    def save(self, commit=True):
+        obj = super(ProjectDashTimeReviewForm, self).save(False) #Only validation required, actual saving is inside the view
+
+        if commit:
+            LogEntry.objects.log_action(
+                user_id         = self.request.user.pk,
+                content_type_id = ContentType.objects.get_for_model(obj).pk,
+                object_id       = obj.pk,
+                object_repr     = str(obj),
+                action_flag     = self.mode,
+                change_message  = construct_change_message(self, formsets=None, add=(self.mode==ADDITION)),
+                )
+
+        return obj
         

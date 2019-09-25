@@ -1,3 +1,37 @@
+/* Dropdown box which pops out on hover */
+.hdrop {
+  position: relative;
+  display: inline-block;
+}
+
+.hdrop-content {
+  display: none;
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  color: #FFF;
+  background-color: #333;
+  min-width: 300px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 4px 10px;
+  z-index: 1;
+  border-radius: 3px;
+  font-family: "Verdana";
+  font-size: 14px;
+  height: auto;
+  vertical-align: middle;
+}
+
+.hdrop-content p {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.hdrop:hover .hdrop-content {
+	display:block;
+}
+
+
 /* Modal dialog with 2 buttons (Yes/No or OK/Cancel type) */
 .modal-dialog {
   display: none;

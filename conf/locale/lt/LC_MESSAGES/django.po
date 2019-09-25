@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 07:06+0200\n"
+"POT-Creation-Date: 2019-09-25 12:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgid "Address information"
 msgstr "Adresas"
 
 #: djauth/admin.py:29 receivables/models.py:324 reports/views.py:319
-#: salary/models.py:36 templates/prjdash/posted_time_review.html:42
+#: salary/models.py:36 templates/prjdash/posted_time_review.html:45
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
 msgstr "Darbuotojas"
@@ -164,7 +164,7 @@ msgid "Price"
 msgstr "Kaina"
 
 #: inventory/models.py:74 receivables/models.py:230 receivables/models.py:328
-#: templates/prjdash/posted_time_review.html:43
+#: templates/prjdash/posted_time_review.html:46
 #: templates/salary/v1/registration_journal.html:52
 #: templates/salary/v2/registration_journal.html:52
 msgid "Item"
@@ -174,13 +174,31 @@ msgstr "Darbas"
 msgid "Items"
 msgstr "Darbai"
 
-#: prjdash/forms.py:11
+#: prjdash/forms.py:12
 msgid "Project name"
 msgstr "Projekto pavadinimas"
 
-#: prjdash/views.py:195 prjdash/views.py:343
+#: prjdash/views.py:199 prjdash/views.py:411
 msgid "Record ID not provided."
 msgstr "Nenurodytas objekto ID."
+
+#: prjdash/views.py:321
+#, python-format
+msgid "%(time)s created by %(user)s"
+msgstr "%(time)s sukūrė %(user)s"
+
+#: prjdash/views.py:323
+msgid "This record was added by %(user)s"
+msgstr "Šį įrašą pridėjo %(user)s"
+
+#: prjdash/views.py:326
+#, python-format
+msgid "%(time)s modified by %(user)s"
+msgstr "%(time)s pakeitė %(user)s"
+
+#: prjdash/views.py:328
+msgid "This record was modified by administrator"
+msgstr "Šį įrašą koregavo administratorius"
 
 #: receivables/admin.py:33
 msgid "Amounts"
@@ -200,7 +218,7 @@ msgstr "Darbuotojai"
 msgid "Receivables"
 msgstr "Įplaukos"
 
-#: receivables/forms.py:43 receivables/models.py:126 receivables/models.py:145
+#: receivables/forms.py:46 receivables/models.py:126 receivables/models.py:145
 #: templates/prjdash/project_dash.html:35
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:51
@@ -288,7 +306,7 @@ msgstr "Priskirtas darbuotojas"
 msgid "Related employees"
 msgstr "Priskirti darbuotojai"
 
-#: receivables/models.py:330 templates/prjdash/posted_time_review.html:44
+#: receivables/models.py:330 templates/prjdash/posted_time_review.html:47
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:79
 #: templates/salary/v1/registration_journal.html:53
 #: templates/salary/v2/registration_journal.html:53
@@ -322,19 +340,19 @@ msgstr "Viršval. 100%"
 msgid "Distance"
 msgstr "Atstumas"
 
-#: receivables/models.py:357 templates/prjdash/posted_time_review.html:48
+#: receivables/models.py:357 templates/prjdash/posted_time_review.html:51
 #: templates/salary/v1/registration_journal.html:57
 #: templates/salary/v2/registration_journal.html:57
 msgid "Toll ring"
 msgstr "BOM"
 
-#: receivables/models.py:363 templates/prjdash/posted_time_review.html:49
+#: receivables/models.py:363 templates/prjdash/posted_time_review.html:52
 #: templates/salary/v1/registration_journal.html:58
 #: templates/salary/v2/registration_journal.html:58
 msgid "Ferry"
 msgstr "Keltas"
 
-#: receivables/models.py:369 templates/prjdash/posted_time_review.html:50
+#: receivables/models.py:369 templates/prjdash/posted_time_review.html:53
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:88
 #: templates/salary/v1/registration_journal.html:59
 #: templates/salary/v2/registration_journal.html:59
@@ -544,7 +562,7 @@ msgid "Vitasbygg AS"
 msgstr "Vitasbygg AS"
 
 #: templates/prjdash/assign_employees.html:19
-#: templates/prjdash/posted_time_review.html:23
+#: templates/prjdash/posted_time_review.html:26
 #: templates/prjdash/project_dash.html:14
 msgid "Project dashboard"
 msgstr "Projektų valdymas"
@@ -561,8 +579,7 @@ msgstr "Priskirti darbuotojus projektui "
 #: templates/prjdash/assign_employees.html:37
 #: templates/prjdash/posted_time_dialog.html:13
 #: templates/prjdash/posted_time_dialog.html:14
-#: templates/prjdash/posted_time_form.html:43
-#: templates/prjdash/posted_time_form.html:44
+#: templates/prjdash/posted_time_form.html:68
 #: templates/prjdash/project_form.html:28
 #: templates/reports/time_summary/dialog_date_filter.html:15
 #: templates/reports/time_summary/dialog_date_filter.html:16
@@ -619,7 +636,21 @@ msgstr "Jei patvirtinsite, pasirinktas įrašas bus negrįžtamai ištrintas."
 msgid "Confirm"
 msgstr "Patvirtinti"
 
-#: templates/prjdash/posted_time_form.html:15
+#: templates/prjdash/posted_time_form.html:6
+msgid ""
+"This line is being edited. Change values on the right and click Save or "
+"Cancel."
+msgstr ""
+"Ši eilutė yra redaguojama. Pakoreguokite laukų reikšmes ir spauskite "
+"Išsaugoti arba Atšaukti."
+
+#: templates/prjdash/posted_time_form.html:10
+msgid "To create a new line fill in values on the right and click Save."
+msgstr ""
+"Jei norite pridėti naują įrašą, užpildykite laukų reikšmes dešiniau ir "
+"spauskite Išsaugoti."
+
+#: templates/prjdash/posted_time_form.html:39
 #: templates/prjdash/print_timelist.html:43
 #: templates/reports/time_summary/dialog_date_filter.html:7
 #: templates/salary/v1/jobreg_form.html:14
@@ -627,54 +658,58 @@ msgstr "Patvirtinti"
 msgid "to"
 msgstr "iki"
 
-#: templates/prjdash/posted_time_form.html:38
+#: templates/prjdash/posted_time_form.html:62
 #: templates/salary/v1/jobreg_form.html:40
 #: templates/salary/v2/jobreg_form.html:77
 msgid "Register"
 msgstr "Registruoti"
 
-#: templates/prjdash/posted_time_jrline.html:14
+#: templates/prjdash/posted_time_jrline.html:11
+msgid "Change history"
+msgstr "Pakeitimų istorija"
+
+#: templates/prjdash/posted_time_jrline.html:31
 #: templates/salary/v1/jobreg_jrline.html:13
 #: templates/salary/v2/jobreg_jrline.html:13
 msgid "Modify"
 msgstr "Keisti"
 
-#: templates/prjdash/posted_time_jrline.html:16
-#: templates/prjdash/posted_time_jrline.html:17
+#: templates/prjdash/posted_time_jrline.html:33
+#: templates/prjdash/posted_time_jrline.html:34
 #: templates/salary/v1/jobreg_jrline.html:15
 #: templates/salary/v2/jobreg_jrline.html:15
 msgid "Delete"
 msgstr "Šalinti"
 
-#: templates/prjdash/posted_time_review.html:23
+#: templates/prjdash/posted_time_review.html:26
 #: templates/prjdash/project_line.html:3
 msgid "Time review and approval"
 msgstr "Laiko peržiūra ir patvirtinimas"
 
-#: templates/prjdash/posted_time_review.html:29
+#: templates/prjdash/posted_time_review.html:32
 msgid "Review and approve time for project "
 msgstr "Peržiūrėti ir patvirtinti laiką projektui "
 
-#: templates/prjdash/posted_time_review.html:45
+#: templates/prjdash/posted_time_review.html:48
 #: templates/salary/v1/registration_journal.html:54
 #: templates/salary/v2/registration_journal.html:54
 msgid "Time"
 msgstr "Laikas"
 
-#: templates/prjdash/posted_time_review.html:46
+#: templates/prjdash/posted_time_review.html:49
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:83
 #: templates/salary/v1/registration_journal.html:55
 #: templates/salary/v2/registration_journal.html:55
 msgid "Hours"
 msgstr "Valandos"
 
-#: templates/prjdash/posted_time_review.html:47
+#: templates/prjdash/posted_time_review.html:50
 #: templates/salary/v1/registration_journal.html:56
 #: templates/salary/v2/registration_journal.html:56
 msgid "Distance (km)"
 msgstr "Atstumas (km)"
 
-#: templates/prjdash/posted_time_review.html:66
+#: templates/prjdash/posted_time_review.html:72
 #: templates/salary/v1/registration_journal.html:77
 #: templates/salary/v2/registration_journal.html:77
 msgid "Total"

@@ -192,7 +192,7 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
 
         request.POST = request.POST.copy()
 
-        #Adding date to request data to pass form validation
+        #Adding date and employee to request data to pass form validation
         request.POST['work_date_day'] = work_date.day
         request.POST['work_date_month'] = work_date.month
         request.POST['work_date_year'] = work_date.year
