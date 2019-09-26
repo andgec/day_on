@@ -36,7 +36,7 @@ DEBUG = str(os.environ.get('DEBUG', RUNTIME_ENV not in ('PROD', 'PRODUCTION'))).
 
 ALLOWED_HOSTS = ['127.0.0.1', '10.0.0.111', '10.189.88.155', os.environ.get('WEB_HOST', 'localhost'), os.environ.get('WEB_HOST_2', 'localhost')]
 
-INTERNAL_IPS=['127.0.0.1']
+#INTERNAL_IPS=['127.0.0.1']
 
 # Application definition
 

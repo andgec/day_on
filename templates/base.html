@@ -26,6 +26,7 @@
 				      {% if user.is_staff or user.is_superuser %}
 				        <a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
 				        <a href="{% url 'pdash' %}" class='top-menu'>{{ _('Project management') }}</a>
+				        <a href="{% url 'report-time-summary' %}">{{ _('Time summary') }}</a>
 				      {% endif %}
                       <a href="{% url 'index' %}">{{ _('Time registration') }}</a>
 				      <a href="{% url 'password_change' %}">{{ _('Change password')}}</a>

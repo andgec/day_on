@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 12:30+0200\n"
+"POT-Creation-Date: 2019-09-26 11:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,26 +177,26 @@ msgstr "Jobber"
 msgid "Project name"
 msgstr "Prosjekt"
 
-#: prjdash/views.py:199 prjdash/views.py:411
+#: prjdash/views.py:197 prjdash/views.py:411
 msgid "Record ID not provided."
 msgstr ""
 
-#: prjdash/views.py:321
+#: prjdash/views.py:319
 #, python-format
 msgid "%(time)s created by %(user)s"
 msgstr ""
 
-#: prjdash/views.py:323
+#: prjdash/views.py:321
 #, python-format
 msgid "This record was added by %(user)s"
 msgstr ""
 
-#: prjdash/views.py:326
+#: prjdash/views.py:324
 #, python-format
 msgid "%(time)s modified by %(user)s"
 msgstr ""
 
-#: prjdash/views.py:328
+#: prjdash/views.py:326
 msgid "This record was modified by administrator"
 msgstr ""
 
@@ -519,19 +519,25 @@ msgstr ""
 msgid "Project management"
 msgstr "Prosjekt"
 
-#: templates/admin/base.html:22 templates/base.html:30
+#: templates/admin/base.html:22 templates/base.html:31
 #, fuzzy
 #| msgid "Site administration"
 msgid "Time registration"
 msgstr "Selskapsadministrasjon"
 
-#: templates/admin/base.html:23 templates/admin/base.html:29
-#: templates/base.html:31
+#: templates/admin/base.html:23 templates/base.html:29
+#: templates/reports/time_summary/base_ts.html:5
+#: templates/reports/time_summary/time_summary.html:19
+msgid "Time summary"
+msgstr ""
+
+#: templates/admin/base.html:24 templates/admin/base.html:30
+#: templates/base.html:32
 msgid "Change password"
 msgstr ""
 
-#: templates/admin/base.html:24 templates/admin/base.html:31
-#: templates/base.html:32
+#: templates/admin/base.html:25 templates/admin/base.html:32
+#: templates/base.html:33
 msgid "Log out"
 msgstr "Logg ut"
 
@@ -652,7 +658,7 @@ msgid ""
 "Cancel."
 msgstr ""
 
-#: templates/prjdash/posted_time_form.html:10
+#: templates/prjdash/posted_time_form.html:9
 msgid "To create a new line fill in values on the right and click Save."
 msgstr ""
 
@@ -812,11 +818,6 @@ msgstr "Fra kl. - Til kl."
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:89
 msgid "Transport Nok"
 msgstr "Transport Nok"
-
-#: templates/reports/time_summary/base_ts.html:5
-#: templates/reports/time_summary/time_summary.html:19
-msgid "Time table"
-msgstr ""
 
 #: templates/reports/time_summary/dialog_date_filter.html:4
 msgid "Select date period"

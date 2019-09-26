@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 12:30+0200\n"
+"POT-Creation-Date: 2019-09-26 11:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,25 +178,26 @@ msgstr "Darbai"
 msgid "Project name"
 msgstr "Projekto pavadinimas"
 
-#: prjdash/views.py:199 prjdash/views.py:411
+#: prjdash/views.py:197 prjdash/views.py:411
 msgid "Record ID not provided."
 msgstr "Nenurodytas objekto ID."
 
-#: prjdash/views.py:321
+#: prjdash/views.py:319
 #, python-format
 msgid "%(time)s created by %(user)s"
 msgstr "%(time)s sukūrė %(user)s"
 
-#: prjdash/views.py:323
+#: prjdash/views.py:321
+#, python-format
 msgid "This record was added by %(user)s"
 msgstr "Šį įrašą pridėjo %(user)s"
 
-#: prjdash/views.py:326
+#: prjdash/views.py:324
 #, python-format
 msgid "%(time)s modified by %(user)s"
 msgstr "%(time)s pakeitė %(user)s"
 
-#: prjdash/views.py:328
+#: prjdash/views.py:326
 msgid "This record was modified by administrator"
 msgstr "Šį įrašą koregavo administratorius"
 
@@ -517,17 +518,23 @@ msgstr "Profilis"
 msgid "Project management"
 msgstr "Projektų valdymas"
 
-#: templates/admin/base.html:22 templates/base.html:30
+#: templates/admin/base.html:22 templates/base.html:31
 msgid "Time registration"
 msgstr "Laiko registravimas"
 
-#: templates/admin/base.html:23 templates/admin/base.html:29
-#: templates/base.html:31
+#: templates/admin/base.html:23 templates/base.html:29
+#: templates/reports/time_summary/base_ts.html:5
+#: templates/reports/time_summary/time_summary.html:19
+msgid "Time summary"
+msgstr "Laiko suvestinė"
+
+#: templates/admin/base.html:24 templates/admin/base.html:30
+#: templates/base.html:32
 msgid "Change password"
 msgstr "Keisti slaptažodį"
 
-#: templates/admin/base.html:24 templates/admin/base.html:31
-#: templates/base.html:32
+#: templates/admin/base.html:25 templates/admin/base.html:32
+#: templates/base.html:33
 msgid "Log out"
 msgstr "Atsijungti"
 
@@ -644,7 +651,7 @@ msgstr ""
 "Ši eilutė yra redaguojama. Pakoreguokite laukų reikšmes ir spauskite "
 "Išsaugoti arba Atšaukti."
 
-#: templates/prjdash/posted_time_form.html:10
+#: templates/prjdash/posted_time_form.html:9
 msgid "To create a new line fill in values on the right and click Save."
 msgstr ""
 "Jei norite pridėti naują įrašą, užpildykite laukų reikšmes dešiniau ir "
@@ -799,11 +806,6 @@ msgstr "Nuo - iki"
 msgid "Transport Nok"
 msgstr "Transportas NOK"
 
-#: templates/reports/time_summary/base_ts.html:5
-#: templates/reports/time_summary/time_summary.html:19
-msgid "Time table"
-msgstr "Laiko žiniaraštis"
-
 #: templates/reports/time_summary/dialog_date_filter.html:4
 msgid "Select date period"
 msgstr "Pasirinkite laiko intervalą"
@@ -871,3 +873,6 @@ msgstr "Ar tikrai norite ištrinti šią eilutę?"
 #: templates/salary/v2/jobreg_delete_dialog.html:6
 msgid "If you will confirm, the line will be deleted."
 msgstr "Jei patvirtinsite, pasirinkta eilutė bus ištrinta."
+
+#~ msgid "Time table"
+#~ msgstr "Laiko žiniaraštis"
