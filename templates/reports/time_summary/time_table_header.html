@@ -1,15 +1,15 @@
 <tr>
 	{% for col in header %}
-		{% ifchanged col.caption_month %} 
-			<th>{{col.caption_month}}</th>
+		{% if col.caption_month %}
+		  {% ifchanged col.caption_month %}<th colspan={{col.meta.month_col_span}}>{{col.caption_month}}</th>{% endifchanged %}
 		{% else %}
-		    <th></th>
-		{% endifchanged %}
+		  <th/>
+        {% endif %}
 	{% endfor %}
 </tr>
 <tr>
 {% for col in header %}
-		<th>{{col.caption}}<!--  {{col.name | date:"D"}}  --></th>
-		 
+	<th class="{{col.meta.cssClass}}{% with weekday=col.name|date:"w" %}{%if weekday == '6' or weekday == '0' %}
+	  {% autoescape off %}  colWkndHdr{% endautoescape %}{% endif %}{% endwith %}">{{col.caption}}</th>
 {% endfor %}
 </tr>

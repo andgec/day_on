@@ -10,6 +10,7 @@
 
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
 
+	<link rel="stylesheet" type="text/css" href="{% static 'css/reports/time-summary.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/dialogs.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 {% endblock %}
@@ -27,8 +28,10 @@
 			{% include 'reports/time_summary/time_table_header.html' %}
 			{% include 'reports/time_summary/time_table_content.html' %}
 		</table>
+		{% autoescape off %}{{meta.js.cell_click}}{% endautoescape %}
+
+		<br>{{header}}<br><br>{{timelist}}
 		
-		<!-- br><br><br>{{timelist}}  -->
 	{% else %}
 		{{message}}
 	{% endif %}		

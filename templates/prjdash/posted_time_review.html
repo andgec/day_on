@@ -3,11 +3,6 @@
 {% load static %}
 
 {% block linked_files %}
-	<!-- link rel="stylesheet" href="jquery-ui.css">
-	<link rel="stylesheet" href="picker.css">
-	<script src="external/jquery/jquery.js"></script>
-    <script src="jquery-ui.js"></script>
-	-->
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
 	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
 	<link rel="stylesheet" href="{% static 'css/prjdash/posted-time.css' %}">
@@ -18,7 +13,6 @@
 	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
 	{{ form.media.js }}
-
 {% endblock %}
 
 {% block breadcrumbs %}

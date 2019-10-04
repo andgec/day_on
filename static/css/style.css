@@ -19,14 +19,21 @@ tr:edit-line {background-color: #e2f2e2;}
 
 .time-register-in-form {vertical-align:top;
 				        padding:8px;}
-
+/*
 .time-register td {vertical-align:top;
 				   padding:8px;}
+*/
 .time-register th {padding: 8px;}
 
 .edit-row td {padding: 3px;
 			  padding-bottom:1px;
 			  padding-top: 3px;}
+
+.separator {
+	padding: 2px 0px 0px 0px;
+	background-color: #BBB;
+	height: 1px;
+}
 			  
 #num-col {text-align: right;}
 

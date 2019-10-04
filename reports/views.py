@@ -1,9 +1,11 @@
 import operator
 import datetime
+from calendar import monthrange
 from functools import reduce
 from django.db import connection
 from django.db.models import Sum
 from django.shortcuts import render
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
@@ -279,6 +281,14 @@ class TimeSummaryXLSXView(View):
     
     default_start_date = start_of_current_month()
     default_end_date = end_of_current_month()
+    meta = {
+            'css_cell_empty'    : 'cellEmpty',      #css class for empty cell (without any data)
+            'css_cell_click'    : 'cellClick',      #css class for clickable cell (with working hours data)
+            'css_cell_wknd_odd' : 'cellWknd-odd',   #css class for weekend cell (odd line)
+            'css_cell_wknd_even': 'cellWknd-even',  #css class for weekend cell (even line)
+            'js_on_click_data_cell': 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
+            'js_on_cell_click_func': '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo} </script>',
+            }
     
     def get_context(self, request):
         context = self.get_report_lines(request)
@@ -292,6 +302,8 @@ class TimeSummaryXLSXView(View):
                 'start': date2str(start_of_month(date)),
                 'end': date2str(end_of_month(date)),
             }
+        def get_js():
+            return self.meta['js_on_cell_click_func'] % {'urlbase': reverse('report-time-summary-details')}
         
         meta = {
             'date_filter_ctrls': {
@@ -301,7 +313,11 @@ class TimeSummaryXLSXView(View):
                 'str_from': date2str(kwargs['date_from']),
                 'str_to': date2str(kwargs['date_to']),
             },
+            'js': {
+                'cell_click': get_js(),
+            }
         }
+        #print(meta)
         return meta
         
     def run_sql_query(self, **kwargs):
@@ -320,12 +336,15 @@ class TimeSummaryXLSXView(View):
                 },
                 {'name': 'total_hours',
                 'type': 'decimal',
-                'caption': _('Total hours')
+                'caption': _('Total hours'),
+                'meta': {
+                    'cssClass': 'colTotalHoursHdr',
+                    },
                 },
-                {'name': 'remarks',
-                'type': 'str',
-                'caption': _('Remarks')
-                }
+                #{'name': 'remarks',
+                #'type': 'str',
+                #'caption': _('Remarks')
+                #}
             ]
         self.make_day_header(header, **kwargs)
         
@@ -337,13 +356,18 @@ class TimeSummaryXLSXView(View):
         date_from = kwargs.get('date_from')
         date_to = kwargs.get('date_to')
         loopdate = date_from
+        start_day = loopdate.day - 1
         while loopdate <= date_to:
             header.append({'name': loopdate,
                            'type': 'date',
-                           'subtype': loopdate.isoweekday(),
                            'caption': str(loopdate.day),
-                           'caption_month': _(loopdate.strftime('%B')) 
+                           'caption_month': _(loopdate.strftime('%B')),
+                           'meta': {
+                               'month_col_span': monthrange(loopdate.year, loopdate.month)[1] - start_day,
+                               'cssClass': 'colDayHdr',
+                               },
                           })
+            start_day = 0
             loopdate = loopdate + datetime.timedelta(days=1)
             
             
@@ -391,9 +415,23 @@ class TimeSummaryXLSXView(View):
                 empl_ids.append(line['employee_id'])
                 prev_empl_id = line['employee_id']
                 
-        empl_ids.append(line['employee_id'])
-        print(empl_ids)
+        #empl_ids.append(line['employee_id'])
+        #print(empl_ids)
         return empl_ids        
+
+    def get_css_class_weekday(self, date, even):
+        try:
+            if date.isoweekday() in (6,7):
+                if even:
+                    cssClass = self.meta['css_cell_wknd_even']
+                else:
+                    cssClass = self.meta['css_cell_wknd_odd']
+            else:
+                cssClass = ''
+        except:
+            cssClass = ''
+
+        return cssClass
 
 
     def build_employee_time_matrix(self, header_data, employee_data, **kwargs):
@@ -402,25 +440,27 @@ class TimeSummaryXLSXView(View):
         if kwargs['split_by_project']:
             time_matrix = {'result': '-- not yet implemented --'}
         else:
+            even = True;
             for employee_id in employee_data.keys():
                 time_matrix_line = {}
+                even = not even;
                 for col in header_data:
-                    time_matrix_line[col['name']] = ''
+                    time_matrix_line[col['name']] = {'data': '', 'meta': {'cssClass': self.get_css_class_weekday(col['name'], even)}}
 
                 time_matrix[employee_id] = time_matrix_line
-
         return time_matrix
 
 
     def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, timelist_data, **kwargs):
         for employee_id in employee_data.keys():
-            time_matrix[employee_id]['employee'] = employee_data[employee_id]
+            time_matrix[employee_id]['employee']['data'] = employee_data[employee_id]
 
         loop_empl_id = 0
         empl_total_work_time = 0
         
         for line in timelist_data:
-            time_matrix[line['employee_id']][line['work_date']] = line['work_time']
+            time_matrix[line['employee_id']][line['work_date']]['data'] = line['work_time']
+            time_matrix[line['employee_id']][line['work_date']]['meta'] = self.get_day_cell_meta(line, time_matrix[line['employee_id']][line['work_date']]['meta'])
 
             if loop_empl_id == 0:
                 loop_empl_id = line['employee_id']
@@ -429,18 +469,44 @@ class TimeSummaryXLSXView(View):
             if loop_empl_id == line['employee_id']:
                 empl_total_work_time += line['work_time']
             else:
-                time_matrix[loop_empl_id]['total_hours'] = empl_total_work_time
+                time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
+                time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, **kwargs)
                 empl_total_work_time = line['work_time']
                 loop_empl_id = line['employee_id']
-        
+
         #adding total hours worked for the last employee
-        time_matrix[loop_empl_id]['total_hours'] = empl_total_work_time                
+        time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
+        time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, **kwargs)
 
         return time_matrix
 
+    def get_day_cell_meta(self, line, meta):
+        meta['onClick'] = self.meta['js_on_click_data_cell'] % {
+                    'empl': str(line['employee_id']),
+                    'date_from': line['work_date'].strftime("%Y-%m-%d"),
+                    'date_to': line['work_date'].strftime("%Y-%m-%d"),
+                    }
+
+        if meta.get('cssClass'):
+            meta['cssClass'] += ' ' + self.meta['css_cell_click'] if meta['cssClass'] != '' else self.meta['css_cell_click']
+        else:
+            meta['cssClass'] = self.meta['css_cell_click']
+
+        return meta
+
+    def get_total_cell_meta(self, employee_id, **kwargs):
+        meta = {'onClick': self.meta['js_on_click_data_cell'] % {
+                    'empl': employee_id,
+                    'date_from': kwargs['date_from'].strftime("%Y-%m-%d"),
+                    'date_to': kwargs['date_to'].strftime("%Y-%m-%d"),
+                    }
+                }
+        meta['cssClass'] = self.meta['css_cell_click']
+        return meta
+
     def get_report_lines(self, request):
         filters = {
-            #Addind default values and converting string dates to date data type.
+            #Adding default values and converting string dates to date data type.
             'date_from': datetime.datetime.strptime(
                 request.GET.get('date-from', self.default_start_date.strftime("%Y-%m-%d")),
                 "%Y-%m-%d").date(),
@@ -492,4 +558,59 @@ class TimeSummaryXLSXView(View):
         return render(request,
                       self.template,
                       context
+                      )
+
+
+class TimeSummaryPostedLineDetailView(View):
+    template = 'reports/time_summary/posted_time.html';
+    def get_context(self, employee, date_from, date_to):
+
+        t_lines = WorkTimeJournal.objects.filter(
+            employee=employee,
+            work_date__gte=date_from,
+            work_date__lte=date_to
+            ).select_related('employee'
+                             ).select_related('employee__user'
+                                              ).select_related('item'
+                                                               ).prefetch_related('item__translations'
+                                                                 ).prefetch_related('content_object'
+                                                                   ).prefetch_related('content_object__customer'
+                                                                     ).order_by('work_date', 'work_time_from')
+        total_time  = 0;
+        total_dist  = 0;
+        total_toll  = 0;
+        total_ferry = 0;
+        total_diet  = 0;
+
+        for line in t_lines:
+            total_time += 0 if line.work_time is None else line.work_time;
+            total_dist += 0 if line.distance is None else line.distance;
+            total_toll += 0 if line.toll_ring is None else line.toll_ring;
+            total_ferry += 0 if line.ferry is None else line.ferry;
+            total_diet += 0 if line.diet is None else line.diet;
+
+        context = {
+            'filters': {
+                    'date_from_str': date_from,
+                    'date_to_str': date_to,
+                    'date_from': datetime.datetime.strptime(date_from, "%Y-%m-%d").date(),
+                    'date_to': datetime.datetime.strptime(date_to, "%Y-%m-%d").date(),
+                    'one_day': date_from == date_to,
+                },
+            'totals': {
+                    'time': None if total_time == 0 else total_time,
+                    'distance': None if total_dist == 0 else total_dist,
+                    'toll': None if total_toll == 0 else total_toll,
+                    'ferry': None if total_ferry == 0 else total_ferry,
+                    'diet': None if total_diet == 0 else total_diet,
+                },
+            'lines': t_lines,
+            }
+
+        return context
+
+    def get(self, request, employee, date_from, date_to):
+        return render(request,
+                      self.template,
+                      self.get_context(employee, date_from, date_to),
                       )

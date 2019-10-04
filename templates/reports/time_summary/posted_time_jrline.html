@@ -1,0 +1,12 @@
+  <tr>
+	{% if not filters.one_day %} <td>{% ifchanged %}<b>{{line.work_date}}</b>{% endifchanged %}</td> {% endif %} 
+	<td>{{line.content_object.customer}}</td>
+	<td>{{line.content_object}}{% if line.content_object.description %}&nbsp({{line.content_object.description}}){% endif %}</td>
+	<td>{{line.item}}</td>
+	<td>{{line.work_time_from}} - {{line.work_time_to}}</td>
+	<td id="num-col">{{line.work_time}}</td>
+	<td id="num-col">{{line.distance|default_if_none:""}}</td>
+	<td id="num-col">{{line.toll_ring|default_if_none:""}}</td>
+	<td id="num-col">{{line.ferry|default_if_none:""}}</td>
+	<td id="num-col">{{line.diet|default_if_none:""}}</td>
+  </tr>	
