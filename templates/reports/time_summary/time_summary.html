@@ -24,16 +24,16 @@
     {% include 'reports/time_summary/time_table_filters.html' %}
     <br><br>
 	{% if timelist%}
-		<table border=1>
+		<table style="width: auto;">
 			{% include 'reports/time_summary/time_table_header.html' %}
 			{% include 'reports/time_summary/time_table_content.html' %}
 		</table>
 		{% autoescape off %}{{meta.js.cell_click}}{% endautoescape %}
 
-		<br>{{header}}<br><br>{{timelist}}
+		<br>{{x_header}}<br><br>{{x_timelist}}
 		
 	{% else %}
 		{{message}}
-	{% endif %}		
+	{% endif %}
 {% endblock %}
 

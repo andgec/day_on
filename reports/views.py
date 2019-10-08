@@ -1,5 +1,6 @@
 import operator
 import datetime
+import locale
 from calendar import monthrange
 from functools import reduce
 from django.db import connection
@@ -282,12 +283,23 @@ class TimeSummaryXLSXView(View):
     default_start_date = start_of_current_month()
     default_end_date = end_of_current_month()
     meta = {
-            'css_cell_empty'    : 'cellEmpty',      #css class for empty cell (without any data)
-            'css_cell_click'    : 'cellClick',      #css class for clickable cell (with working hours data)
-            'css_cell_wknd_odd' : 'cellWknd-odd',   #css class for weekend cell (odd line)
-            'css_cell_wknd_even': 'cellWknd-even',  #css class for weekend cell (even line)
-            'js_on_click_data_cell': 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
-            'js_on_cell_click_func': '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo} </script>',
+            'css_cell_empty'        : 'cellEmpty',          #css class for empty cell (without any data)
+            'css_cell_click'        : 'cellClick',          #css class for clickable cell (with working hours data)
+            'css_cell_workday_odd'  : 'cellWrkDay-odd',     #css class for workday cell (odd line)
+            'css_cell_workday_even' : 'cellWrkDay-even',    #css class for workday cell (even line)
+            'css_cell_wknd_odd'     : 'cellWknd-odd',       #css class for weekend cell (odd line)
+            'css_cell_wknd_even'    : 'cellWknd-even',      #css class for weekend cell (even line)
+            'css_cell_totalhrs_odd' : 'cellWrkDay-odd',     #css class for total-hours cell (odd line)
+            'css_cell_totalhrs_even': 'cellWrkDay-even',    #css class for total-hours cell (even line)
+            'css_cell_employee_odd' : 'cellWrkDay-odd',     #css class for employee cell (odd line)
+            'css_cell_employee_even': 'cellWrkDay-even',    #css class for employee cell (odd line)
+            'css_cell_day_hdr'      : 'colDayHdr',          #css class for day column header
+            'css_cell_totalhrs_hdr' : 'colTotalHoursHdr',   #css class for total-hours column header
+            'css_cell_employee_hdr' : 'colEmployeeHdr',     #css class for employee column header
+            'css_cell_day_footer'   : 'colDayFooter',       #css class for day and total column footer
+            'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
+            'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
+            'js_on_cell_click_func' : '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo} </script>',
             }
     
     def get_context(self, request):
@@ -332,13 +344,16 @@ class TimeSummaryXLSXView(View):
         header = [
                 {'name': 'employee',
                 'type': 'str',
-                'caption': _('Employee')
+                'caption': _('Employee'),
+                'meta': {
+                    'cssClass': self.meta['css_cell_employee_hdr'],
+                    }
                 },
                 {'name': 'total_hours',
                 'type': 'decimal',
                 'caption': _('Total hours'),
                 'meta': {
-                    'cssClass': 'colTotalHoursHdr',
+                    'cssClass': self.meta['css_cell_totalhrs_hdr'],
                     },
                 },
                 #{'name': 'remarks',
@@ -347,8 +362,6 @@ class TimeSummaryXLSXView(View):
                 #}
             ]
         self.make_day_header(header, **kwargs)
-        
-        #print(header)
         
         return header
 
@@ -361,10 +374,11 @@ class TimeSummaryXLSXView(View):
             header.append({'name': loopdate,
                            'type': 'date',
                            'caption': str(loopdate.day),
+                           'caption_weekday': _(loopdate.strftime('%a')),
                            'caption_month': _(loopdate.strftime('%B')),
                            'meta': {
                                'month_col_span': monthrange(loopdate.year, loopdate.month)[1] - start_day,
-                               'cssClass': 'colDayHdr',
+                               'cssClass': self.meta['css_cell_day_hdr'],
                                },
                           })
             start_day = 0
@@ -374,6 +388,7 @@ class TimeSummaryXLSXView(View):
     def get_employee_data(self, empl_ids, **kwargs):
         users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
         employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
+        employee_data[-1] = _('Total') #Adding line for totals
         return employee_data
         
         
@@ -419,17 +434,31 @@ class TimeSummaryXLSXView(View):
         #print(empl_ids)
         return empl_ids        
 
-    def get_css_class_weekday(self, date, even):
+    def get_css_class_for_cell(self, col, even):
         try:
-            if date.isoweekday() in (6,7):
+            if col.isoweekday() in (6,7):
                 if even:
                     cssClass = self.meta['css_cell_wknd_even']
                 else:
                     cssClass = self.meta['css_cell_wknd_odd']
             else:
-                cssClass = ''
+                if even:
+                    cssClass = self.meta['css_cell_workday_even']
+                else:
+                    cssClass = self.meta['css_cell_workday_odd']
         except:
-            cssClass = ''
+            if col == 'total_hours':
+                if even:
+                    cssClass = self.meta['css_cell_totalhrs_even']
+                else:
+                    cssClass = self.meta['css_cell_totalhrs_odd']
+            if col == 'employee':
+                if even:
+                    cssClass = self.meta['css_cell_employee_even']
+                else:
+                    cssClass = self.meta['css_cell_employee_odd']
+            else:
+                cssClass = ''
 
         return cssClass
 
@@ -445,11 +474,10 @@ class TimeSummaryXLSXView(View):
                 time_matrix_line = {}
                 even = not even;
                 for col in header_data:
-                    time_matrix_line[col['name']] = {'data': '', 'meta': {'cssClass': self.get_css_class_weekday(col['name'], even)}}
+                    time_matrix_line[col['name']] = {'data': 0, 'meta': {'cssClass': self.get_css_class_for_cell(col['name'], even)}}
 
                 time_matrix[employee_id] = time_matrix_line
         return time_matrix
-
 
     def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, timelist_data, **kwargs):
         for employee_id in employee_data.keys():
@@ -470,13 +498,19 @@ class TimeSummaryXLSXView(View):
                 empl_total_work_time += line['work_time']
             else:
                 time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
-                time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, **kwargs)
+                time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, time_matrix[loop_empl_id]['total_hours']['meta'], **kwargs)
                 empl_total_work_time = line['work_time']
                 loop_empl_id = line['employee_id']
 
+            #adding totals
+            time_matrix[-1]['total_hours']['data'] += line['work_time'];       #grand total
+            time_matrix[-1][line['work_date']]['data'] += line['work_time'];   #day total
+
         #adding total hours worked for the last employee
         time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
-        time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, **kwargs)
+        time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, time_matrix[loop_empl_id]['total_hours']['meta'], **kwargs)
+
+        self.set_total_line_meta(time_matrix[-1])
 
         return time_matrix
 
@@ -494,15 +528,27 @@ class TimeSummaryXLSXView(View):
 
         return meta
 
-    def get_total_cell_meta(self, employee_id, **kwargs):
-        meta = {'onClick': self.meta['js_on_click_data_cell'] % {
+    def get_total_cell_meta(self, employee_id, meta, **kwargs):
+        meta['onClick'] = self.meta['js_on_click_data_cell'] % {
                     'empl': employee_id,
                     'date_from': kwargs['date_from'].strftime("%Y-%m-%d"),
                     'date_to': kwargs['date_to'].strftime("%Y-%m-%d"),
                     }
-                }
-        meta['cssClass'] = self.meta['css_cell_click']
+        if meta.get('cssClass'):
+            meta['cssClass'] += ' ' + self.meta['css_cell_click'] if meta['cssClass'] != '' else self.meta['css_cell_click']
+        else:
+            meta['cssClass'] = self.meta['css_cell_click']
+
         return meta
+
+
+    def set_total_line_meta(self, total_line):
+        for col_name, col in total_line.items():
+            if col_name != 'employee':
+                col['meta']['cssClass'] += ' ' + self.meta['css_cell_day_footer']
+            else:
+                col['meta']['cssClass'] += ' ' + self.meta['css_cell_empl_footer']
+
 
     def get_report_lines(self, request):
         filters = {
@@ -523,7 +569,7 @@ class TimeSummaryXLSXView(View):
         if len(timelist_data) > 0:
             distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
             employee_data = self.get_employee_data(distinct_empl_ids, **filters)
-        
+
             time_matrix = self.build_employee_time_matrix(
                 header_data,
                 employee_data,
@@ -535,7 +581,7 @@ class TimeSummaryXLSXView(View):
                 employee_data,
                 timelist_data,
                 **filters)
-            
+
         meta = self.get_meta(**filters)
 
         context = {

@@ -1,7 +1,7 @@
 {% for empl_id, timeline in timelist.items %}
 	<tr>
 	{% for col, data in timeline.items %}
-		<td class="{{data.meta.cssClass}}" {{data.meta.onClick}}>{{data.data}}</td>
+		<td class="{{data.meta.cssClass}}" {{data.meta.onClick}}>{% if data.data != 0 %}{{data.data}}{% endif %}</td>
 	{% endfor %}
 	</tr>
 {% endfor %}
