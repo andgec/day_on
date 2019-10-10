@@ -1,7 +1,10 @@
+<tbody>
 {% for empl_id, timeline in timelist.items %}
 	<tr>
 	{% for col, data in timeline.items %}
-		<td class="{{data.meta.cssClass}}" {{data.meta.onClick}}>{% if data.data != 0 %}{{data.data}}{% endif %}</td>
+		<td class="{{data.meta.cssClass}}" {{data.meta.onClick}}><div>{% if data.data != 0 %}{{data.data}}{% endif %}</div></td>
 	{% endfor %}
+	<td class="pseudo"><div/></td>
 	</tr>
 {% endfor %}
+</tbody>

@@ -9,6 +9,18 @@
 	text-decoration: underline;
 }
 
+.cellDay div {
+	width: 37px;
+}
+
+.cellEmployee div {
+	width: 170px;
+}
+
+.cellTotalHrs div {
+	width: 60px;
+}
+
 .cellWknd-odd{
 	background-color: #e7eff2;
 	border-left: 1px solid #CCC;
@@ -53,32 +65,36 @@
 
 .colDayHdr {
 	text-align: center;
-	width: 33px;
 	font-size: 14px;
+	padding: 5px;
 }
 
 .colTotalHoursHdr {
-	width: 60px;
 	text-align: right;
 	padding-right: 10px;
+	padding-left: 10px;
 	background-color: #DDD;
 	border-left: 1px solid #B9B9B9;
 	border-right: 1px solid #AAA;
 	border-top: 1px solid #B9B9B9;
 	border-bottom: 1px solid #B9B9B9;
+	text-transform: uppercase;
 }
 
 .colEmployeeHdr {
-	padding-left:10px;
+	padding-left: 10px;
 	background-color: #DDD;
 	border-left: 1px solid #AAA;
 	border-right: 1px solid #AAA;
 	border-top: 1px solid #B9B9B9;
 	border-bottom: 1px solid #B9B9B9;
+	text-transform: uppercase;
 }
 
 .monthHdrLine {
 	border-bottom: none;
+	border-top: none;
+	background-color: #FFF;
 }
 
 .monthHdr {
@@ -86,7 +102,7 @@
 	color: #999;
 	font-size: 18px;
 	border-style: dotted dotted none dotted;
-	border-width: 7px;
+	border-width: 5px;
 	border-color: #B9B9B9;
 	text-align: center;
 }
@@ -105,4 +121,20 @@
 .weekdayText {
 	color:#777;
 	font-size: 10px;
+}
+
+.pseudo {
+	padding: 0px;
+	border: none;
+	background-color: white;
+}
+.pseudo div {
+	width: 4px;
+}
+
+thead th{
+	background-color: white;
+	border: none;
+	text-transform: none;
+	color: #333;
 }

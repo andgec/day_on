@@ -1,3 +1,5 @@
+<thead>
+<tr><th colspan={{meta.table_header.whitebar_col_span}}></th></tr>
 <tr>
 	{% for col in header %}
 		{% if col.caption_month %}
@@ -6,6 +8,7 @@
 		  <th class="monthHdrLine"/>
         {% endif %}
 	{% endfor %}
+	<th class="pseudo"><div/></th>
 </tr>
 <tr>
 {% for col in header %}
@@ -13,4 +16,6 @@
 	  colWkndHdr {%elif weekday == '1' or weekday == '2' or weekday == '3' or weekday == '4' or weekday == '5'%} colWrkdHdr{% endif %}{% endwith %}">
 	  {{col.caption}}<br><span class="weekdayText">{{col.caption_weekday}}</span></th>
 {% endfor %}
+	th class="pseudo"><div/></th>
 </tr>
+</thead>

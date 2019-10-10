@@ -4,6 +4,7 @@
 
 {% block linked_files %}
 	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery/external/jquery/jquery.floatThead.min.js' %}"></script>
     <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
@@ -24,10 +25,17 @@
     {% include 'reports/time_summary/time_table_filters.html' %}
     <br><br>
 	{% if timelist%}
-		<table style="width: auto;">
+		<div style="width: auto">
+		<table id="resultset" style="width: 10%">
 			{% include 'reports/time_summary/time_table_header.html' %}
 			{% include 'reports/time_summary/time_table_content.html' %}
 		</table>
+		</div>
+		<script>
+		$(function(){
+		    $('#resultset').floatThead();
+		});
+		</script>
 		{% autoescape off %}{{meta.js.cell_click}}{% endautoescape %}
 
 		<br>{{x_header}}<br><br>{{x_timelist}}

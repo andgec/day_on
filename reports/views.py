@@ -279,18 +279,22 @@ class TimelistHTMLView(View):
 class TimeSummaryXLSXView(View):
     #template = get_template('reports/time_summary/time_summary.html')
     template = 'reports/time_summary/time_summary.html'
-    
+
     default_start_date = start_of_current_month()
     default_end_date = end_of_current_month()
+
     meta = {
             'css_cell_empty'        : 'cellEmpty',          #css class for empty cell (without any data)
             'css_cell_click'        : 'cellClick',          #css class for clickable cell (with working hours data)
+            'css_cell_day'          : 'cellDay',            #css class for any day cell
             'css_cell_workday_odd'  : 'cellWrkDay-odd',     #css class for workday cell (odd line)
             'css_cell_workday_even' : 'cellWrkDay-even',    #css class for workday cell (even line)
             'css_cell_wknd_odd'     : 'cellWknd-odd',       #css class for weekend cell (odd line)
             'css_cell_wknd_even'    : 'cellWknd-even',      #css class for weekend cell (even line)
+            'css_cell_totalhrs'     : 'cellTotalHrs',       #css class for total hours cell
             'css_cell_totalhrs_odd' : 'cellWrkDay-odd',     #css class for total-hours cell (odd line)
             'css_cell_totalhrs_even': 'cellWrkDay-even',    #css class for total-hours cell (even line)
+            'css_cell_employee'     : 'cellEmployee',       #css class for employee cell
             'css_cell_employee_odd' : 'cellWrkDay-odd',     #css class for employee cell (odd line)
             'css_cell_employee_even': 'cellWrkDay-even',    #css class for employee cell (odd line)
             'css_cell_day_hdr'      : 'colDayHdr',          #css class for day column header
@@ -300,8 +304,10 @@ class TimeSummaryXLSXView(View):
             'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
             'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
             'js_on_cell_click_func' : '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo} </script>',
-            }
-    
+        }
+
+    whitebar_col_span = 0;
+
     def get_context(self, request):
         context = self.get_report_lines(request)
         return context
@@ -327,19 +333,13 @@ class TimeSummaryXLSXView(View):
             },
             'js': {
                 'cell_click': get_js(),
+            },
+            'table_header': {
+                'whitebar_col_span': self.whitebar_col_span,
             }
         }
-        #print(meta)
         return meta
         
-    def run_sql_query(self, **kwargs):
-        with connection.cursor() as cursor:
-            #try
-            cursor.execute(self.sql)
-            #except
-            result_dict = dictfetchall(cursor)
-        return result_dict
-    
     def make_report_header(self, **kwargs):
         header = [
                 {'name': 'employee',
@@ -365,11 +365,21 @@ class TimeSummaryXLSXView(View):
         
         return header
 
+
     def make_day_header(self, header, **kwargs):
+        def get_month_col_span(date, date_from, date_to):
+            span = monthrange(date.year, date.month)[1]
+            if date.year == date_from.year and date.month == date_from.month:
+                span = monthrange(date.year, date.month)[1] - date_from.day + 1
+            if date.year == date_to.year and date.month == date_to.month:
+                span = span - (monthrange(date.year, date.month)[1] - date_to.day) if span else date_to.day
+            return span
+
         date_from = kwargs.get('date_from')
         date_to = kwargs.get('date_to')
         loopdate = date_from
-        start_day = loopdate.day - 1
+        month = 0;
+        wbcspan = 0;
         while loopdate <= date_to:
             header.append({'name': loopdate,
                            'type': 'date',
@@ -377,21 +387,28 @@ class TimeSummaryXLSXView(View):
                            'caption_weekday': _(loopdate.strftime('%a')),
                            'caption_month': _(loopdate.strftime('%B')),
                            'meta': {
-                               'month_col_span': monthrange(loopdate.year, loopdate.month)[1] - start_day,
+                               'month_col_span': get_month_col_span(loopdate, date_from, date_to), #calculating colspan for month header
                                'cssClass': self.meta['css_cell_day_hdr'],
                                },
                           })
-            start_day = 0
             loopdate = loopdate + datetime.timedelta(days=1)
-            
-            
+
+        # Whitebar is the thin white bar at the very top of data table header.
+        # Wee need to know how many columns to the right it must span.
+            if month != loopdate.month:
+                month = loopdate.month
+                wbcspan += get_month_col_span(loopdate, date_from, date_to)
+
+        self.whitebar_col_span = wbcspan + 3
+
+
     def get_employee_data(self, empl_ids, **kwargs):
         users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
         employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
         employee_data[-1] = _('Total') #Adding line for totals
         return employee_data
-        
-        
+
+
     def get_timelist_data(self, **kwargs):
         q_list = []
 
@@ -422,7 +439,7 @@ class TimeSummaryXLSXView(View):
 
 
     def get_distinct_empl_ids(self, timelist_data):
-        #get employee ids from 
+        # get distinct employee ids from timelist data
         empl_ids = []
         prev_empl_id = 0
         for line in timelist_data:
@@ -430,33 +447,34 @@ class TimeSummaryXLSXView(View):
                 empl_ids.append(line['employee_id'])
                 prev_empl_id = line['employee_id']
                 
-        #empl_ids.append(line['employee_id'])
-        #print(empl_ids)
         return empl_ids        
 
     def get_css_class_for_cell(self, col, even):
         try:
+            cssClass = self.meta['css_cell_day'] + ' '
             if col.isoweekday() in (6,7):
                 if even:
-                    cssClass = self.meta['css_cell_wknd_even']
+                    cssClass += self.meta['css_cell_wknd_even']
                 else:
-                    cssClass = self.meta['css_cell_wknd_odd']
+                    cssClass += self.meta['css_cell_wknd_odd']
             else:
                 if even:
-                    cssClass = self.meta['css_cell_workday_even']
+                    cssClass += self.meta['css_cell_workday_even']
                 else:
-                    cssClass = self.meta['css_cell_workday_odd']
+                    cssClass += self.meta['css_cell_workday_odd']
         except:
             if col == 'total_hours':
+                cssClass = self.meta['css_cell_totalhrs'] + ' '
                 if even:
-                    cssClass = self.meta['css_cell_totalhrs_even']
+                    cssClass += self.meta['css_cell_totalhrs_even']
                 else:
-                    cssClass = self.meta['css_cell_totalhrs_odd']
-            if col == 'employee':
+                    cssClass += self.meta['css_cell_totalhrs_odd']
+            elif col == 'employee':
+                cssClass = self.meta['css_cell_employee'] + ' '
                 if even:
-                    cssClass = self.meta['css_cell_employee_even']
+                    cssClass += self.meta['css_cell_employee_even']
                 else:
-                    cssClass = self.meta['css_cell_employee_odd']
+                    cssClass += self.meta['css_cell_employee_odd']
             else:
                 cssClass = ''
 
@@ -593,11 +611,6 @@ class TimeSummaryXLSXView(View):
         }
         
         return context
-    
-    #def get(self, request):
-    #    context = self.get_context(request)
-    #    html = self.template.render(context)
-    #    return HttpResponse(html)
     
     def get(self, request):
         context = self.get_context(request)
