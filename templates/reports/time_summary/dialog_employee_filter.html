@@ -1,12 +1,18 @@
   <div id="empl-dialog" class="modal-dialog">
-	 <div class="dialog-content">
+	 <div class="dialog-content" style="width: 540px;">
 	   <div class="dialog-title"> {{_('Set employee filter')}} <span class="close" id="clempl">&times;</span></div>
 	   <div class="dialog-body">
-	     <p><h2>{{_('Do you really want to delete this record?')}}</h2></p>
-	     <h3>{{_('If you will confirm, the record will be irrecoverably deleted.')}}</h3>
+	     <p><h2>{{_('Select relevant employees')}}</h2></p>
+	     <h3>{{_('Please select employees which you want to filter on:')}}</h3>
+		<select data-placeholder="xPasirinkite darbuotojus..." id="select-employees" class="chosen-select" multiple tabindex="4">
+		  <option value=""></option>
+		  {% for empl_id, empl_name in employees.items %}
+			<option value="{{empl_id}}">{{empl_name}}</option>
+		  {% endfor %}
+		</select>
 	   </div>
 	   <div class="dialog-footer">
-	     <button id="btn-conf-empl" class="btn-save" title = "{{ _('Confirm') }}">
+	     <button id="btn-conf-empl" class="btn-save" title = "{{ _('Confirm') }}" onclick="confirmEmplFilter()">
 		   {{_('Confirm')}}
          </button>
          <span class="btn-spacing"/>
@@ -18,18 +24,59 @@
   </div>
   <script>
     var empl_dialog = document.getElementById("empl-dialog");
-    
+
     showEmplFilterDialog = function() {
       empl_dialog.style.display = "block";
-    }
+    };
 
     closeEmplDialog = function() {
       empl_dialog.style.display = "none";
     };
 
+    var cancelEmplDialog = function() {
+      closeEmplDialog();
+      drawFilterEmployees();
+    };
+
     var spanEmpl = document.getElementById("clempl");
-    spanEmpl.onclick = closeEmplDialog;
+    spanEmpl.onclick = cancelEmplDialog;
 
     var btnCancelEmpl = document.getElementById("btn-cnc-empl");
-    btnCancelEmpl.onclick = closeEmplDialog;
+    btnCancelEmpl.onclick = cancelEmplDialog;
+
+    //----------------------------------------------------------
+    //-------------- Employee filter functions -----------------
+    //----------------------------------------------------------
+
+    var confirmEmplFilter = function() {
+      setInternalData($("#select-employees :selected"), filters['employees'], filters['empl_names']);
+      drawFilterEmployees(false);
+      closeEmplDialog();
+    };
+
+    // Clears employee filter. Executes when user clicks "clear employee filter".
+    var clearEmployeeFilter = function() {
+      clearFilter(document.getElementById('filter-employees'),
+                  document.getElementById('select-employees'),
+                  filters['employees']
+      );
+    };
+
+	// Sets visual representation of the selected filter
+    var drawFilterEmployees = function(reloadNames = true) {
+      drawFilter(
+          document.getElementById('filter-employees'),
+          document.getElementById('select-employees'),
+          filters['employees'],
+          filters['empl_names'],
+          reloadNames
+      );
+    };
+
+    var initFilterEmployees = function(empl_ids) {
+      filters['employees'] = empl_ids.split(',');
+      drawFilterEmployees();
+    };
+
+    initFilterEmployees('{{filters.employee_ids}}');
   </script>

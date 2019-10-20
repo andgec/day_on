@@ -1,12 +1,24 @@
   <div id="proj-dialog" class="modal-dialog">
-	 <div class="dialog-content">
+	 <div class="dialog-content"  style="width: 540px;">
 	   <div class="dialog-title"> {{_('Set project filter')}} <span class="close" id="clproj">&times;</span></div>
 	   <div class="dialog-body">
-	     <p><h2>{{_('Do you really want to delete this record?')}}</h2></p>
-	     <h3>{{_('If you will confirm, the record will be irrecoverably deleted.')}}</h3>
+	     <p><h2>{{_('xPasirinkite projektus kuriems skaičuoti valandas ')}}</h2></p>
+	     <h3>{{_('xPaieškos laukelyje įrašykite kliento arba projekto pavadinimo fragmentą')}}</h3>
+		    <select data-placeholder="xPasirinkite projektus..." id="select-projects" class="chosen-select" multiple tabindex="4">
+				<option value=""></option>
+				<optgroup>
+				{% for project in projects %}
+				  {% ifchanged project.customer.name %}
+				  </optgroup>
+				  <optgroup label="{{project.customer.name}}">
+				  {% endifchanged %}
+					<option value="{{project.id}}">{{project.name}}</option>
+				{% endfor %}
+				</optgroup>
+			</select>
 	   </div>
 	   <div class="dialog-footer">
-	     <button id="btn-conf-proj" class="btn-save" title = "{{ _('Confirm') }}">
+	     <button id="btn-conf-proj" class="btn-save" title = "{{ _('Confirm') }}" onclick="confirmProjFilter()">
 		   {{_('Confirm')}}
          </button>
          <span class="btn-spacing"/>
@@ -18,7 +30,7 @@
   </div>
   <script>
     var proj_dialog = document.getElementById("proj-dialog");
-    
+
     showProjFilterDialog = function() {
       proj_dialog.style.display = "block";
     }
@@ -27,9 +39,50 @@
       proj_dialog.style.display = "none";
     };
 
+    var cancelProjDialog = function() {
+      closeProjDialog();
+      drawFilterProjects();
+    };
+
     var spanProj = document.getElementById("clproj");
-    spanProj.onclick = closeProjDialog;
+    spanProj.onclick = cancelProjDialog;
 
     var btnCancelProj = document.getElementById("btn-cnc-proj");
-    btnCancelProj.onclick = closeProjDialog;
+    btnCancelProj.onclick = cancelProjDialog;
+
+    //----------------------------------------------------------
+    //-------------- Project filter functions -----------------
+    //----------------------------------------------------------
+
+    var confirmProjFilter = function() {
+      setInternalData($("#select-projects :selected"), filters['projects'], filters['proj_names']);
+      drawFilterProjects(false);
+      closeProjDialog();
+    }
+
+    // Clears project filter. Executes when user clicks "clear project filter".
+    var clearProjectFilter = function() {
+      clearFilter(document.getElementById('filter-projects'),
+                  document.getElementById('select-projects'),
+                  filters['projects']
+      );
+    }
+
+    // Sets visual representation of the selected filter
+    var drawFilterProjects = function(reloadNames = true) {
+      drawFilter(
+          document.getElementById('filter-projects'),
+          document.getElementById('select-projects'),
+          filters['projects'],
+          filters['proj_names'],
+          reloadNames
+      );
+    };
+
+    var initFilterProjects = function(proj_ids) {
+      filters['projects'] = proj_ids.split(',');
+      drawFilterProjects();
+    }
+
+    initFilterProjects('{{filters.project_ids}}')
   </script>

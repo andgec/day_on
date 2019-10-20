@@ -1,0 +1,8 @@
+- Daugybė nemokamų JQuery komponentų:
+	https://www.jqueryscript.net/
+	
+- JQuery dropdown multiple searchable select (Geras!):
+	https://www.jqueryscript.net/form/Searchable-Multi-select-jQuery-Dropdown.html
+	Files:
+	  * jquery.dropdown.css
+	  * jquery.dropdown.min.js

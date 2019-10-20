@@ -26,16 +26,6 @@
     var display_from = document.getElementById("fd-from");
     var display_to = document.getElementById("fd-to");
 
-  	function get_url(){
-  	  return '{% url 'report-time-summary' %}' + '?date-from=' + filters['date']['from'] + '&date-to=' + filters['date']['to']
-  	};
-
-  	var filters = {
-  	  'date': {},
-  	  'employees': [],
-  	  'projects': [],
-  	}
-
   	function set_date_from(value){
   	  filters['date']['tmp-from'] = value;
   	};
@@ -65,7 +55,7 @@
       //Changing values on datepickers
       datepicker_from.datepicker('setDate', new Date(filters['date']['from']));
       datepicker_to.datepicker('setDate', new Date(filters['date']['to']));
-      //Changing values in filter filter window
+      //Changing values in filter window
       display_from.innerHTML = filters['date']['from'];
       display_to.innerHTML = filters['date']['to'];
     }
@@ -75,10 +65,6 @@
       filters['date']['to'] = filters['date']['tmp-to'];
       drawDateFilterValues();
       closeDateDialog();
-    }
-
-    runFilters = function() {
-      window.location.replace(get_url());
     }
 
     var spanDate = document.getElementById("cldate");

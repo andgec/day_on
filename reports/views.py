@@ -283,6 +283,8 @@ class TimeSummaryXLSXView(View):
     default_start_date = start_of_current_month()
     default_end_date = end_of_current_month()
 
+    ctp_proj = None
+
     meta = {
             'css_cell_empty'        : 'cellEmpty',          #css class for empty cell (without any data)
             'css_cell_click'        : 'cellClick',          #css class for clickable cell (with working hours data)
@@ -303,7 +305,7 @@ class TimeSummaryXLSXView(View):
             'css_cell_day_footer'   : 'colDayFooter',       #css class for day and total column footer
             'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
             'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
-            'js_on_cell_click_func' : '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo} </script>',
+            'js_on_cell_click_func' : '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo%(projects)s} </script>',
         }
 
     whitebar_col_span = 0;
@@ -311,7 +313,14 @@ class TimeSummaryXLSXView(View):
     def get_context(self, request):
         context = self.get_report_lines(request)
         return context
+
+    def get_contenttype_project(self):
+        if not self.ctp_proj:
+            self.ctp_proj = ContentType.objects.get(model='project')
+        return self.ctp_proj
         
+    contenttype_project = property(get_contenttype_project)
+
     def get_meta(self, **kwargs):
         def get_month_meta(date):
             return {
@@ -320,9 +329,13 @@ class TimeSummaryXLSXView(View):
                 'start': date2str(start_of_month(date)),
                 'end': date2str(end_of_month(date)),
             }
+
         def get_js():
-            return self.meta['js_on_cell_click_func'] % {'urlbase': reverse('report-time-summary-details')}
-        
+            return self.meta['js_on_cell_click_func'] % {
+                'urlbase': reverse('report-time-summary-details'),
+                'projects': ' + "?projects=' + kwargs.get('project_ids', '') + '"' if kwargs.get('project_ids') else '',
+            }
+
         meta = {
             'date_filter_ctrls': {
                 'this_month': get_month_meta(self.default_start_date),
@@ -339,7 +352,7 @@ class TimeSummaryXLSXView(View):
             }
         }
         return meta
-        
+
     def make_report_header(self, **kwargs):
         header = [
                 {'name': 'employee',
@@ -403,11 +416,25 @@ class TimeSummaryXLSXView(View):
 
 
     def get_employee_data(self, empl_ids, **kwargs):
-        users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
-        employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
-        employee_data[-1] = _('Total') #Adding line for totals
-        return employee_data
+        def filter_employees(empl_dict, empl_ids):
+            return {empl_id: empl_dict[empl_id] for empl_id in empl_dict if empl_id in empl_ids}
 
+        # Optimized version returns two employee lists:
+        #   - a list for employee filter (full list of active employees);
+        #   - a list for report without employees who do not have any hours registered for a given period.
+        # This way only one call to the database is needed to retrieve both lists.
+
+        #users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
+        users = User.objects.only('first_name', 'last_name').filter(is_active = True).order_by('first_name', 'last_name')
+        full_employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
+        employee_data = filter_employees(full_employee_data, empl_ids)
+        employee_data[-1] = _('Total') #Adding line for totals
+        return employee_data, full_employee_data
+
+
+    def get_project_data(self):
+        projects = Project.objects.only('customer__name', 'name').filter(visible = True).select_related('customer').order_by('customer__name', 'name')
+        return projects
 
     def get_timelist_data(self, **kwargs):
         q_list = []
@@ -415,13 +442,16 @@ class TimeSummaryXLSXView(View):
         q_list.append(Q(work_date__gte=kwargs.get('date_from')))
         q_list.append(Q(work_date__lte=kwargs.get('date_to')))
 
+        employee_ids = kwargs.get('employee_ids')
+        if employee_ids:
+            q_list.append(Q(employee_id__in=employee_ids.split(',')))
+
         project_ids = kwargs.get('project_ids')
         if project_ids:
-            contenttype_project = ContentType.objects.get(model='project')
             project_ids_list = project_ids.split(',')
-            q_list.append(Q(content_type=contenttype_project))
+            q_list.append(Q(content_type=self.contenttype_project))
             q_list.append(Q(object_id__in=project_ids_list))
-        
+
         if kwargs['split_by_project']:
             timelist_data = WorkTimeJournal.objects.filter(
                 reduce(operator.and_, q_list)).values(
@@ -446,7 +476,7 @@ class TimeSummaryXLSXView(View):
             if line['employee_id'] != prev_empl_id:
                 empl_ids.append(line['employee_id'])
                 prev_empl_id = line['employee_id']
-                
+
         return empl_ids        
 
     def get_css_class_for_cell(self, col, even):
@@ -581,12 +611,17 @@ class TimeSummaryXLSXView(View):
             'employee_ids': request.GET.get('employees'),
             'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
         }
+
         time_matrix = None
         header_data = self.make_report_header(**filters)
         timelist_data = self.get_timelist_data(**filters)
+
+        distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
+        employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
+
         if len(timelist_data) > 0:
-            distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
-            employee_data = self.get_employee_data(distinct_empl_ids, **filters)
+            # distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
+            # employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
 
             time_matrix = self.build_employee_time_matrix(
                 header_data,
@@ -607,6 +642,8 @@ class TimeSummaryXLSXView(View):
             'meta': meta,
             'header': header_data,
             'timelist': time_matrix,
+            'employees': select_empl_list,
+            'projects': self.get_project_data(),
             'message': _('No timelist entries for given period.') if time_matrix is None else ''
         }
         
@@ -622,8 +659,17 @@ class TimeSummaryXLSXView(View):
 
 class TimeSummaryPostedLineDetailView(View):
     template = 'reports/time_summary/posted_time.html';
-    def get_context(self, employee, date_from, date_to):
 
+    ctp_proj = None
+
+    def get_contenttype_project(self):
+        if not self.ctp_proj:
+            self.ctp_proj = ContentType.objects.get(model='project')
+        return self.ctp_proj
+
+    contenttype_project = property(get_contenttype_project)
+
+    def get_context(self, employee, date_from, date_to, project_ids):
         t_lines = WorkTimeJournal.objects.filter(
             employee=employee,
             work_date__gte=date_from,
@@ -635,6 +681,9 @@ class TimeSummaryPostedLineDetailView(View):
                                                                  ).prefetch_related('content_object'
                                                                    ).prefetch_related('content_object__customer'
                                                                      ).order_by('work_date', 'work_time_from')
+        if project_ids:
+            t_lines = t_lines.filter(content_type=self.contenttype_project, object_id__in=project_ids.split(','))
+
         total_time  = 0;
         total_dist  = 0;
         total_toll  = 0;
@@ -668,8 +717,8 @@ class TimeSummaryPostedLineDetailView(View):
 
         return context
 
-    def get(self, request, employee, date_from, date_to):
+    def get(self, request, employee, date_from, date_to, project_ids=None):
         return render(request,
                       self.template,
-                      self.get_context(employee, date_from, date_to),
+                      self.get_context(employee, date_from, date_to, request.GET.get('projects')),
                       )

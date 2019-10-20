@@ -5,11 +5,13 @@
 {% block linked_files %}
 	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
     <script src="{% static 'js/jquery/external/jquery/jquery.floatThead.min.js' %}"></script>
+    <script src="{% static 'js/jquery/external/jquery/chosen.jquery.min.js' %}"></script>
     <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
 
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/jquery/chosen/chosen.css' %}">
 
 	<link rel="stylesheet" type="text/css" href="{% static 'css/reports/time-summary.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/dialogs.css' %}">
@@ -22,6 +24,7 @@
 		</div>
 {% endblock %}
 {% block content %}
+	<br><br>
     {% include 'reports/time_summary/time_table_filters.html' %}
     <br><br>
 	{% if timelist%}
@@ -32,9 +35,11 @@
 		</table>
 		</div>
 		<script>
-		$(function(){
-		    $('#resultset').floatThead();
-		});
+			var tableResultset = $('#resultset');
+
+			$(function(){
+		  	  tableResultset.floatThead();
+			});
 		</script>
 		{% autoescape off %}{{meta.js.cell_click}}{% endautoescape %}
 

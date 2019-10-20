@@ -1,7 +1,5 @@
-<h2>{{ _('Filters') }}: <!-- b>{{filters}}</b> --></h2>
-
 <!-- Filter box -->
-<div class="filter-box" style="max-width: 730px;">
+<div class="filter-box" style="max-width: 900px;">
   <div class="inner-box">
     <div class="left-section" style="width: 250px;">
       <div class="fbs-header">
@@ -36,30 +34,29 @@
         </div>
       </div>
     </div>
-    <div class="middle-section" style="width: 300px;">
+    <div class="middle-section" style="width: 280px;">
       <div class="fbs-header">
         {{_('Employees')|upper}}
         <div class="fr">
-          <span id="ef-clear" class="filter-edit" onClick="showEmplFilterDialog()" title = "{{ _('Clear employee filter') }}">&nbsp<i class="fas fa-times"></i>&nbsp</span>&nbsp
+          <span id="ef-clear" class="filter-edit" onClick="clearEmployeeFilter()" title = "{{ _('Clear employee filter') }}">&nbsp<i class="fas fa-times"></i>&nbsp</span>&nbsp
           <span id="ef-edit" class="filter-edit" onClick="showEmplFilterDialog()" title = "{{ _('Edit employee filter') }}">&nbsp<i class="fas fa-edit"></i></span>
         </div>          
       </div>
       <div class="fbs-body">
-        <ul>
-          <li>Andrius Gečys</li>
-          <li>Andrius Gečys</li>
-          <li>Andrius Gečys</li>
-        </ul>      
+        <ul id="filter-employees"/>
       </div>
     </div>
     
-    <div class="right-section"  style="width: 300px;">
+    <div class="right-section"  style="width: 600px;">
       <div class="fbs-header">
         {{_('Projects')|upper}}
-        <span id="pf-edit" class="filter-edit fr" onClick="showProjFilterDialog()" title = "{{ _('Edit project filter') }}">&nbsp<i class="fas fa-edit"></i></span>        
+        <div class="fr">
+          <span id="pf-clear" class="filter-edit" onClick="clearProjectFilter()" title = "{{ _('Clear project filter') }}">&nbsp<i class="fas fa-times"></i>&nbsp</span>&nbsp
+          <span id="pf-edit" class="filter-edit fr" onClick="showProjFilterDialog()" title = "{{ _('Edit project filter') }}">&nbsp<i class="fas fa-edit"></i></span>
+		</div>
       </div>
-      <div class="fbs-body">
-		508: Solberg skole
+      <div class="fbs-body"">
+        <ul id="filter-projects"/>
       </div>
     </div>
   </div>
@@ -67,6 +64,116 @@
     <button onClick="runFilters()" class="btn-save" style="width:150px;"> {{_('Calculate')}} </button>
   </div>
 </div>
+<script>
+
+//-----------------------------------------------------------
+
+	var filters = {
+  	  'date': {},
+  	  'employees': [],
+  	  'empl_names': [],
+  	  'projects': [],
+  	  'proj_names': [],
+  	};
+
+	// Builds url with parameters according to selected filters
+	function get_url() {
+  	  var url_date='', url_empl='', url_proj='';
+	  url_date = '{% url 'report-time-summary' %}' + '?date-from=' + filters['date']['from'] + '&date-to=' + filters['date']['to'];
+	  if (filters['employees'].length > 0 && filters['employees'][0] != "None")
+	    {url_empl = '&employees=' + filters['employees'].join();} else {url_empl = ''};
+  	  if (filters['projects'].length > 0  && filters['projects'][0] != "None")
+  	    {url_proj = '&projects=' + filters['projects'].join();} else {url_proj = ''};
+  	  return url_date + url_empl + url_proj;
+  	};
+
+  	// Redirect to new url
+    runFilters = function() {
+      window.location.replace(get_url());
+    }
+
+	//Fills internal (array) data from select object into arrays. Executed when user sets and confirms filter.
+	var setInternalData = function(elmnt, array_ids, array_names) {
+	  array_ids.length = 0;
+	  array_names.length = 0;
+	  elmnt.each(function(i, selected){
+        array_ids[i] = $(selected).val();
+	    array_names[i] = $(selected).text();
+	  })
+	};
+
+	// Refresh select component (when items are removed dynamically component does not refresh automatically)
+	var refreshSelect = function(elmnt) {
+	  $(elmnt).trigger('chosen:updated');
+	}
+
+	// Updates select component by dynamically selecting options by values which are in the array "values" (used on initializing filter)
+	var selectItemsByValues = function(elmnt, values) {
+	  var selected_texts = [];
+	  for(var i=0; i < elmnt.options.length; i++)
+	  {
+	    if($.inArray(elmnt.options[i].value, values) >= 0) {
+	      elmnt.options[i].selected = true;
+	      selected_texts[i] = elmnt.options[i].text;
+	    }
+	    else {
+	      elmnt.options[i].selected = false;
+	    }
+	  }
+	  refreshSelect(elmnt);
+	  return selected_texts;
+	};
+
+	// Updates filter display box by adding single text line to it
+	var addFilterBoxItem = function(elmnt, text) {
+	  var li = document.createElement("li");
+	  li.appendChild(document.createTextNode(text));
+	  elmnt.appendChild(li);
+	};
+
+	// Clears filter display box
+	var clearFilterBoxItems = function(elmnt) {
+	  elmnt.innerHTML = '';
+	};
+
+	// Clears select box
+	var clearSelectBoxItems = function(elmnt) {
+	  for (i=0; i < elmnt.options.length; i++) {
+	    elmnt.options[i].selected = false;
+	  }
+	};
+
+	// Clear filter (clear button)
+	var clearFilter = function(elmnt_fbox, elmnt_select, array_ids) {
+	  array_ids.length = 0;
+	  clearFilterBoxItems(elmnt_fbox);
+	  clearSelectBoxItems(elmnt_select);
+	  refreshSelect(elmnt_select);
+	  window.scrollBy(0,1); window.scrollBy(0,-1); //This is needed to refresh floatTHead
+	  tableResultset.trigger('reflow');  		   //This is needed to refresh floatTHead
+	};
+
+	// Sets visual representation of the selected filter
+	var drawFilter = function(elmnt_fbox, elmnt_select, array_ids, array_names, reloadNames = true) {
+	  var writeFilterBoxLine = function(text, index, array) {
+	    addFilterBoxItem(elmnt_fbox, text)
+	  }
+	  if (reloadNames) {array_names = selectItemsByValues(elmnt_select, array_ids)};
+	  clearFilterBoxItems(elmnt_fbox);
+	  array_names.forEach(writeFilterBoxLine)
+	  window.scrollBy(0,1); window.scrollBy(0,-1); //This is needed to refresh floatTHead
+	  tableResultset.trigger('reflow'); 		   //This is needed to refresh floatTHead
+	};
+
+    //Enable JQuery Chosen plugin for multiple select (for employee filter dialog and project filter dialog)
+    $(function() {
+		$(".chosen-select").chosen({
+	 		search_contains: true,
+    		display_selected_options: false,
+    		width: "500px",
+    	});
+    });
+</script>
 {% include 'reports/time_summary/dialog_date_filter.html' %}
 {% include 'reports/time_summary/dialog_employee_filter.html' %}
 {% include 'reports/time_summary/dialog_project_filter.html' %}

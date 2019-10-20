@@ -112,8 +112,9 @@
   cursor: pointer;
 }
 
-
-/* ------------  Filter box  ------------- */
+/* -----------|--------------|------------
+   -----------|  Filter box  |------------
+   -----------|--------------|------------ */
 .filter-box {
   display: flex;
   flex-direction: column;
@@ -201,6 +202,18 @@
   text-align: right;
   font-weight: bold;
   color: #555;
+}
+
+.filter-box .fbs-body ul {
+	padding: 0px 10px 10px 0px;
+}
+
+.filter-box .fbs-body ul li {
+	list-style: none;
+	font-size: 14px;
+	padding: 4px 0px 0px 5px;
+	border-bottom: 1px solid #CCC;
+	color: #555;
 }
 
 
