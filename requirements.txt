@@ -20,7 +20,7 @@ django==2.2.4
 docutils==0.14            # via botocore
 html5lib==1.0.1
 jmespath==0.9.3           # via boto3, botocore
-pillow==5.4.1
+pillow==6.2.0
 psycopg2-binary==2.7.6.1
 pypdf2==1.26.0
 python-dateutil==2.7.5    # via botocore
