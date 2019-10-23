@@ -122,6 +122,11 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
     login_url='/accounts/login/'
 
     form_class = WorkTimeJournalForm_V2
+    
+    work_day_start = {
+        'hour': 7,
+        'minute': 0,
+        }
 
     def get_context(self, request, date, jrline_id, action, form):
         date = date_.today().strftime('%Y-%m-%d') if date is None else date
@@ -140,8 +145,8 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
             hour = jr_totals['work_time_to__max'].hour
             minute = jr_totals['work_time_to__max'].minute
         else:
-            hour = 8
-            minute = 0
+            hour = self.work_day_start['hour']
+            minute = self.work_day_start['minute']
 
         return {'date': date,
                 'employee': employee,
