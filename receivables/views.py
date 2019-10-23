@@ -221,7 +221,6 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                           self.get_context(request, work_date_str, jrline_id, 'edit', form))
 
     def get_open(self, work_date):
-        return True #Remove this when prjdash gets possibility to enter missing hours
         today = date_.today()
         last_sunday = today + timedelta(days = -today.weekday() - 1)
         return datetime.strptime(work_date, '%Y-%m-%d').date() > last_sunday
