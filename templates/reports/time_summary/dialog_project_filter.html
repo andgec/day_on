@@ -1,10 +1,10 @@
   <div id="proj-dialog" class="modal-dialog">
 	 <div class="dialog-content"  style="width: 540px;">
-	   <div class="dialog-title"> {{_('Set project filter')}} <span class="close" id="clproj">&times;</span></div>
+	   <div class="dialog-title center"> {{_('Set project filter')}} <span class="close" id="clproj">&times;</span></div>
 	   <div class="dialog-body">
-	     <p><h2>{{_('xPasirinkite projektus kuriems skaičuoti valandas ')}}</h2></p>
-	     <h3>{{_('xPaieškos laukelyje įrašykite kliento arba projekto pavadinimo fragmentą')}}</h3>
-		    <select data-placeholder="xPasirinkite projektus..." id="select-projects" class="chosen-select" multiple tabindex="4">
+	     <p><h2>{{_('Select projects to calculate working time for')}}</h2></p>
+	     <h3>{{_('Start typing customer or project name')}}:</h3>
+		    <select data-placeholder="{{_('Select projects...')}}" id="select-projects" class="chosen-select" multiple tabindex="4">
 				<option value=""></option>
 				<optgroup>
 				{% for project in projects %}
@@ -18,11 +18,11 @@
 			</select>
 	   </div>
 	   <div class="dialog-footer">
-	     <button id="btn-conf-proj" class="btn-save" title = "{{ _('Confirm') }}" onclick="confirmProjFilter()">
-		   {{_('Confirm')}}
+	     <button id="btn-conf-proj" class="btn-save" onclick="confirmProjFilter()">
+		   {{_('Set')}}
          </button>
          <span class="btn-spacing"/>
-	     <button id="btn-cnc-proj" class="btn-cancel" title = "{{ _('Cancel') }}">
+	     <button id="btn-cnc-proj" class="btn-cancel">
 		   {{_('Cancel')}}
          </button>
 	   </div>
@@ -64,6 +64,7 @@
     var clearProjectFilter = function() {
       clearFilter(document.getElementById('filter-projects'),
                   document.getElementById('select-projects'),
+                  document.getElementById('proj-box-all'),
                   filters['projects']
       );
     }
@@ -73,6 +74,7 @@
       drawFilter(
           document.getElementById('filter-projects'),
           document.getElementById('select-projects'),
+          document.getElementById('proj-box-all'),
           filters['projects'],
           filters['proj_names'],
           reloadNames

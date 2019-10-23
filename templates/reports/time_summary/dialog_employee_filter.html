@@ -1,10 +1,10 @@
   <div id="empl-dialog" class="modal-dialog">
 	 <div class="dialog-content" style="width: 540px;">
-	   <div class="dialog-title"> {{_('Set employee filter')}} <span class="close" id="clempl">&times;</span></div>
+	   <div class="dialog-title center"> {{_('Set employee filter')}} <span class="close" id="clempl">&times;</span></div>
 	   <div class="dialog-body">
-	     <p><h2>{{_('Select relevant employees')}}</h2></p>
-	     <h3>{{_('Please select employees which you want to filter on:')}}</h3>
-		<select data-placeholder="xPasirinkite darbuotojus..." id="select-employees" class="chosen-select" multiple tabindex="4">
+	     <p><h2>{{_('Select employees which you have to see in the report')}}</h2></p>
+	     <h3>{{_('Start typing employee name')}}:</h3>
+		<select data-placeholder="{{_('Select employees...')}}" id="select-employees" class="chosen-select" multiple tabindex="4">
 		  <option value=""></option>
 		  {% for empl_id, empl_name in employees.items %}
 			<option value="{{empl_id}}">{{empl_name}}</option>
@@ -12,11 +12,11 @@
 		</select>
 	   </div>
 	   <div class="dialog-footer">
-	     <button id="btn-conf-empl" class="btn-save" title = "{{ _('Confirm') }}" onclick="confirmEmplFilter()">
-		   {{_('Confirm')}}
+	     <button id="btn-conf-empl" class="btn-save" onclick="confirmEmplFilter()">
+		   {{_('Set')}}
          </button>
          <span class="btn-spacing"/>
-	     <button id="btn-cnc-empl" class="btn-cancel" title = "{{ _('Cancel') }}">
+	     <button id="btn-cnc-empl" class="btn-cancel">
 		   {{_('Cancel')}}
          </button>
 	   </div>
@@ -58,6 +58,7 @@
     var clearEmployeeFilter = function() {
       clearFilter(document.getElementById('filter-employees'),
                   document.getElementById('select-employees'),
+                  document.getElementById('empl-box-all'),
                   filters['employees']
       );
     };
@@ -67,6 +68,7 @@
       drawFilter(
           document.getElementById('filter-employees'),
           document.getElementById('select-employees'),
+          document.getElementById('empl-box-all'),
           filters['employees'],
           filters['empl_names'],
           reloadNames

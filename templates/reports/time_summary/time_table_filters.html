@@ -31,6 +31,9 @@
             <div class="f-cell title">{{_('To')}}</div>
             <div class="f-cell data" id="fd-to"></div>
           </div>
+          <div class="f-row">
+            <div style="height:19px;"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -43,10 +46,13 @@
         </div>          
       </div>
       <div class="fbs-body">
+        <div class="box-all" id="empl-box-all">
+        	&#9702;&nbsp&nbsp{{_('all')|upper}}&nbsp&nbsp&#9702;
+        </div>
         <ul id="filter-employees"/>
       </div>
     </div>
-    
+
     <div class="right-section"  style="width: 600px;">
       <div class="fbs-header">
         {{_('Projects')|upper}}
@@ -56,6 +62,9 @@
 		</div>
       </div>
       <div class="fbs-body"">
+        <div class="box-all" id="proj-box-all">
+        	&#9702;&nbsp&nbsp{{_('all')|upper}}&nbsp&nbsp&#9702;
+        </div>
         <ul id="filter-projects"/>
       </div>
     </div>
@@ -143,22 +152,33 @@
 	  }
 	};
 
+	var toggleAllBox = function(array_ids, elmnt_allbox) {
+	  if (array_ids.length > 0 && array_ids[0] != "None") {
+	    elmnt_allbox.style.display = "none"
+	  }
+	  else {
+	    elmnt_allbox.style.display = "block"
+	  };
+	}
+
 	// Clear filter (clear button)
-	var clearFilter = function(elmnt_fbox, elmnt_select, array_ids) {
+	var clearFilter = function(elmnt_fbox, elmnt_select, elmnt_allbox, array_ids) {
 	  array_ids.length = 0;
 	  clearFilterBoxItems(elmnt_fbox);
 	  clearSelectBoxItems(elmnt_select);
+	  toggleAllBox(array_ids, elmnt_allbox);
 	  refreshSelect(elmnt_select);
 	  window.scrollBy(0,1); window.scrollBy(0,-1); //This is needed to refresh floatTHead
 	  tableResultset.trigger('reflow');  		   //This is needed to refresh floatTHead
 	};
 
 	// Sets visual representation of the selected filter
-	var drawFilter = function(elmnt_fbox, elmnt_select, array_ids, array_names, reloadNames = true) {
+	var drawFilter = function(elmnt_fbox, elmnt_select, elmnt_allbox, array_ids, array_names, reloadNames = true) {
 	  var writeFilterBoxLine = function(text, index, array) {
 	    addFilterBoxItem(elmnt_fbox, text)
 	  }
 	  if (reloadNames) {array_names = selectItemsByValues(elmnt_select, array_ids)};
+	  toggleAllBox(array_ids, elmnt_allbox);
 	  clearFilterBoxItems(elmnt_fbox);
 	  array_names.forEach(writeFilterBoxLine)
 	  window.scrollBy(0,1); window.scrollBy(0,-1); //This is needed to refresh floatTHead

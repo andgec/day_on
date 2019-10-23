@@ -216,6 +216,15 @@
 	color: #555;
 }
 
+.filter-box .fbs-body .box-all {
+	text-align: center;
+	padding-top: 20px;
+	height: 33px;
+	color: #E7E7E7;
+	background-color: #FFF;
+	font-size: 30px;
+}
+
 
 /* Filter box footer */
 .filter-box .fb-footer {

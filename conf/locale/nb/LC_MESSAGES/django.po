@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-26 11:19+0200\n"
+"POT-Creation-Date: 2019-10-23 10:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,8 +34,8 @@ msgstr "Selskapsadministrasjon"
 msgid "Address information"
 msgstr "Adresseinformasjon"
 
-#: djauth/admin.py:29 receivables/models.py:324 reports/views.py:319
-#: salary/models.py:36 templates/prjdash/posted_time_review.html:45
+#: djauth/admin.py:29 receivables/models.py:324 reports/views.py:360
+#: salary/models.py:36 templates/prjdash/posted_time_review.html:39
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
 msgstr "Ansatt"
@@ -161,7 +161,8 @@ msgid "Price"
 msgstr "Pris"
 
 #: inventory/models.py:74 receivables/models.py:230 receivables/models.py:328
-#: templates/prjdash/posted_time_review.html:46
+#: templates/prjdash/posted_time_review.html:40
+#: templates/reports/time_summary/posted_time.html:48
 #: templates/salary/v1/registration_journal.html:52
 #: templates/salary/v2/registration_journal.html:52
 msgid "Item"
@@ -210,7 +211,7 @@ msgstr "Annet informasjon"
 
 #: receivables/admin.py:106 receivables/admin.py:107 receivables/models.py:111
 #: receivables/models.py:155 salary/models.py:37
-#: templates/reports/time_summary/time_table_filters.html:41
+#: templates/reports/time_summary/time_table_filters.html:42
 msgid "Employees"
 msgstr "Ansatte"
 
@@ -220,6 +221,7 @@ msgstr "Inntekt"
 
 #: receivables/forms.py:46 receivables/models.py:126 receivables/models.py:145
 #: templates/prjdash/project_dash.html:35
+#: templates/reports/time_summary/posted_time.html:47
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:51
 msgid "Project"
@@ -238,6 +240,7 @@ msgid "Web site"
 msgstr "Nettsted"
 
 #: receivables/models.py:75 receivables/models.py:100 receivables/models.py:138
+#: templates/reports/time_summary/posted_time.html:46
 msgid "Customer"
 msgstr "Kunde"
 
@@ -306,8 +309,9 @@ msgstr "Tilknyttet ansatt"
 msgid "Related employees"
 msgstr "Tilknyttede ansatte"
 
-#: receivables/models.py:330 templates/prjdash/posted_time_review.html:47
+#: receivables/models.py:330 templates/prjdash/posted_time_review.html:41
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:79
+#: templates/reports/time_summary/posted_time.html:45
 #: templates/salary/v1/registration_journal.html:53
 #: templates/salary/v2/registration_journal.html:53
 msgid "Date"
@@ -315,12 +319,12 @@ msgstr "Dato"
 
 #: receivables/models.py:331
 #: templates/reports/time_summary/dialog_date_filter.html:7
-#: templates/reports/time_summary/time_table_filters.html:29
+#: templates/reports/time_summary/time_table_filters.html:27
 msgid "From"
 msgstr "Fra"
 
 #: receivables/models.py:332
-#: templates/reports/time_summary/time_table_filters.html:33
+#: templates/reports/time_summary/time_table_filters.html:31
 msgid "To"
 msgstr "Til"
 
@@ -340,20 +344,23 @@ msgstr "Overtid 100%"
 msgid "Distance"
 msgstr "Avstand"
 
-#: receivables/models.py:357 templates/prjdash/posted_time_review.html:51
+#: receivables/models.py:357 templates/prjdash/posted_time_review.html:45
+#: templates/reports/time_summary/posted_time.html:52
 #: templates/salary/v1/registration_journal.html:57
 #: templates/salary/v2/registration_journal.html:57
 msgid "Toll ring"
 msgstr "Bomring"
 
-#: receivables/models.py:363 templates/prjdash/posted_time_review.html:52
+#: receivables/models.py:363 templates/prjdash/posted_time_review.html:46
+#: templates/reports/time_summary/posted_time.html:53
 #: templates/salary/v1/registration_journal.html:58
 #: templates/salary/v2/registration_journal.html:58
 msgid "Ferry"
 msgstr "Ferge"
 
-#: receivables/models.py:369 templates/prjdash/posted_time_review.html:53
+#: receivables/models.py:369 templates/prjdash/posted_time_review.html:47
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:88
+#: templates/reports/time_summary/posted_time.html:54
 #: templates/salary/v1/registration_journal.html:59
 #: templates/salary/v2/registration_journal.html:59
 msgid "Diet"
@@ -391,17 +398,20 @@ msgstr "Utskrifter"
 msgid "Print timelist"
 msgstr "Skriv ut timelist"
 
-#: reports/views.py:323
+#: reports/views.py:367
 #, fuzzy
 #| msgid "Total"
 msgid "Total hours"
 msgstr "Totalt"
 
-#: reports/views.py:327
-msgid "Remarks"
-msgstr ""
+#: reports/views.py:431 templates/prjdash/posted_time_review.html:66
+#: templates/reports/time_summary/posted_time.html:70
+#: templates/salary/v1/registration_journal.html:77
+#: templates/salary/v2/registration_journal.html:77
+msgid "Total"
+msgstr "Totalt"
 
-#: reports/views.py:480
+#: reports/views.py:647
 msgid "No timelist entries for given period."
 msgstr ""
 
@@ -527,7 +537,10 @@ msgstr "Selskapsadministrasjon"
 
 #: templates/admin/base.html:23 templates/base.html:29
 #: templates/reports/time_summary/base_ts.html:5
-#: templates/reports/time_summary/time_summary.html:19
+#: templates/reports/time_summary/posted_time.html:11
+#: templates/reports/time_summary/posted_time.html:12
+#: templates/reports/time_summary/posted_time.html:24
+#: templates/reports/time_summary/time_summary.html:23
 msgid "Time summary"
 msgstr ""
 
@@ -574,7 +587,7 @@ msgid "Vitasbygg AS"
 msgstr "Vitasbygg AS"
 
 #: templates/prjdash/assign_employees.html:19
-#: templates/prjdash/posted_time_review.html:26
+#: templates/prjdash/posted_time_review.html:20
 #: templates/prjdash/project_dash.html:14
 #, fuzzy
 #| msgid "Projects"
@@ -599,10 +612,8 @@ msgstr ""
 #: templates/prjdash/project_form.html:28
 #: templates/reports/time_summary/dialog_date_filter.html:15
 #: templates/reports/time_summary/dialog_date_filter.html:16
-#: templates/reports/time_summary/dialog_employee_filter.html:13
-#: templates/reports/time_summary/dialog_employee_filter.html:14
-#: templates/reports/time_summary/dialog_project_filter.html:13
-#: templates/reports/time_summary/dialog_project_filter.html:14
+#: templates/reports/time_summary/dialog_employee_filter.html:20
+#: templates/reports/time_summary/dialog_project_filter.html:26
 #: templates/salary/v1/jobreg_delete_dialog.html:13
 #: templates/salary/v1/jobreg_delete_dialog.html:14
 #: templates/salary/v1/jobreg_form.html:45
@@ -624,15 +635,11 @@ msgid "Warning"
 msgstr ""
 
 #: templates/prjdash/posted_time_dialog.html:5
-#: templates/reports/time_summary/dialog_employee_filter.html:5
-#: templates/reports/time_summary/dialog_project_filter.html:5
 #: templates/salary/v1/jobreg_delete_dialog.html:5
 msgid "Do you really want to delete this record?"
 msgstr ""
 
 #: templates/prjdash/posted_time_dialog.html:6
-#: templates/reports/time_summary/dialog_employee_filter.html:6
-#: templates/reports/time_summary/dialog_project_filter.html:6
 #: templates/salary/v1/jobreg_delete_dialog.html:6
 msgid "If you will confirm, the record will be irrecoverably deleted."
 msgstr ""
@@ -641,10 +648,6 @@ msgstr ""
 #: templates/prjdash/posted_time_dialog.html:10
 #: templates/reports/time_summary/dialog_date_filter.html:11
 #: templates/reports/time_summary/dialog_date_filter.html:12
-#: templates/reports/time_summary/dialog_employee_filter.html:9
-#: templates/reports/time_summary/dialog_employee_filter.html:10
-#: templates/reports/time_summary/dialog_project_filter.html:9
-#: templates/reports/time_summary/dialog_project_filter.html:10
 #: templates/salary/v1/jobreg_delete_dialog.html:9
 #: templates/salary/v1/jobreg_delete_dialog.html:10
 #: templates/salary/v2/jobreg_delete_dialog.html:9
@@ -695,39 +698,36 @@ msgstr "Endre"
 msgid "Delete"
 msgstr ""
 
-#: templates/prjdash/posted_time_review.html:26
+#: templates/prjdash/posted_time_review.html:20
 #: templates/prjdash/project_line.html:3
 msgid "Time review and approval"
 msgstr ""
 
-#: templates/prjdash/posted_time_review.html:32
+#: templates/prjdash/posted_time_review.html:26
 msgid "Review and approve time for project "
 msgstr ""
 
-#: templates/prjdash/posted_time_review.html:48
+#: templates/prjdash/posted_time_review.html:42
+#: templates/reports/time_summary/posted_time.html:49
 #: templates/salary/v1/registration_journal.html:54
 #: templates/salary/v2/registration_journal.html:54
 msgid "Time"
 msgstr "Tid"
 
-#: templates/prjdash/posted_time_review.html:49
+#: templates/prjdash/posted_time_review.html:43
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:83
+#: templates/reports/time_summary/posted_time.html:50
 #: templates/salary/v1/registration_journal.html:55
 #: templates/salary/v2/registration_journal.html:55
 msgid "Hours"
 msgstr "Timer"
 
-#: templates/prjdash/posted_time_review.html:50
+#: templates/prjdash/posted_time_review.html:44
+#: templates/reports/time_summary/posted_time.html:51
 #: templates/salary/v1/registration_journal.html:56
 #: templates/salary/v2/registration_journal.html:56
 msgid "Distance (km)"
 msgstr "Avstand (km)"
-
-#: templates/prjdash/posted_time_review.html:72
-#: templates/salary/v1/registration_journal.html:77
-#: templates/salary/v2/registration_journal.html:77
-msgid "Total"
-msgstr "Totalt"
 
 #: templates/prjdash/print_timelist.html:43
 #, fuzzy
@@ -829,39 +829,79 @@ msgstr ""
 msgid "Set employee filter"
 msgstr "Tilknyttet ansatt"
 
+#: templates/reports/time_summary/dialog_employee_filter.html:5
+msgid "Select employees which you have to see in the report"
+msgstr ""
+
+#: templates/reports/time_summary/dialog_employee_filter.html:6
+msgid "Start typing employee name"
+msgstr ""
+
+#: templates/reports/time_summary/dialog_employee_filter.html:7
+#, fuzzy
+#| msgid "Related employees"
+msgid "Select employees..."
+msgstr "Tilknyttede ansatte"
+
+#: templates/reports/time_summary/dialog_employee_filter.html:16
+#: templates/reports/time_summary/dialog_project_filter.html:22
+msgid "Set"
+msgstr ""
+
 #: templates/reports/time_summary/dialog_project_filter.html:3
 #, fuzzy
 #| msgid "Project list"
 msgid "Set project filter"
 msgstr "Prosjektliste"
 
-#: templates/reports/time_summary/time_table_filters.html:1
-msgid "Filters"
+#: templates/reports/time_summary/dialog_project_filter.html:5
+msgid "Select projects to calculate working time for"
 msgstr ""
 
-#: templates/reports/time_summary/time_table_filters.html:8
+#: templates/reports/time_summary/dialog_project_filter.html:6
+msgid "Start typing customer or project name"
+msgstr ""
+
+#: templates/reports/time_summary/dialog_project_filter.html:7
+#, fuzzy
+#| msgid "Project list"
+msgid "Select projects..."
+msgstr "Prosjektliste"
+
+#: templates/reports/time_summary/time_table_filters.html:6
 #, fuzzy
 #| msgid "Date"
 msgid "Dates"
 msgstr "Dato"
 
-#: templates/reports/time_summary/time_table_filters.html:23
+#: templates/reports/time_summary/time_table_filters.html:21
 msgid "Edit date filter"
 msgstr ""
 
-#: templates/reports/time_summary/time_table_filters.html:43
+#: templates/reports/time_summary/time_table_filters.html:44
 msgid "Clear employee filter"
 msgstr ""
 
-#: templates/reports/time_summary/time_table_filters.html:44
+#: templates/reports/time_summary/time_table_filters.html:45
 msgid "Edit employee filter"
 msgstr ""
 
-#: templates/reports/time_summary/time_table_filters.html:59
+#: templates/reports/time_summary/time_table_filters.html:50
+#: templates/reports/time_summary/time_table_filters.html:66
+msgid "all"
+msgstr ""
+
+#: templates/reports/time_summary/time_table_filters.html:60
+#, fuzzy
+#| msgid "Project list"
+msgid "Clear project filter"
+msgstr "Prosjektliste"
+
+#: templates/reports/time_summary/time_table_filters.html:61
 msgid "Edit project filter"
 msgstr ""
 
-#: templates/reports/time_summary/time_table_filters.html:67
+#: templates/reports/time_summary/time_table_filters.html:73
 msgid "Calculate"
 msgstr ""
 
