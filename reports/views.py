@@ -1,9 +1,7 @@
 import operator
 import datetime
-import locale
 from calendar import monthrange
 from functools import reduce
-from django.db import connection
 from django.db.models import Sum
 from django.shortcuts import render
 from django.urls import reverse
@@ -19,7 +17,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.models import model_to_dict
 from babel.dates import format_date
 
-from shared.utils import dictfetchall, start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str
+from shared.utils import start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str, write_log_message
 from receivables.models import Project, WorkTimeJournal
 from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
@@ -646,9 +644,16 @@ class TimeSummaryXLSXView(View):
             'projects': self.get_project_data(),
             'message': _('No timelist entries for given period.') if time_matrix is None else ''
         }
-        
+
+        self.write_log(request.user, filters)
+
         return context
-    
+
+    def write_log(self, user, filters):
+        write_log_message(user,
+                          str(filters),
+                          'TimeSummaryXLSXView')
+
     def get(self, request):
         context = self.get_context(request)
         return render(request,
@@ -668,6 +673,11 @@ class TimeSummaryPostedLineDetailView(View):
         return self.ctp_proj
 
     contenttype_project = property(get_contenttype_project)
+
+    def write_log(self, user, employee, date_from, date_to, project_ids):
+        write_log_message(user,
+                          str({'employee': employee, 'from': date_from, 'to': date_to, 'projects': project_ids}),
+                          'TimeSummaryPostedLineDetailView')
 
     def get_context(self, employee, date_from, date_to, project_ids):
         t_lines = WorkTimeJournal.objects.filter(
@@ -718,6 +728,7 @@ class TimeSummaryPostedLineDetailView(View):
         return context
 
     def get(self, request, employee, date_from, date_to, project_ids=None):
+        self.write_log(request.user, employee, date_from, date_to, project_ids)
         return render(request,
                       self.template,
                       self.get_context(employee, date_from, date_to, request.GET.get('projects')),

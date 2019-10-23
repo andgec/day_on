@@ -1,3 +1,4 @@
+import logging
 from io import BytesIO
 from datetime import datetime, time, timedelta
 from dateutil.relativedelta import relativedelta
@@ -5,7 +6,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.contrib.contenttypes.models import ContentType
-#from xhtml2pdf import pisa
+
 
 def str2bool(value):
     return value.lower() in ('true', 'yes', 't', 'y', '1')
@@ -48,3 +49,13 @@ def dictfetchall(cursor):
         dict(zip(columns, row))
         for row in cursor.fetchall()
     ]
+
+def write_log_message(user, text, view=None):
+    db_logger = logging.getLogger('db')
+    message = ''
+    if user:
+        message += 'USER: [' + str(user.id) + '] ' + user.first_name + ' ' + user.last_name + ' | \n '
+    if view:
+        message += 'VIEW: ['+ view + '] | \n '
+    message += 'DATA: ' + text
+    db_logger.info(message)

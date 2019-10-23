@@ -12,7 +12,7 @@
 				  </optgroup>
 				  <optgroup label="{{project.customer.name}}">
 				  {% endifchanged %}
-					<option value="{{project.id}}">{{project.name}}</option>
+					<option value="{{project.id}}">{{project.name}}{% if project.description %}&nbsp({{project.description}}){% endif %}</option>
 				{% endfor %}
 				</optgroup>
 			</select>
