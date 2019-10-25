@@ -1,5 +1,5 @@
 from django import forms
-from parler.forms import TranslatableModelForm
+from parler.forms import TranslatableModelForm, TranslatableBaseInlineFormSet
 from .models import ItemGroup, Item
 
 class ItemGroupAdminForm(TranslatableModelForm):
@@ -17,4 +17,3 @@ class ItemAdminForm(TranslatableModelForm):
             'description': forms.Textarea(attrs={'rows':1, 'cols':100}),
         }
         fields = '__all__'
-        
