@@ -10,7 +10,7 @@ class ItemInLine(TranslatableTabularInline):
     form = ItemAdminForm
     fields = ('name', 'description', 'unit_of_measure', 'price', 'active')
     model = Item
-
+    '''
     def get_formset(self, request, obj=None, **kwargs):
         initial = []
         if request.method == "GET":
@@ -19,7 +19,7 @@ class ItemInLine(TranslatableTabularInline):
             formset = super(ItemInLine, self).get_formset(request, obj, **kwargs)
             formset.__init__ = curry(formset.__init__, initial=initial)
             return formset
-
+    '''
 
 class ItemGroupAdmin(TranslatableAdmin):
     form = ItemGroupAdminForm
