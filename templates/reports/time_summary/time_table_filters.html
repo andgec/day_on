@@ -169,7 +169,7 @@
 	  toggleAllBox(array_ids, elmnt_allbox);
 	  refreshSelect(elmnt_select);
 	  window.scrollBy(0,1); window.scrollBy(0,-1); //This is needed to refresh floatTHead
-	  tableResultset.trigger('reflow');  		   //This is needed to refresh floatTHead
+	  try {tableResultset.trigger('reflow');} catch(err){};	   //This is needed to refresh floatTHead
 	};
 
 	// Sets visual representation of the selected filter
@@ -182,7 +182,7 @@
 	  clearFilterBoxItems(elmnt_fbox);
 	  array_names.forEach(writeFilterBoxLine)
 	  window.scrollBy(0,1); window.scrollBy(0,-1); //This is needed to refresh floatTHead
-	  tableResultset.trigger('reflow'); 		   //This is needed to refresh floatTHead
+	  try {tableResultset.trigger('reflow');} catch(err){};	   //This is needed to refresh floatTHead
 	};
 
     //Enable JQuery Chosen plugin for multiple select (for employee filter dialog and project filter dialog)
