@@ -280,7 +280,7 @@ class ProjectDashboardPostedTimeReview(View):
             form = self.form_class(instance = self.jr_line if self.state == RecState.EDIT else None)
         project = Project.objects.select_related('customer').get(id=project_id)
         journal_raw = self.model.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                  object_id = project_id).select_related('item').select_related('employee').select_related('employee__user').order_by('work_date', 'employee_id', 'work_time_from')
+                                                  object_id = project_id).select_related('item').select_related('employee').select_related('employee__user').order_by('-work_date', 'employee_id', 'work_time_from')
 
         log_raw = LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(WorkTimeJournal).pk,
                                           object_id__in=[jr_raw_line.id for jr_raw_line in journal_raw]
