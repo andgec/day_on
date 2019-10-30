@@ -1,0 +1,1 @@
+SELECT 	user_fullname as Darbuotojas, project_name as Projektas, sum(work_time) as Valandos FROM public."registered time" WHERE work_date >= '2019-09-01' and work_date <= '2019-09-30' GROUP BY user_fullname, project_name ORDER BY user_fullname, project_name
