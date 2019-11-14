@@ -19,3 +19,4 @@ babel==2.6.0
 django-wkhtmltopdf==3.2.0
 urllib3==1.24.2
 django-db-logger==0.1.7
+XlsxWriter==1.2.2
