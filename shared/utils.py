@@ -8,6 +8,15 @@ from django.template.loader import get_template
 from django.contrib.contenttypes.models import ContentType
 
 
+def uniq4list(seq):
+    '''
+    Uniquefies and converts a sequence to a list
+    '''
+    keys = {}
+    for item in seq:
+        keys[item] = 1
+    return list(keys)
+
 def str2bool(value):
     return value.lower() in ('true', 'yes', 't', 'y', '1')
 

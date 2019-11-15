@@ -1,5 +1,6 @@
 import operator
 import datetime
+import copy
 from calendar import monthrange
 from functools import reduce
 from django.db.models import Sum
@@ -17,7 +18,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.models import model_to_dict
 from babel.dates import format_date
 
-from shared.utils import start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str, write_log_message
+from shared.utils import uniq4list, start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str, write_log_message
 from receivables.models import Project, WorkTimeJournal
 from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
@@ -353,6 +354,7 @@ class TimeSummaryPostedLineDetailView(View):
 @method_decorator(staff_member_required, name='dispatch')
 class TimeSummaryBaseView(View):
     table_col_count = 0
+    fixed_col_count = 3
     ctp_proj = None
 
     def get_context(self, request):
@@ -385,17 +387,30 @@ class TimeSummaryBaseView(View):
                 'caption': _('Employee'),
                 'meta': self._get_hdr_employee_meta(),
                 },
+            ]
+        if kwargs.get('split_by_project', None):
+            self.fixed_col_count += 1
+            header.append(
+                    {'name': 'project',
+                    'type': 'str',
+                    'caption': _('Project'),
+                    'meta': self._get_hdr_project_meta(),
+                    },
+                )
+        header.append(
                 {'name': 'total_hours',
                 'type': 'decimal',
                 'caption': _('Total hours'),
                 'meta': self._get_hdr_totalhrs_meta(),
                 },
-            ]
+            )
         self.make_day_header(header, **kwargs)
-
         return header
 
     def _get_hdr_employee_meta(self):
+        raise NotImplementedError("Method not implemented")
+
+    def _get_hdr_project_meta(self):
         raise NotImplementedError("Method not implemented")
 
     def _get_hdr_totalhrs_meta(self):
@@ -418,7 +433,7 @@ class TimeSummaryBaseView(View):
         date_to = kwargs.get('date_to')
         loopdate = date_from
         month = 0;
-        col_count = 0;
+        day_col_count = 0;
         while loopdate <= date_to:
             header.append({'name': loopdate,
                            'type': 'date',
@@ -431,11 +446,11 @@ class TimeSummaryBaseView(View):
             # Calculating total table column count
             if month != loopdate.month:
                 month = loopdate.month
-                col_count += self.get_month_col_count(loopdate, date_from, date_to)
+                day_col_count += self.get_month_col_count(loopdate, date_from, date_to)
 
             loopdate = loopdate + datetime.timedelta(days=1)
 
-        self.table_col_count = col_count + 3
+        self.table_col_count = day_col_count + self.fixed_col_count
 
 
     def get_employee_data(self, empl_ids, **kwargs):
@@ -451,13 +466,34 @@ class TimeSummaryBaseView(View):
         users = User.objects.only('first_name', 'last_name').filter(is_active = True).order_by('first_name', 'last_name')
         full_employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
         employee_data = filter_employees(full_employee_data, empl_ids)
-        employee_data[-1] = _('Total') #Adding line for totals
+        #employee_data[-1] = _('Total') #Adding line for totals
         return employee_data, full_employee_data
 
 
-    def get_project_data(self):
-        projects = Project.objects.only('customer__name', 'name').filter(visible = True).select_related('customer').order_by('customer__name', 'name')
-        return projects
+    def get_project_data(self, timelist_data, **kwargs):
+        # Returns two datasets:
+        #    - a dictionary with project list in which employee worked in given time period;
+        #    - a queryset with all visible projects + invisible projects in which any employee worked in given time period.
+        # Must show projects which are hidden (visible=False) but included in the report.
+        proj_ids = uniq4list([timelist_line['object_id'] for timelist_line in timelist_data])
+        full_project_data = Project.objects.only('customer__name', 'name'
+                                ).filter(Q(visible = True) | Q(id__in=proj_ids)
+                                    ).select_related('customer'
+                                        ).order_by('customer__name', 'name')
+
+        project_data = {}
+
+        if kwargs.get('split_by_project', False):
+            full_project_dict = {project.id: project.name + ' (' + project.description + ')' if project.description else project.name for project in full_project_data}
+            for line in timelist_data:
+                if project_data.get(line['employee_id']):
+                    if line['object_id'] not in project_data[line['employee_id']]:
+                        project_data[line['employee_id']][line['object_id']] = full_project_dict[line['object_id']]
+                else:
+                    project_data[line['employee_id']] = {line['object_id']: full_project_dict[line['object_id']]}
+
+        return project_data, full_project_data
+
 
     def get_timelist_data(self, **kwargs):
         q_list = []
@@ -475,6 +511,12 @@ class TimeSummaryBaseView(View):
             q_list.append(Q(content_type=self.contenttype_project))
             q_list.append(Q(object_id__in=project_ids_list))
 
+        timelist_data = WorkTimeJournal.objects.filter(
+            reduce(operator.and_, q_list)).values(
+                'employee_id', 'object_id', 'work_date').order_by(
+                    'employee_id', 'object_id', 'work_date').annotate(
+                        work_time = Sum('work_time'))
+        '''
         if kwargs['split_by_project']:
             timelist_data = WorkTimeJournal.objects.filter(
                 reduce(operator.and_, q_list)).values(
@@ -487,7 +529,7 @@ class TimeSummaryBaseView(View):
                     'employee_id', 'work_date').order_by(
                         'employee_id', 'work_date').annotate(
                             work_time = Sum('work_time'))
-
+        '''
         return timelist_data
 
 
@@ -510,54 +552,77 @@ class TimeSummaryBaseView(View):
         raise NotImplementedError("Method not implemented")
 
 
-    def build_employee_time_matrix(self, header_data, employee_data, **kwargs):
-        # makes an empty matrix with rows for employees and columns for dates
+    def build_employee_time_matrix(self, header_data, employee_data, project_data, **kwargs):
+        # makes an empty matrix with rows for employees (and projects if requested) and columns for dates
         time_matrix = {}
-        if kwargs['split_by_project']:
-            time_matrix = {'result': '-- not yet implemented --'}
+        even = True;
+        if kwargs.get('split_by_project', False):
+            for employee_id in employee_data.keys():
+                for project_id in project_data[employee_id]:
+                    time_matrix_line = {}
+                    even = not even;
+                    for col in header_data:
+                        time_matrix_line[col['name']] = {'data': 0, 'meta': self._get_cell_meta(col['name'], even)}
+
+                    time_matrix[(employee_id,project_id)] = time_matrix_line
         else:
-            even = True;
             for employee_id in employee_data.keys():
                 time_matrix_line = {}
                 even = not even;
                 for col in header_data:
                     time_matrix_line[col['name']] = {'data': 0, 'meta': self._get_cell_meta(col['name'], even)}
 
-                time_matrix[employee_id] = time_matrix_line
+                time_matrix[(employee_id,0)] = time_matrix_line
+
+        # Adding a line for totals:
+        time_matrix_line = copy.deepcopy(time_matrix_line)
+        time_matrix_line['employee']['data'] = _('Total')
+        time_matrix[(-1,-1)] = time_matrix_line
+
         return time_matrix
 
-    def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, timelist_data, **kwargs):
-        for employee_id in employee_data.keys():
-            time_matrix[employee_id]['employee']['data'] = employee_data[employee_id]
+    def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, project_data, timelist_data, **kwargs):
+        print(project_data)
+        if kwargs.get('split_by_project', False):
+            for employee_id in employee_data.keys():
+                for project_id, project_name in project_data[employee_id].items():
+                    time_matrix[(employee_id, project_id)]['employee']['data'] = employee_data[employee_id]
+                    time_matrix[(employee_id, project_id)]['project']['data'] = project_name
+        else:
+            for employee_id in employee_data.keys():
+                time_matrix[(employee_id, 0)]['employee']['data'] = employee_data[employee_id]
 
-        loop_empl_id = 0
-        empl_total_work_time = 0
+        loop_id = (0,0)
+        line_total_work_time = 0
 
         for line in timelist_data:
-            time_matrix[line['employee_id']][line['work_date']]['data'] = line['work_time']
-            time_matrix[line['employee_id']][line['work_date']]['meta'] = self._get_day_cell_meta(line, time_matrix[line['employee_id']][line['work_date']]['meta'])
+            eid = line['employee_id']
+            pid = line['object_id'] if kwargs.get('split_by_project', None) else 0
 
-            if loop_empl_id == 0:
-                loop_empl_id = line['employee_id']
+            time_matrix[(eid, pid)][line['work_date']]['data'] = line['work_time']
+            time_matrix[(eid, pid)][line['work_date']]['meta'] = self._get_day_cell_meta(line, time_matrix[(eid, pid)][line['work_date']]['meta'])
+
+            if loop_id == (0,0):
+                loop_id = (eid, pid)
 
             #calculating and adding total hours worked
-            if loop_empl_id == line['employee_id']:
-                empl_total_work_time += line['work_time']
+            if loop_id == (eid, pid):
+                line_total_work_time += line['work_time']
             else:
-                time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
-                time_matrix[loop_empl_id]['total_hours']['meta'] = self._get_total_cell_meta(loop_empl_id, time_matrix[loop_empl_id]['total_hours']['meta'], **kwargs)
-                empl_total_work_time = line['work_time']
-                loop_empl_id = line['employee_id']
+                time_matrix[loop_id]['total_hours']['data'] = line_total_work_time
+                time_matrix[loop_id]['total_hours']['meta'] = self._get_total_cell_meta(loop_id, time_matrix[loop_id]['total_hours']['meta'], **kwargs)
+                line_total_work_time = line['work_time']
+                loop_id = (eid, pid)
 
             #adding totals
-            time_matrix[-1]['total_hours']['data'] += line['work_time'];       #grand total
-            time_matrix[-1][line['work_date']]['data'] += line['work_time'];   #day total
+            time_matrix[(-1,-1)]['total_hours']['data'] += line['work_time'];       #grand total
+            time_matrix[(-1,-1)][line['work_date']]['data'] += line['work_time'];   #day total
 
         #adding total hours worked for the last employee
-        time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
-        time_matrix[loop_empl_id]['total_hours']['meta'] = self._get_total_cell_meta(loop_empl_id, time_matrix[loop_empl_id]['total_hours']['meta'], **kwargs)
+        time_matrix[loop_id]['total_hours']['data'] = line_total_work_time
+        time_matrix[loop_id]['total_hours']['meta'] = self._get_total_cell_meta(loop_id, time_matrix[loop_id]['total_hours']['meta'], **kwargs)
 
-        self._set_total_line_meta(time_matrix[-1])
+        self._set_total_line_meta(time_matrix[(-1,-1)])
 
         return time_matrix
 
@@ -590,6 +655,7 @@ class TimeSummaryBaseView(View):
 
         distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
         employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
+        project_data, select_proj_list = self.get_project_data(timelist_data, **filters)
 
         if len(timelist_data) > 0:
             # distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
@@ -598,12 +664,14 @@ class TimeSummaryBaseView(View):
             time_matrix = self.build_employee_time_matrix(
                 header_data,
                 employee_data,
+                project_data,
                 **filters)
 
             time_matrix = self.fill_employee_time_matrix(
                 time_matrix,
                 header_data,
                 employee_data,
+                project_data,
                 timelist_data,
                 **filters)
 
@@ -615,7 +683,7 @@ class TimeSummaryBaseView(View):
             'header': header_data,
             'timelist': time_matrix,
             'employees': select_empl_list,
-            'projects': self.get_project_data(),
+            'projects': select_proj_list,
             'message': _('No timelist entries for given period.') if time_matrix is None else ''
         }
 
@@ -656,9 +724,11 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'css_cell_employee'     : 'cellEmployee',       #css class for employee cell
             'css_cell_employee_odd' : 'cellWrkDay-odd',     #css class for employee cell (odd line)
             'css_cell_employee_even': 'cellWrkDay-even',    #css class for employee cell (odd line)
+            'css_cell_project'      : 'cellProject',        #css class for employee cell
             'css_cell_day_hdr'      : 'colDayHdr',          #css class for day column header
-            'css_cell_totalhrs_hdr' : 'colTotalHoursHdr',   #css class for total-hours column header
             'css_cell_employee_hdr' : 'colEmployeeHdr',     #css class for employee column header
+            'css_cell_project_hdr'  : 'colProjectHdr',      #css class for project column header
+            'css_cell_totalhrs_hdr' : 'colTotalHoursHdr',   #css class for total-hours column header
             'css_cell_day_footer'   : 'colDayFooter',       #css class for day and total column footer
             'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
             'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
@@ -730,6 +800,8 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
                     cssClass += self.meta['css_cell_employee_even']
                 else:
                     cssClass += self.meta['css_cell_employee_odd']
+            elif col == 'project':
+                cssClass = self.meta['css_cell_project'] + ' '
             else:
                 cssClass = ''
 
@@ -738,6 +810,9 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
 
     def _get_hdr_employee_meta(self):
         return {'cssClass': self.meta['css_cell_employee_hdr'],}
+
+    def _get_hdr_project_meta(self):
+        return {'cssClass': self.meta['css_cell_project_hdr'],}
 
     def _get_hdr_totalhrs_meta(self):
         return {'cssClass': self.meta['css_cell_totalhrs_hdr'],}
@@ -766,9 +841,9 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
         return meta
 
 
-    def _get_total_cell_meta(self, employee_id, meta, **kwargs):
+    def _get_total_cell_meta(self, line_id, meta, **kwargs):
         meta['onClick'] = self.meta['js_on_click_data_cell'] % {
-                    'empl': employee_id,
+                    'empl': line_id[0],
                     'date_from': kwargs['date_from'].strftime("%Y-%m-%d"),
                     'date_to': kwargs['date_to'].strftime("%Y-%m-%d"),
                     }
