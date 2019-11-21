@@ -1,0 +1,107 @@
+  <div id="param-dialog" class="modal-dialog">
+	 <div class="dialog-content" style="width: 540px;">
+	   <div class="dialog-title center"> {{_('Set report parameters')}} <span class="close" id="clparam">&times;</span></div>
+	   <div class="dialog-body">
+	     <p><h2>{{_('Set report parameters')}}</h2></p>
+	     <h3>{{_('Pagal projektus*')}}:</h3>
+	     <p style="margin-left:16px;">
+		 	<input type="radio" name = "by-proj" value="true">Sumuoti*<br>
+		 	<input type="radio" name = "by-proj" value="false">Detalizuoti*<br>
+		 </p>
+		 <hr>
+		 <h3>{{_('Pagal datas*')}}:</h3>
+		 <p style="margin-left:16px;">
+		 	<input type="radio" name = "by-dates" value="true">Sumuoti*<br>
+		 	<input type="radio" name = "by-dates" value="false">Detalizuoti*<br>
+		 </p>
+	   </div>
+	   <div class="dialog-footer">
+	     <button id="btn-conf-params" class="btn-save" onclick="confirmParamFilter()">
+		   {{_('Set')}}
+         </button>
+         <span class="btn-spacing"/>
+	     <button id="btn-cnc-params" class="btn-cancel">
+		   {{_('Cancel')}}
+         </button>
+	   </div>
+	 </div>
+  </div>
+  <script>
+    var param_dialog = document.getElementById("param-dialog");
+
+    showParamFilterDialog = function() {
+      param_dialog.style.display = "block";
+    };
+
+    closeParamDialog = function() {
+      param_dialog.style.display = "none";
+    };
+
+    var cancelParamDialog = function() {
+      closeParamDialog();
+      drawFilterParams();
+    };
+    
+    var confirmParamFilter = function() {
+      drawFilterParams();
+      closeParamDialog();
+    };    
+    
+    var spanParams = document.getElementById("clparam");
+    spanParams.onclick = cancelParamDialog;
+    
+    var btnCancelParams = document.getElementById("btn-cnc-params");
+    btnCancelParams.onclick = cancelParamDialog;
+    
+    var btnConfirmParams = document.getElementById("btn-conf-params");
+    btnConfirmParams.onclick = confirmParamFilter;
+
+
+    //----------------------------------------------------------
+    //-------------- Parameter filter functions -----------------
+    //----------------------------------------------------------
+
+
+	// Sets visual representation of the selected filter
+    var drawFilterParams = function() {
+      var pLine = document.getElementById("by-proj");
+      var dLine = document.getElementById("by-dates");
+      
+      function switchLine(lineElmnt, active){
+      	var chkBox = lineElmnt.getElementsByTagName('div')[0];
+      	if (active) {
+      	  chkBox.innerHTML = "&#128505";
+      	  lineElmnt.classList.remove("title");
+      	  lineElmnt.classList.add("data");
+      	}
+      	else {
+      	  chkBox.innerHTML = "&#9744";
+      	  lineElmnt.classList.remove("data");
+      	  lineElmnt.classList.add("title");
+      	}
+      }
+      
+      switchLine(pLine, filters['params']['split-by-project']);
+      switchLine(dLine, filters['params']['split-by-dates']);
+    };
+    
+    var toggleProj = function() {
+      filters['params']['split-by-project'] = !filters['params']['split-by-project'];
+      drawFilterParams();
+    }
+
+    var toggleDates = function() {
+      filters['params']['split-by-dates'] = !filters['params']['split-by-dates'];
+      drawFilterParams();
+    }
+    
+
+    var initFilterParams = function(splitByProj, splitByDates) {
+      filters['params'] = {};
+      filters['params']['split-by-project'] = splitByProj;
+      filters['params']['split-by-dates'] = splitByDates;
+      drawFilterParams();
+    };
+
+    initFilterParams({{filters.split_by_project|lower}}, {{filters.split_by_dates|lower}});
+  </script>

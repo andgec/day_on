@@ -190,18 +190,37 @@
 .filter-box .fbs-body .f-row .f-cell{
   display: table-cell;
   vertical-align: bottom;
-  padding-top: 12px;
+  padding-top: 14px;
+  padding-bottom: 3px;
   border-bottom: 1px solid #CCC;
 }
 
-.filter-box .fbs-body .f-row .title{
+.filter-box .fbs-body .title{
   color: #777;
 }
 
-.filter-box .fbs-body .f-row .data{
-  text-align: right;
+.filter-box .fbs-body .data{
+  text-align: left;
   font-weight: bold;
   color: #555;
+}
+
+.filter-box .fbs-body .f-row .checkbox{
+  font-size: 20px;
+  padding-top: 9px;
+  padding-bottom: 0px;
+}
+
+.filter-box .fbs-body .clickable {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.filter-box .fbs-body .clickable:hover {
+	color: #417690;
+	cursor: pointer;
 }
 
 .filter-box .fbs-body ul {
@@ -225,7 +244,6 @@
 	font-size: 30px;
 }
 
-
 /* Filter box footer */
 .filter-box .fb-footer {
   height: 24px;
@@ -235,7 +253,7 @@
 }
 
 .filter-box .filter-edit {
-  cursor: pointer;	
+  cursor: pointer;
   display: inline-block;
   height: auto;
 }

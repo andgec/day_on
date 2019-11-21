@@ -1,7 +1,28 @@
 <!-- Filter box -->
-<div class="filter-box" style="max-width: 900px;">
+<div class="filter-box" style="max-width: 1240px;">
   <div class="inner-box">
-    <div class="left-section" style="width: 250px;">
+    <div class="left-section" style="width: 290px;">
+      <div class="fbs-header">
+        {{_('Report')|upper}}
+        <div class="fr">
+          <!-- span id="ef-edit" class="filter-edit" onClick="showParamFilterDialog()" title = "{{ _('Change report parameters') }}">&nbsp<i class="fas fa-edit"></i></span -->
+        </div>
+      </div>
+      <div class="fbs-body">
+        <div style="display:table;width:202;">
+			<div class="f-row title clickable" id="by-proj" onClick="toggleProj()">
+				<div class="f-cell checkbox"></div>
+				<div class="f-cell">&nbsp&nbsp{{_('Itemize by projects')}}</div>
+			</div>
+			<div class="f-row data clickable" id="by-dates" onClick="toggleDates()">
+				<div class="f-cell checkbox"></div>
+				<div class="f-cell">&nbsp&nbsp{{_('Itemize by dates')}}</div>
+			</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="middle-section" style="width: 290px;">
       <div class="fbs-header">
         {{_('Dates')|upper}}
         <div class="fctrl">
@@ -22,7 +43,7 @@
         </div>
       </div>
       <div class="fbs-body">
-        <div style="display:table;width:150;">
+        <div style="display:table;width:200;">
 		  <div class="f-row">
             <div class="f-cell title">{{_('From')}}</div>
             <div class="f-cell data" id="fd-from"></div>
@@ -37,7 +58,7 @@
         </div>
       </div>
     </div>
-    <div class="middle-section" style="width: 280px;">
+    <div class="middle-section" style="width: 290px;">
       <div class="fbs-header">
         {{_('Employees')|upper}}
         <div class="fr">
@@ -89,6 +110,8 @@
 	function get_url() {
   	  var url_date='', url_empl='', url_proj='';
 	  url_date = '{% url 'report-time-summary' %}' + '?date-from=' + filters['date']['from'] + '&date-to=' + filters['date']['to'];
+	  if (filters['params']['split-by-project']) {url_date += '&split-by-project=1'}; //Don't put URL parameter if it has default value
+	  if (!filters['params']['split-by-dates']) {url_date += '&split-by-dates=0'}; //Don't put URL parameter if it has default value
 	  if (filters['employees'].length > 0 && filters['employees'][0] != "None")
 	    {url_empl = '&employees=' + filters['employees'].join();} else {url_empl = ''};
   	  if (filters['projects'].length > 0  && filters['projects'][0] != "None")
@@ -194,6 +217,7 @@
     	});
     });
 </script>
+{% include 'reports/time_summary/dialog_report_parameters.html' %}
 {% include 'reports/time_summary/dialog_date_filter.html' %}
 {% include 'reports/time_summary/dialog_employee_filter.html' %}
 {% include 'reports/time_summary/dialog_project_filter.html' %}

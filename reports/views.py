@@ -353,11 +353,10 @@ class TimeSummaryPostedLineDetailView(View):
 
 @method_decorator(staff_member_required, name='dispatch')
 class TimeSummaryBaseView(View):
-    table_col_count = 0
-    fixed_col_count = 3
+    table_col_count = 3
     ctp_proj = None
 
-    def get_context(self, request):
+    def _get_context(self, request):
         context = self.get_report_lines(request)
         return context
 
@@ -389,7 +388,7 @@ class TimeSummaryBaseView(View):
                 },
             ]
         if kwargs.get('split_by_project', None):
-            self.fixed_col_count += 1
+            self.table_col_count += 1
             header.append(
                     {'name': 'project',
                     'type': 'str',
@@ -429,6 +428,8 @@ class TimeSummaryBaseView(View):
         return span
 
     def make_day_header(self, header, **kwargs):
+        if not kwargs.get('split_by_dates', True):
+            return
         date_from = kwargs.get('date_from')
         date_to = kwargs.get('date_to')
         loopdate = date_from
@@ -450,7 +451,7 @@ class TimeSummaryBaseView(View):
 
             loopdate = loopdate + datetime.timedelta(days=1)
 
-        self.table_col_count = day_col_count + self.fixed_col_count
+        self.table_col_count += day_col_count
 
 
     def get_employee_data(self, empl_ids, **kwargs):
@@ -463,7 +464,7 @@ class TimeSummaryBaseView(View):
         # This way only one call to the database is needed to retrieve both lists.
 
         #users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
-        users = User.objects.only('first_name', 'last_name').filter(is_active = True).order_by('first_name', 'last_name')
+        users = User.objects.only('first_name', 'last_name').filter(Q(is_active = True) | Q(id__in = empl_ids)).order_by('first_name', 'last_name')
         full_employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
         employee_data = filter_employees(full_employee_data, empl_ids)
         #employee_data[-1] = _('Total') #Adding line for totals
@@ -582,7 +583,6 @@ class TimeSummaryBaseView(View):
         return time_matrix
 
     def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, project_data, timelist_data, **kwargs):
-        print(project_data)
         if kwargs.get('split_by_project', False):
             for employee_id in employee_data.keys():
                 for project_id, project_name in project_data[employee_id].items():
@@ -599,8 +599,9 @@ class TimeSummaryBaseView(View):
             eid = line['employee_id']
             pid = line['object_id'] if kwargs.get('split_by_project', None) else 0
 
-            time_matrix[(eid, pid)][line['work_date']]['data'] = line['work_time']
-            time_matrix[(eid, pid)][line['work_date']]['meta'] = self._get_day_cell_meta(line, time_matrix[(eid, pid)][line['work_date']]['meta'])
+            if kwargs.get('split_by_dates', True):
+                time_matrix[(eid, pid)][line['work_date']]['data'] += line['work_time']
+                time_matrix[(eid, pid)][line['work_date']]['meta'] = self._get_day_cell_meta(line, (eid, pid), time_matrix[(eid, pid)][line['work_date']]['meta'])
 
             if loop_id == (0,0):
                 loop_id = (eid, pid)
@@ -615,8 +616,9 @@ class TimeSummaryBaseView(View):
                 loop_id = (eid, pid)
 
             #adding totals
-            time_matrix[(-1,-1)]['total_hours']['data'] += line['work_time'];       #grand total
-            time_matrix[(-1,-1)][line['work_date']]['data'] += line['work_time'];   #day total
+            time_matrix[(-1,-1)]['total_hours']['data'] += line['work_time'];           #grand total
+            if kwargs.get('split_by_dates', True):
+                time_matrix[(-1,-1)][line['work_date']]['data'] += line['work_time'];   #day total
 
         #adding total hours worked for the last employee
         time_matrix[loop_id]['total_hours']['data'] = line_total_work_time
@@ -647,6 +649,7 @@ class TimeSummaryBaseView(View):
             'project_ids': request.GET.get('projects'),
             'employee_ids': request.GET.get('employees'),
             'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
+            'split_by_dates': str2bool(request.GET.get('split-by-dates')) if request.GET.get('split-by-dates') else True,
         }
 
         time_matrix = None
@@ -731,12 +734,21 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'css_cell_totalhrs_hdr' : 'colTotalHoursHdr',   #css class for total-hours column header
             'css_cell_day_footer'   : 'colDayFooter',       #css class for day and total column footer
             'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
-            'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
-            'js_on_cell_click_func' : '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo%(projects)s} </script>',
+            'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(proj)s\',\'%(date_from)s\',\'%(date_to)s\')',
+            'js_on_cell_click_func' : '''<script>
+                                            function showTLines(emplId, projId, dFrom, dTo){
+                                                if (projId == 0) {
+                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo%(projects)s
+                                                }
+                                                else {
+                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo + "?projects=" + projId
+                                                }
+                                            }
+                                        </script>''',
         }
 
     def _render_doc(self, request):
-        context = self.get_context(request)
+        context = self._get_context(request)
         return render(request,
                       self.template,
                       context
@@ -826,9 +838,10 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
     def _get_cell_meta(self, col, even):
         return {'cssClass': self.__get_css_class_for_data_cell(col, even)}
 
-    def _get_day_cell_meta(self, line, meta):
+    def _get_day_cell_meta(self, line, line_id, meta):
         meta['onClick'] = self.meta['js_on_click_data_cell'] % {
-                    'empl': str(line['employee_id']),
+                    'empl': line_id[0],
+                    'proj': line_id[1],
                     'date_from': line['work_date'].strftime("%Y-%m-%d"),
                     'date_to': line['work_date'].strftime("%Y-%m-%d"),
                     }
@@ -844,6 +857,7 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
     def _get_total_cell_meta(self, line_id, meta, **kwargs):
         meta['onClick'] = self.meta['js_on_click_data_cell'] % {
                     'empl': line_id[0],
+                    'proj': line_id[1],
                     'date_from': kwargs['date_from'].strftime("%Y-%m-%d"),
                     'date_to': kwargs['date_to'].strftime("%Y-%m-%d"),
                     }
