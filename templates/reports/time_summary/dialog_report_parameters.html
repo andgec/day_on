@@ -88,11 +88,13 @@
     var toggleProj = function() {
       filters['params']['split-by-project'] = !filters['params']['split-by-project'];
       drawFilterParams();
+      onFiltersChanged();
     }
 
     var toggleDates = function() {
       filters['params']['split-by-dates'] = !filters['params']['split-by-dates'];
       drawFilterParams();
+      onFiltersChanged();
     }
     
 

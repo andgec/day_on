@@ -14,7 +14,8 @@
 {% for col in header %}
 	<th class="{{col.meta.cssClass}}{% with weekday=col.name|date:"w" %}{%if weekday == '6' or weekday == '0' %}
 	  colWkndHdr {%elif weekday == '1' or weekday == '2' or weekday == '3' or weekday == '4' or weekday == '5'%} colWrkdHdr{% endif %}{% endwith %}">
-	  {{col.caption}}<br><span class="weekdayText">{{col.caption_weekday}}</span></th>
+	  {{col.caption}}<br><span class="weekdayText">{{col.caption_weekday}}</span>
+	</th>
 {% endfor %}
 	<th class="pseudo"><div/></th>
 </tr>

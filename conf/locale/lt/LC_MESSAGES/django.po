@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-23 10:47+0200\n"
+"POT-Creation-Date: 2019-12-02 14:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,8 +37,9 @@ msgstr "Įmonės administravimas"
 msgid "Address information"
 msgstr "Adresas"
 
-#: djauth/admin.py:29 receivables/models.py:324 reports/views.py:360
-#: salary/models.py:36 templates/prjdash/posted_time_review.html:39
+#: djauth/admin.py:29 receivables/models.py:324 reports/views.bak.py:91
+#: reports/views.py:396 salary/models.py:36
+#: templates/prjdash/posted_time_review.html:39
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
 msgstr "Darbuotojas"
@@ -212,7 +213,7 @@ msgstr "Kita informacija"
 
 #: receivables/admin.py:106 receivables/admin.py:107 receivables/models.py:111
 #: receivables/models.py:155 salary/models.py:37
-#: templates/reports/time_summary/time_table_filters.html:42
+#: templates/reports/time_summary/time_table_filters.html:63
 msgid "Employees"
 msgstr "Darbuotojai"
 
@@ -221,7 +222,7 @@ msgid "Receivables"
 msgstr "Įplaukos"
 
 #: receivables/forms.py:46 receivables/models.py:126 receivables/models.py:145
-#: templates/prjdash/project_dash.html:35
+#: reports/views.py:405 templates/prjdash/project_dash.html:35
 #: templates/reports/time_summary/posted_time.html:47
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:51
@@ -258,7 +259,7 @@ msgid "Visible"
 msgstr "Matomas"
 
 #: receivables/models.py:127
-#: templates/reports/time_summary/time_table_filters.html:58
+#: templates/reports/time_summary/time_table_filters.html:79
 msgid "Projects"
 msgstr "Projektai"
 
@@ -320,12 +321,12 @@ msgstr "Data"
 
 #: receivables/models.py:331
 #: templates/reports/time_summary/dialog_date_filter.html:7
-#: templates/reports/time_summary/time_table_filters.html:27
+#: templates/reports/time_summary/time_table_filters.html:48
 msgid "From"
 msgstr "Nuo"
 
 #: receivables/models.py:332
-#: templates/reports/time_summary/time_table_filters.html:31
+#: templates/reports/time_summary/time_table_filters.html:52
 msgid "To"
 msgstr "Iki"
 
@@ -401,20 +402,30 @@ msgstr "Ataskaitos"
 msgid "Print timelist"
 msgstr "Spausdinti laiko tabelį"
 
-#: reports/views.py:367
+#: reports/views.bak.py:98 reports/views.py:412
 msgid "Total hours"
 msgstr "Bendras valandų skaičius"
 
-#: reports/views.py:431 templates/prjdash/posted_time_review.html:66
+#: reports/views.bak.py:162 reports/views.py:604
+#: templates/prjdash/posted_time_review.html:66
 #: templates/reports/time_summary/posted_time.html:70
 #: templates/salary/v1/registration_journal.html:77
 #: templates/salary/v2/registration_journal.html:77
 msgid "Total"
 msgstr "Viso"
 
-#: reports/views.py:647
+#: reports/views.bak.py:378 reports/views.py:721
 msgid "No timelist entries for given period."
 msgstr "Nurodytu laikotarpiu nerasta jokių laiko žiniaraščio įrašų."
+
+#: reports/views.py:1071 templates/admin/base.html:23 templates/base.html:29
+#: templates/reports/time_summary/base_ts.html:5
+#: templates/reports/time_summary/posted_time.html:11
+#: templates/reports/time_summary/posted_time.html:12
+#: templates/reports/time_summary/posted_time.html:24
+#: templates/reports/time_summary/time_summary.html:23
+msgid "Time summary"
+msgstr "Laiko suvestinė"
 
 #: salary/admin.py:72 salary/models.py:24
 msgid "Full name"
@@ -532,15 +543,6 @@ msgstr "Projektų valdymas"
 msgid "Time registration"
 msgstr "Laiko registravimas"
 
-#: templates/admin/base.html:23 templates/base.html:29
-#: templates/reports/time_summary/base_ts.html:5
-#: templates/reports/time_summary/posted_time.html:11
-#: templates/reports/time_summary/posted_time.html:12
-#: templates/reports/time_summary/posted_time.html:24
-#: templates/reports/time_summary/time_summary.html:23
-msgid "Time summary"
-msgstr "Laiko suvestinė"
-
 #: templates/admin/base.html:24 templates/admin/base.html:30
 #: templates/base.html:32
 msgid "Change password"
@@ -605,6 +607,7 @@ msgstr "Priskirti darbuotojus projektui "
 #: templates/reports/time_summary/dialog_date_filter.html:16
 #: templates/reports/time_summary/dialog_employee_filter.html:20
 #: templates/reports/time_summary/dialog_project_filter.html:26
+#: templates/reports/time_summary/dialog_report_parameters.html:24
 #: templates/salary/v1/jobreg_delete_dialog.html:13
 #: templates/salary/v1/jobreg_delete_dialog.html:14
 #: templates/salary/v1/jobreg_form.html:45
@@ -828,6 +831,7 @@ msgstr "Pasirinkite darbuotojus..."
 
 #: templates/reports/time_summary/dialog_employee_filter.html:16
 #: templates/reports/time_summary/dialog_project_filter.html:22
+#: templates/reports/time_summary/dialog_report_parameters.html:20
 msgid "Set"
 msgstr "Nustatyti"
 
@@ -847,38 +851,71 @@ msgstr "Rašykite kliento arba projekto pavadinimo fragmentą"
 msgid "Select projects..."
 msgstr "Pasirinkite projektus..."
 
+#: templates/reports/time_summary/dialog_report_parameters.html:3
+#: templates/reports/time_summary/dialog_report_parameters.html:5
+msgid "Set report parameters"
+msgstr ""
+
+#: templates/reports/time_summary/dialog_report_parameters.html:6
+msgid "Pagal projektus*"
+msgstr ""
+
+#: templates/reports/time_summary/dialog_report_parameters.html:12
+msgid "Pagal datas*"
+msgstr ""
+
 #: templates/reports/time_summary/time_table_filters.html:6
+msgid "Report details"
+msgstr "Ataskaitos detalumas"
+
+#: templates/reports/time_summary/time_table_filters.html:8
+msgid "Change report parameters"
+msgstr "Keisti nustatymus"
+
+#: templates/reports/time_summary/time_table_filters.html:15
+msgid "Itemize by projects"
+msgstr "Detalizuoti pagal projektus"
+
+#: templates/reports/time_summary/time_table_filters.html:19
+msgid "Itemize by dates"
+msgstr "Detalizuoti pagal datas"
+
+#: templates/reports/time_summary/time_table_filters.html:27
 msgid "Dates"
 msgstr "Datos"
 
-#: templates/reports/time_summary/time_table_filters.html:21
+#: templates/reports/time_summary/time_table_filters.html:42
 msgid "Edit date filter"
 msgstr "Keisti datos filtrą"
 
-#: templates/reports/time_summary/time_table_filters.html:44
+#: templates/reports/time_summary/time_table_filters.html:65
 msgid "Clear employee filter"
 msgstr "Išvalyti darbuotojų filtrą"
 
-#: templates/reports/time_summary/time_table_filters.html:45
+#: templates/reports/time_summary/time_table_filters.html:66
 msgid "Edit employee filter"
 msgstr "Keisti darbuotojų filtrą"
 
-#: templates/reports/time_summary/time_table_filters.html:50
-#: templates/reports/time_summary/time_table_filters.html:66
+#: templates/reports/time_summary/time_table_filters.html:71
+#: templates/reports/time_summary/time_table_filters.html:87
 msgid "all"
 msgstr "visi"
 
-#: templates/reports/time_summary/time_table_filters.html:60
+#: templates/reports/time_summary/time_table_filters.html:81
 msgid "Clear project filter"
 msgstr "Išvalyti projektų filtrą"
 
-#: templates/reports/time_summary/time_table_filters.html:61
+#: templates/reports/time_summary/time_table_filters.html:82
 msgid "Edit project filter"
 msgstr "Keisti projektų filtrą"
 
-#: templates/reports/time_summary/time_table_filters.html:73
+#: templates/reports/time_summary/time_table_filters.html:94
 msgid "Calculate"
 msgstr "Skaičiuoti"
+
+#: templates/reports/time_summary/time_table_filters.html:96
+msgid "Export to"
+msgstr "Eksportuoti į"
 
 #: templates/salary/base_wtr.html:6
 msgid "Working time registration in project "

@@ -52,6 +52,7 @@
       setInternalData($("#select-employees :selected"), filters['employees'], filters['empl_names']);
       drawFilterEmployees(false);
       closeEmplDialog();
+      onFiltersChanged();
     };
 
     // Clears employee filter. Executes when user clicks "clear employee filter".
@@ -61,6 +62,7 @@
                   document.getElementById('empl-box-all'),
                   filters['employees']
       );
+      onFiltersChanged();
     };
 
 	// Sets visual representation of the selected filter

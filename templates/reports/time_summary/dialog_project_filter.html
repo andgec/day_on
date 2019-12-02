@@ -58,6 +58,7 @@
       setInternalData($("#select-projects :selected"), filters['projects'], filters['proj_names']);
       drawFilterProjects(false);
       closeProjDialog();
+      onFiltersChanged();
     }
 
     // Clears project filter. Executes when user clicks "clear project filter".
@@ -67,6 +68,7 @@
                   document.getElementById('proj-box-all'),
                   filters['projects']
       );
+      onFiltersChanged();
     }
 
     // Sets visual representation of the selected filter

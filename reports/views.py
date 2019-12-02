@@ -1,6 +1,8 @@
+#import io
 import operator
 import datetime
 import copy
+import xlsxwriter
 from calendar import monthrange
 from functools import reduce
 from django.db.models import Sum
@@ -379,12 +381,20 @@ class TimeSummaryBaseView(View):
         #Abstract method to acquire eventual metadata for document rendering
         raise NotImplementedError("Method not implemented")
 
+    def __get_report_col_count(self, **kwargs):
+        col_count = 2
+        col_count += ((kwargs['date_to']-kwargs['date_from']).days + 1 if kwargs['split_by_dates'] else 0)
+        col_count += (1 if kwargs.get('split_by_project') else 0)
+        return col_count
+
     def make_report_header(self, **kwargs):
+        col_count = self.__get_report_col_count(**kwargs)
+
         header = [
                 {'name': 'employee',
                 'type': 'str',
                 'caption': _('Employee'),
-                'meta': self._get_hdr_employee_meta(),
+                'meta': self._get_hdr_employee_meta(col_count),
                 },
             ]
         if kwargs.get('split_by_project', None):
@@ -393,29 +403,29 @@ class TimeSummaryBaseView(View):
                     {'name': 'project',
                     'type': 'str',
                     'caption': _('Project'),
-                    'meta': self._get_hdr_project_meta(),
+                    'meta': self._get_hdr_project_meta(col_count),
                     },
                 )
         header.append(
                 {'name': 'total_hours',
                 'type': 'decimal',
                 'caption': _('Total hours'),
-                'meta': self._get_hdr_totalhrs_meta(),
+                'meta': self._get_hdr_totalhrs_meta(col_count, last_col = not kwargs.get('split_by_dates', True)),
                 },
             )
         self.make_day_header(header, **kwargs)
         return header
 
-    def _get_hdr_employee_meta(self):
+    def _get_hdr_employee_meta(self, col_count):
         raise NotImplementedError("Method not implemented")
 
-    def _get_hdr_project_meta(self):
+    def _get_hdr_project_meta(self, col_count):
         raise NotImplementedError("Method not implemented")
 
-    def _get_hdr_totalhrs_meta(self):
+    def _get_hdr_totalhrs_meta(self, col_count, last_col = False):
         raise NotImplementedError("Method not implemented")
 
-    def _get_day_header_cell_meta(self, loopdate, date_from, date_to):
+    def _get_day_header_cell_meta(self, loopdate, date_from, date_to, last_col = False):
         raise NotImplementedError("Method not implemented")
 
     @staticmethod
@@ -441,7 +451,7 @@ class TimeSummaryBaseView(View):
                            'caption': str(loopdate.day),
                            'caption_weekday': _(loopdate.strftime('%a')),
                            'caption_month': _(loopdate.strftime('%B')),
-                           'meta': self._get_day_header_cell_meta(loopdate, date_from, date_to)
+                           'meta': self._get_day_header_cell_meta(loopdate, date_from, date_to, last_col = loopdate == date_to)
                           })
 
             # Calculating total table column count
@@ -450,7 +460,6 @@ class TimeSummaryBaseView(View):
                 day_col_count += self.get_month_col_count(loopdate, date_from, date_to)
 
             loopdate = loopdate + datetime.timedelta(days=1)
-
         self.table_col_count += day_col_count
 
 
@@ -545,7 +554,7 @@ class TimeSummaryBaseView(View):
 
         return empl_ids        
 
-    def _get_cell_meta(self, col, even):
+    def _get_cell_meta(self, col, even, col_count, new_section = False, last_col = False):
         """
         This method is intended to define metadata for different types of data cells
         (f.eks. CSS class for HTML page)
@@ -554,30 +563,51 @@ class TimeSummaryBaseView(View):
 
 
     def build_employee_time_matrix(self, header_data, employee_data, project_data, **kwargs):
-        # makes an empty matrix with rows for employees (and projects if requested) and columns for dates
+        # makes an empty matrix with rows for employees (and projects if requested) and columns for dates (if requested)
         time_matrix = {}
         even = True;
+        prev_empl_id = 0
+        col_count = self.__get_report_col_count(**kwargs)
         if kwargs.get('split_by_project', False):
             for employee_id in employee_data.keys():
                 for project_id in project_data[employee_id]:
+                    col_num = 0
+                    is_next_empl = prev_empl_id != employee_id
                     time_matrix_line = {}
                     even = not even;
                     for col in header_data:
-                        time_matrix_line[col['name']] = {'data': 0, 'meta': self._get_cell_meta(col['name'], even)}
-
+                        col_num += 1
+                        is_last_col = col_num == len(header_data)
+                        time_matrix_line[col['name']] = {'data': is_next_empl if col['name'] == 'employee' else 0,
+                                                         'meta': self._get_cell_meta(col['name'], even, col_count, is_next_empl, is_last_col)
+                                                        }
                     time_matrix[(employee_id,project_id)] = time_matrix_line
+
+                    if is_next_empl:
+                        prev_empl_id = employee_id
         else:
             for employee_id in employee_data.keys():
                 time_matrix_line = {}
+                col_num = 0
                 even = not even;
                 for col in header_data:
-                    time_matrix_line[col['name']] = {'data': 0, 'meta': self._get_cell_meta(col['name'], even)}
+                    col_num += 1
+                    is_last_col = col_num == len(header_data)
+                    time_matrix_line[col['name']] = {'data': 0,
+                                                     'meta': self._get_cell_meta(col['name'], even, col_count, last_col = is_last_col),
+                                                    }
 
                 time_matrix[(employee_id,0)] = time_matrix_line
 
         # Adding a line for totals:
-        time_matrix_line = copy.deepcopy(time_matrix_line)
-        time_matrix_line['employee']['data'] = _('Total')
+        time_matrix_line = copy.deepcopy(time_matrix_line)  # Copying last line
+        time_matrix_line['employee']['data'] = _('Total')   # Changing name to be "Totals"
+        col_num = 0
+        for col in time_matrix_line:
+            col_num += 1
+            is_last_col = col_num == len(header_data)
+            time_matrix_line[col]['meta'] = self._get_cell_meta(col, not even, col_count, True, is_last_col) # Writing correct metadata
+
         time_matrix[(-1,-1)] = time_matrix_line
 
         return time_matrix
@@ -586,7 +616,8 @@ class TimeSummaryBaseView(View):
         if kwargs.get('split_by_project', False):
             for employee_id in employee_data.keys():
                 for project_id, project_name in project_data[employee_id].items():
-                    time_matrix[(employee_id, project_id)]['employee']['data'] = employee_data[employee_id]
+                    if time_matrix[(employee_id, project_id)]['employee']['data']:
+                        time_matrix[(employee_id, project_id)]['employee']['data'] = employee_data[employee_id]
                     time_matrix[(employee_id, project_id)]['project']['data'] = project_name
         else:
             for employee_id in employee_data.keys():
@@ -727,13 +758,15 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'css_cell_employee'     : 'cellEmployee',       #css class for employee cell
             'css_cell_employee_odd' : 'cellWrkDay-odd',     #css class for employee cell (odd line)
             'css_cell_employee_even': 'cellWrkDay-even',    #css class for employee cell (odd line)
-            'css_cell_project'      : 'cellProject',        #css class for employee cell
+            'css_cell_project'      : 'cellProject',        #css class for project cell
+            'css_cell_project_wide' : 'cellProjectWide',    #css class for project cell (wide)
             'css_cell_day_hdr'      : 'colDayHdr',          #css class for day column header
             'css_cell_employee_hdr' : 'colEmployeeHdr',     #css class for employee column header
             'css_cell_project_hdr'  : 'colProjectHdr',      #css class for project column header
             'css_cell_totalhrs_hdr' : 'colTotalHoursHdr',   #css class for total-hours column header
             'css_cell_day_footer'   : 'colDayFooter',       #css class for day and total column footer
             'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
+            'css_cell_section_divider': 'cellSectionDivider', #css class for visual division of the report into sections
             'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(proj)s\',\'%(date_from)s\',\'%(date_to)s\')',
             'js_on_cell_click_func' : '''<script>
                                             function showTLines(emplId, projId, dFrom, dTo){
@@ -786,7 +819,9 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
         }
         return meta
 
-    def __get_css_class_for_data_cell(self, col, even):
+    def __get_css_class_for_data_cell(self, col, even, col_count, new_section):
+        def get_css_for_section_divider(new_section):
+            return ' ' + self.meta['css_cell_section_divider'] + ' ' if new_section else ' '
         try:
             cssClass = self.meta['css_cell_day'] + ' '
             if col.isoweekday() in (6,7):
@@ -813,30 +848,28 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
                 else:
                     cssClass += self.meta['css_cell_employee_odd']
             elif col == 'project':
-                cssClass = self.meta['css_cell_project'] + ' '
+                cssClass = self.meta['css_cell_project'] + ' ' if col_count > 20 else self.meta['css_cell_project_wide'] + ' '
             else:
                 cssClass = ''
+        return cssClass + get_css_for_section_divider(new_section)
 
-        return cssClass
-
-
-    def _get_hdr_employee_meta(self):
+    def _get_hdr_employee_meta(self, col_count):
         return {'cssClass': self.meta['css_cell_employee_hdr'],}
 
-    def _get_hdr_project_meta(self):
+    def _get_hdr_project_meta(self, col_count):
         return {'cssClass': self.meta['css_cell_project_hdr'],}
 
-    def _get_hdr_totalhrs_meta(self):
+    def _get_hdr_totalhrs_meta(self, col_count, last_col = False):
         return {'cssClass': self.meta['css_cell_totalhrs_hdr'],}
 
-    def _get_day_header_cell_meta(self, loopdate, date_from, date_to):
+    def _get_day_header_cell_meta(self, loopdate, date_from, date_to, last_col = False):
         return {
             'month_col_span': self.get_month_col_count(loopdate, date_from, date_to), #calculating colspan for month header
             'cssClass': self.meta['css_cell_day_hdr'],
         }
 
-    def _get_cell_meta(self, col, even):
-        return {'cssClass': self.__get_css_class_for_data_cell(col, even)}
+    def _get_cell_meta(self, col, even, col_count, new_section = False, last_col = False):
+        return {'cssClass': self.__get_css_class_for_data_cell(col, even, col_count, new_section)}
 
     def _get_day_cell_meta(self, line, line_id, meta):
         meta['onClick'] = self.meta['js_on_click_data_cell'] % {
@@ -874,3 +907,403 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
                 col['meta']['cssClass'] += ' ' + self.meta['css_cell_day_footer']
             else:
                 col['meta']['cssClass'] += ' ' + self.meta['css_cell_empl_footer']
+
+
+
+# ------ Time Summary report for XLSX representation ------
+#import pprint
+class TimeSummaryXLSXView(TimeSummaryBaseView):
+    meta = {
+        'start_row': 1,
+        'start_col': 1,
+    }
+
+    xlsx_style_dict = {
+        'bold'              : {'type'   : 'bool',
+                               'value'  : {'bold': 1},
+                               },
+        'dtype'             : {'type'   : 'enum',
+                               'decimal': {'num_format': '#,##0.00_)'},
+                               },
+        'section-divider'   : {'type'   : 'bool',
+                               'value'  : {'top': 2, 'top_color': '#B0B0B0'},
+                               },
+        'align'             : {'type'   : 'enum',
+                               'left'   : {'align': 'left'},
+                               'right'  : {'align': 'right'},
+                               'center' : {'align': 'center'},
+                               },
+        'valign'            : {'type'   : 'enum',
+                               'top'    : {'valign': 'top'},
+                               'bottom' : {'valign': 'bottom'},
+                               'middle' : {'valign': 'vcenter'},
+                               'wrap'   : {'valign': 'vjustify'},
+                               },
+        'bgcolor'           : {'type'       : 'enum',
+                               'hdr-wknd'   : {'bg_color': '#79AEC8'},
+                               'hdr'        : {'bg_color': '#DDDDDD'},
+                               'odd'        : {'bg_color': '#FFFFFF'},
+                               'even'       : {'bg_color': '#f2f2f2'},
+                               'wknd-odd'   : {'bg_color': '#E7EFF2'},
+                               'wknd-even'  : {'bg_color': '#CFDFE6'},
+                               'white'      : {'bg_color': '#FFFFFF'},
+                               },
+        'font'              : {'type'       : 'enum',
+                               'default'    : {'font_color': '#333333',
+                                               'font_size': 10,
+                                               },
+                                'monthday'  : {'font_color': '#333333',
+                                               'font_size': 12,
+                                               'bold': True
+                                               },
+                                'weekday'   : {'font_color': '#777777',
+                                               'font_size': 9,
+                                               'bold': True
+                                               },
+                               },
+        'border'            : {'type'       : 'enum',
+                               'odd'        : {'right': 1, 'bottom': 1, 'right_color': '#DDDDDD', 'bottom_color': '#EEEEEE'},
+                               'even'       : {'right': 1, 'bottom': 1, 'right_color': '#CCCCCC', 'bottom_color': '#EEEEEE'},
+                               'wknd-odd'   : {'right': 1, 'bottom': 1, 'right_color': '#CCCCCC', 'bottom_color': '#c6d9e2'},
+                               'wknd-even'  : {'right': 1, 'bottom': 1, 'right_color': '#AAAAAA', 'bottom_color': '#c6d9e2'},
+                               'hdr-inner'  : {'right': 1, 'right_color': '#AAAAAA'},
+                               'wknd-hdr-inner': {'right': 1, 'right_color': '#777777'},
+                               },
+        'table-border'      : {'type'       : 'enum',
+                               'left'       : {'left': 2, 'left_color': '#B0B0B0'},
+                               'right'      : {'right': 2, 'right_color': '#B0B0B0'},
+                               'top'        : {'top': 2, 'top_color': '#B0B0B0'},
+                               'bottom'     : {'bottom': 2, 'bottom_color': '#B0B0B0'},
+                               },
+        'month-hdr'         : {'type'   : 'bool',
+                               'value'  : {'bold': True,
+                                           'align': 'center',
+                                           'valign': 'vcenter',
+                                           'left': 8,
+                                           'top': 8,
+                                           'right': 8,
+                                           'left_color':'#B0B0B0',
+                                           'top_color':'#B0B0B0',
+                                           'right_color':'#B0B0B0',
+                                           'font_color': '#B0B0B0',
+                                           'font_size': 14,
+                                           }
+                               },
+        'width'             : {'type'   : 'pseudo'}, # applied to a column
+        'height'            : {'type'   : 'pseudo'}, # applied to a row
+        'upper'             : {'type'   : 'pseudo'}, # applied directly to a string before writing it to XLSX
+        'indent'            : {'type'   : 'pseudo'}, # applied to a string before writing
+        'wrap'              : {'type'   : 'pseudo'}, # applied to a string before writing
+        }
+
+    def get_file_name(self):
+        return 'time_summary_test.xlsx'
+
+    def _render_doc(self, request):
+        context = self._get_context(request)
+        #pprint.pprint(context)
+        return self.__get_xlsx(request, context)
+
+    def __get_xlsx_format_props(self, dcell):
+        xlsx_format = {}
+        for fkey, fvalue in dcell['meta'].items():
+            style_item = self.xlsx_style_dict.get(fkey, None)
+            if style_item:
+                if style_item['type'] == 'pseudo': # pseudo properties are not applied to a cell
+                    pass
+                elif style_item['type'] == 'bool':
+                    if fvalue and style_item['value']:
+                        xlsx_format.update(style_item['value'])
+                elif style_item['type'] == 'enum':
+                    if isinstance(fvalue, tuple):
+                        for fval in fvalue:
+                            if style_item.get(fval):
+                                xlsx_format.update(style_item[fval])
+                    else:
+                        if style_item.get(fvalue):
+                            xlsx_format.update(style_item[fvalue])
+        return xlsx_format
+
+    def __apply_indent_and_wrap(self, text, indentation, wrap, align = 'left'):
+        res_text = ''
+        indent = ' ' * indentation if indentation else ''
+        if wrap:
+            words = text.split()
+            word_num = 0
+            if align in ('left', 'center', None):
+                for word in words:
+                    last = word_num == len(words) - 1
+                    res_text += indent + word + ('\n' if not last else '')
+                    word_num += 1
+
+            elif align == 'right':
+                for word in words:
+                    last = word_num == len(words) - 1
+                    res_text += word + indent + ('\n' if not last else '')
+                    word_num += 1
+        else:
+            if align in ('left', 'center', None):
+                res_text = indent + text
+            elif align == 'right':
+                res_text = text + indent
+
+        return res_text
+
+    def __get_xlsx(self, request, context):
+        # get xlsx format object by dictionary cell metadata
+        def get_xlsx_format(workbook, format_dict, dcell):
+            xlsx_format_props = self.__get_xlsx_format_props(dcell);
+            #print(xlsx_format_props)
+            xlsx_format = format_dict.get(str(xlsx_format_props), None)
+            if not xlsx_format:
+                xlsx_format = workbook.add_format(xlsx_format_props)
+                format_dict[str(xlsx_format_props)] = xlsx_format
+            return xlsx_format
+
+        def row_write_style(worksheet, row, col_count, cell_format):
+            for col in range(col_count):
+                worksheet.write_blank(row, col, None, cell_format)
+
+        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = "attachment; filename=time_summary.xlsx"
+
+        book = xlsxwriter.Workbook(response, {'in_memory': True})
+        sheet = book.add_worksheet(str(_('Time summary')))
+
+        # Return "report empty" message if no content
+        if not context['timelist']:
+            sheet.set_row(1, 25)
+            cell_format = book.add_format({'bold': True, 'font_size': 18})
+            sheet.write_string(1, 1, str(context['message']), cell_format)
+            book.close()
+            return response
+
+        sheet.set_zoom(75)          if context['filters']['split_by_dates'] else sheet.set_zoom(100)
+        sheet.set_print_scale(30)   if context['filters']['split_by_dates'] else sheet.set_print_scale(75)
+        sheet.set_paper(9) # A4
+        sheet.set_landscape()       if context['filters']['split_by_dates'] else sheet.set_portrait()
+        sheet.set_margins(0.3,0.3,0.3,0.3) # Inches
+
+        # dictionary for actual cell format objects in xlsx workbook
+        fd = {}
+
+        if self.meta['start_col'] > 0:
+            sheet.set_column(0, self.meta['start_col'] - 1, 2)
+
+        white_row_format = get_xlsx_format(book, fd, {'meta':{'bgcolor': 'white'}})
+
+        for row in range(self.meta['start_row']):
+            row_write_style(sheet, row, self.meta['start_col'] + len(context['header']), white_row_format)
+        # ------------------
+        # write month header
+        # ------------------
+        row = self.meta['start_row']
+        col = self.meta['start_col']
+
+        if context['filters']['split_by_dates']:
+            row_write_style(sheet, row, self.meta['start_col'] + len(context['header']), white_row_format)
+            curr_month = 0
+            month_format = get_xlsx_format(book, fd, {'meta':{'month-hdr': True}})
+            for cell in context['header']:
+                row_height = cell['meta'].get('height-month', None)
+                if row_height:
+                    sheet.set_row(row, row_height)
+                span = cell['meta'].get('month_col_span')
+                if span:
+                    if curr_month != cell['name'].month:
+                        curr_month = cell['name'].month
+                        sheet.merge_range(row, col, row, col + span - 1, str(cell['caption_month']), month_format)
+                col += 1
+            row += 1
+
+        # -----------------
+        # write main header
+        # -----------------
+        col = self.meta['start_col']
+
+        for cell in context['header']:
+            #print(cell)
+            col_width = cell['meta'].get('width', None)
+            if col_width:
+                sheet.set_column(col, col, col_width)
+            row_height = cell['meta'].get('height', None)
+            if row_height:
+                sheet.set_row(row, row_height)
+
+            # applying "upper(case) format option:
+            cell_data = str(cell['caption']).upper() if cell['meta'].get('upper') else str(cell['caption'])
+            cell_data = str(self.__apply_indent_and_wrap(
+                                cell_data,
+                                cell['meta'].get('indent'),
+                                cell['meta'].get('wrap'),
+                                cell['meta'].get('align', 'left'))
+                            )
+
+            weekday_data = cell.get('caption_weekday')
+            if weekday_data:
+                string_segments = [get_xlsx_format(book, fd, {'meta':{'font': 'monthday'}}), cell_data]
+                string_segments.append(get_xlsx_format(book, fd, {'meta':{'font': 'weekday'}}))
+                string_segments.append('\n' + str(weekday_data))
+                sheet.write_rich_string(row, col,  *string_segments, get_xlsx_format(book, fd, cell))
+            else:
+                sheet.write_string(row, col, cell_data, get_xlsx_format(book, fd, cell))
+
+            col += 1
+
+        # ------------
+        # write data
+        # ------------
+        for row_data in context['timelist'].values():
+            row += 1
+            col = self.meta['start_col']
+            for cell in row_data.values():
+                row_height = cell['meta'].get('height', None)
+                if row_height:
+                    sheet.set_row(row, row_height)
+                if cell['data']:
+                    if cell['meta'].get('dtype', None) == 'decimal':
+                        sheet.write_number(row, col, cell['data'], get_xlsx_format(book, fd, cell))
+                    else:
+                        # applying "upper(case) format option:
+                        cell_data = str(cell['data']).upper() if cell['meta'].get('upper') else str(cell['data'])
+                        cell_data = str(self.__apply_indent_and_wrap(
+                                            cell_data,
+                                            cell['meta'].get('indent'),
+                                            cell['meta'].get('wrap'),
+                                            cell['meta'].get('align', 'left'))
+                                        )
+                        sheet.write_string(row, col, str(cell_data), get_xlsx_format(book, fd, cell))
+                else:
+                    sheet.write_blank(row, col, None, get_xlsx_format(book, fd, cell))
+
+                col += 1;
+
+        book.close()
+        return response
+
+    def _get_report_meta(self, **kwargs):
+        return {}
+
+    def _get_hdr_employee_meta(self, col_count):
+        return {
+            'bold': True,
+            'valign': 'middle',
+            'width': 20,
+            'height': 45,
+            'height-month': 35, # Month header line height
+            'upper': True,
+            'table-border': ('left', 'top', 'bottom'),
+            'border': 'hdr-inner',
+            'bgcolor': 'hdr',
+            'font': 'default',
+            'indent': 1,
+            }
+
+    def _get_hdr_project_meta(self, col_count):
+        return {
+            'bold': True,
+            'width': 45 if col_count > 24 else 55,
+            'valign': 'middle',
+            'upper': True,
+            'table-border': ('top', 'bottom'),
+            'border': 'hdr-inner',
+            'bgcolor': 'hdr',
+            'font': 'default',
+            'indent': 1,
+            }
+
+    def _get_hdr_totalhrs_meta(self, col_count, last_col = False):
+        return {
+            'bold': True,
+            'width': 9,
+            'align': 'right',
+            'valign': 'middle',
+            'upper': True,
+            'border': 'hdr-inner',
+            'table-border': ('top', 'bottom', 'right') if last_col else ('top', 'bottom'),
+            'bgcolor': 'hdr',
+            'font': 'default',
+            'indent': 1,
+            'wrap': True,
+            }
+
+    def _get_day_header_cell_meta(self, loopdate, date_from, date_to, last_col = False):
+        if loopdate.isoweekday() in (6,7):
+            border = 'wknd-hdr-inner'
+            bgcolor = 'hdr-wknd'
+        else:
+            border = 'hdr-inner'
+            bgcolor = 'hdr'
+
+        return {
+            'bold': True,
+            'align': 'center',
+            'valign': 'middle',
+            'width': 6.5,
+            'border': border,
+            'table-border': ('top', 'bottom', 'right') if last_col else ('top', 'bottom'),
+            'bgcolor': bgcolor,
+            'font': 'default',
+            'month_col_span': self.get_month_col_count(loopdate, date_from, date_to), #calculating colspan for month header
+            }
+
+    def _get_cell_meta(self, col, even, col_count, new_section = False, last_col=False):
+        meta = {
+            'valign': 'middle',
+            'font': 'default',
+            'indent': 1,
+        }
+
+        try:
+            weekend = col.isoweekday() in (6,7)
+        except:
+            weekend = False
+
+        if weekend:
+            if even:
+                meta['bgcolor'] = 'wknd-even'
+                meta['border'] = 'wknd-even'
+            else:
+                meta['bgcolor'] = 'wknd-odd'
+                meta['border'] = 'wknd-odd'
+        else:
+            if even:
+                meta['bgcolor'] = 'even'
+                meta['border'] = 'even'
+            else:
+                meta['bgcolor'] = 'odd'
+                meta['border'] = 'odd'
+
+        if new_section:
+            meta['section-divider'] = True
+
+        if col == 'employee':
+            meta['height'] = 22
+            meta['table-border'] = 'left'
+
+        if last_col:
+            meta['table-border'] = ('right',)
+
+        return meta
+
+    def _get_day_cell_meta(self, line, line_id, meta):
+        meta['dtype'] = 'decimal'
+        return meta
+
+    def _get_total_cell_meta(self, line_id, meta, **kwargs):
+        meta['dtype'] = 'decimal'
+        return meta
+
+    def _set_total_line_meta(self, total_line):
+        for col_name, col in total_line.items():
+            col['meta']['bold'] = True
+            col['meta']['section-divider'] = True
+            try:
+                col['meta']['table-border'] += ('bottom',)
+            except:
+                col['meta']['table-border'] = 'bottom'
+
+            if col_name not in ('employee', 'project'):
+                col['meta']['dtype'] = 'decimal'
+            elif col_name == 'employee':
+                col['meta']['table-border'] = ('left', 'bottom')

@@ -6,3 +6,20 @@
 	Files:
 	  * jquery.dropdown.css
 	  * jquery.dropdown.min.js
+	  
+-----------------------------------------------------------------------------------	  
+    def __get_xlsx(self, request, context):
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+        worksheet.write('A1', 'Laiko suvestinė')
+        workbook.close()
+        
+        output.seek(0)
+        
+        response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = "attachment; filename=time_summary.xlsx"
+        
+        output.close()
+        return response

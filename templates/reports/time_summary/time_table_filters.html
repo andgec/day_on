@@ -3,7 +3,7 @@
   <div class="inner-box">
     <div class="left-section" style="width: 290px;">
       <div class="fbs-header">
-        {{_('Report')|upper}}
+        {{_('Report details')|upper}}
         <div class="fr">
           <!-- span id="ef-edit" class="filter-edit" onClick="showParamFilterDialog()" title = "{{ _('Change report parameters') }}">&nbsp<i class="fas fa-edit"></i></span -->
         </div>
@@ -91,7 +91,9 @@
     </div>
   </div>
   <div class="fb-footer">
-    <button onClick="runFilters()" class="btn-save" style="width:150px;"> {{_('Calculate')}} </button>
+    <!-- button onClick="runFilters()" class="btn-save" style="width:155px;"> {{_('Calculate')}} </button>
+    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp -->
+    <button onClick="runFiltersXLSX()" class="btn-save" style="width:230px;"> {{_('Export to')}} Excel (*.xlsx)</button>
   </div>
 </div>
 <script>
@@ -107,9 +109,9 @@
   	};
 
 	// Builds url with parameters according to selected filters
-	function get_url() {
+	function get_url(urlBase) {
   	  var url_date='', url_empl='', url_proj='';
-	  url_date = '{% url 'report-time-summary' %}' + '?date-from=' + filters['date']['from'] + '&date-to=' + filters['date']['to'];
+	  url_date = urlBase + '?date-from=' + filters['date']['from'] + '&date-to=' + filters['date']['to'];
 	  if (filters['params']['split-by-project']) {url_date += '&split-by-project=1'}; //Don't put URL parameter if it has default value
 	  if (!filters['params']['split-by-dates']) {url_date += '&split-by-dates=0'}; //Don't put URL parameter if it has default value
 	  if (filters['employees'].length > 0 && filters['employees'][0] != "None")
@@ -119,10 +121,20 @@
   	  return url_date + url_empl + url_proj;
   	};
 
+	// Trigger fires when any confirmed changes in filter panel occur
+	onFiltersChanged = function() {
+	  runFilters();
+	}
+
   	// Redirect to new url
     runFilters = function() {
-      window.location.replace(get_url());
+      window.location.replace(get_url('{% url 'report-time-summary' %}'));
     }
+
+	// Download XLSX
+	runFiltersXLSX = function() {
+	  window.location.href = get_url('{% url 'report-time-summary-xlsx' %}')
+	}
 
 	//Fills internal (array) data from select object into arrays. Executed when user sets and confirms filter.
 	var setInternalData = function(elmnt, array_ids, array_names) {

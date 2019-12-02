@@ -41,10 +41,13 @@
       drawDateFilterValues();
     }
 
-    setFilterDate = function(date_from, date_to) {
+    setFilterDate = function(date_from, date_to, onChanged=true) {
       set_date_from(date_from);
       set_date_to(date_to);
       confirmDateFilter();
+      if (onChanged) {
+        onFiltersChanged();
+      }
     }
 
     closeDateDialog = function() {
@@ -74,7 +77,10 @@
     btnCancelDate.onclick = closeDateDialog;
 
     var btnConfirmDate = document.getElementById("btn-conf-date");
-    btnConfirmDate.onclick = confirmDateFilter;
-    
-    setFilterDate('{{meta.date_filter_ctrls.str_from}}', '{{meta.date_filter_ctrls.str_to}}')
+    btnConfirmDate.onclick = function() {
+      confirmDateFilter();
+      onFiltersChanged();
+    }
+
+    setFilterDate('{{meta.date_filter_ctrls.str_from}}', '{{meta.date_filter_ctrls.str_to}}', false)
   </script>

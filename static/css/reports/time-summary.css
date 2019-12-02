@@ -21,6 +21,10 @@
 	width: 280px;
 }
 
+.cellProjectWide div {
+	width: 420px;
+}
+
 .cellTotalHrs div {
 	width: 60px;
 }
@@ -49,6 +53,10 @@
 .cellWrkDay-even {
 	border-left: 1px solid #CCC;
 	border-right: 1px solid #CCC;
+}
+
+.cellSectionDivider {
+	border-top: 2px solid #B9B9B9;
 }
 
 .colWkndHdr {
