@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-02 14:26+0100\n"
+"POT-Creation-Date: 2020-01-13 21:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,15 +52,15 @@ msgstr "Taip"
 msgid "No"
 msgstr "Ne"
 
-#: djauth/admin.py:59
+#: djauth/admin.py:57
 msgid "Personal info"
 msgstr "Asmeninė informacija"
 
-#: djauth/admin.py:60
+#: djauth/admin.py:58
 msgid "Permissions"
 msgstr "Leidimai"
 
-#: djauth/admin.py:61
+#: djauth/admin.py:59
 msgid "Important dates"
 msgstr "Svarbios datos"
 
@@ -68,7 +68,23 @@ msgstr "Svarbios datos"
 msgid "Authentication and authorization"
 msgstr "Autentifikacija ir įgaliojimai"
 
-#: djauth/models.py:53
+#: djauth/models.py:54
+msgid "username (email address)"
+msgstr "Vartotojo vardas (el. pašto adresas)"
+
+#: djauth/models.py:57
+msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr "Privalomas. 150 arba mažiau simbolių. Raidės, skaičiai bei @/./+/-/_ simboliai."
+
+#: djauth/models.py:60
+msgid "A user with that username already exists."
+msgstr "Vartotojas tokiu vardu jau egzistuoja."
+
+#: djauth/models.py:63
+msgid "email address"
+msgstr "El. pašto adresas"
+
+#: djauth/models.py:70
 msgid "Employee status"
 msgstr "Darbuotojas"
 
