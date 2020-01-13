@@ -61,6 +61,8 @@ class UserAdmin(DjangoUserAdmin):
 
     list_display=('username', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
 
+    ordering = ('first_name', 'last_name')
+
     def save_model(self, request, obj, form, change):
         obj.company = request.user.company
         super().save_model(request, obj, form, change)
