@@ -43,12 +43,10 @@ class IsEmployeeFilter(admin.SimpleListFilter):
         return queryset
 
 
-#@admin.register(User)
 class UserAdmin(DjangoUserAdmin):
 
     def get_queryset(self, request):
         qs = super(UserAdmin, self).get_queryset(request)
-        #qs = qs.values(qs)
         return qs
 
     readonly_fields = ('last_login', 'date_joined')
@@ -56,16 +54,15 @@ class UserAdmin(DjangoUserAdmin):
 
     fieldsets=(
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'groups',)}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
 
-    list_display=('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
+    list_display=('username', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
 
     def save_model(self, request, obj, form, change):
         obj.company = request.user.company
-        #print('Saving user. Company: ' + str(request.user.company))
         super().save_model(request, obj, form, change)
 
     inlines = [
