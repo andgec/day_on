@@ -4,11 +4,15 @@
 
 {% block linked_files %}
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/jquery/chosen/chosen.css' %}">
 	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
 	<link rel="stylesheet" href="{% static 'css/prjdash/posted-time.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/controls.css' %}">
+
 	{{ form.media.css }}
-	
+
 	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery/external/jquery/chosen.jquery.min.js' %}"></script>
     <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
 	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>

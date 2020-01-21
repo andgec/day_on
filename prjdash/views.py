@@ -13,7 +13,8 @@ from shared.utils import get_contenttypes
 from django.db import connection
 from .forms import PDashProjectForm, PDashAssignEmployees, ProjectDashTimeReviewForm
 #from botocore.vendored.requests.api import request
-from receivables.models import Project, WorkTimeJournal
+from receivables.models import WorkTimeJournal
+from inventory.models import Item
 
 
 class RecState:
@@ -41,8 +42,9 @@ class ProjectDashboardView(View):
           "receivables_customer"."id" as "customer_id",
           "receivables_customer"."name" as "customer_name",
           Proj."project_id", 
-          Proj."project_name", 
-          Proj."project_comment", 
+          Proj."project_name",
+          Proj."project_category",
+          Proj."project_comment",
           Proj."project_active",
           Proj."datetime_created"
         FROM "receivables_customer"
@@ -52,11 +54,13 @@ class ProjectDashboardView(View):
                 "receivables_project"."customer_id",
                 "receivables_project"."id" as "project_id", 
                 "receivables_project"."name" as "project_name",
+                pc."name" as "project_category",
                 "receivables_project"."comment" as "project_comment", 
                 "receivables_project"."active" as "project_active",
                 "django_admin_log"."action_time" as "datetime_created"
             FROM "receivables_project"
             JOIN "django_admin_log" ON ("django_admin_log"."object_id" = "receivables_project"."id"::text)
+            LEFT OUTER JOIN "receivables_projectcategory" pc ON (pc."id" = "receivables_project"."category_id")
             WHERE "django_admin_log"."content_type_id" = %s
             AND "django_admin_log"."action_flag" = 1
             ) Proj ON (Proj."customer_id" = "receivables_customer"."id")
@@ -100,6 +104,7 @@ class ProjectDashboardView(View):
             if line['project_id']:
                 projects.append({'id': line['project_id'],
                                  'name': line['project_name'],
+                                 'category': line['project_category'],
                                  'comment': line['project_comment'],
                                  'active': line['project_active'],
                                  'datetime_created': line['datetime_created'].strftime("%Y-%m-%d"),
@@ -126,46 +131,8 @@ class ProjectDashboardView(View):
                    'customers': self.build_result_list(result_dicts),
                   }
 
-        #print(context)
         return context
 
-    '''
-    def get_context(self, request):
-        customers = Customer.objects.filter(active=True).order_by('name')
-        customer_list = [c for c in customers]
-       
-        print(content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)])
-       
-        projects = Project.objects.filter(customer__active=True).extra(select = {
-            'date_created': 'SELECT dal.action_time ' + 
-                            'FROM django_admin_log dal ' + 
-                            'WHERE dal.content_type_id = %s '  +
-                            'AND dal.object_id = receivables_project.id '
-                            }, select_params=(content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],)
-                        ).order_by('customer__name', 'id')
-        print(projects.query)
-        
-        projects_by_cust_id = {}
-        prev_cust_id = None
-        for project in projects:
-            if project.customer_id != prev_cust_id:
-                projects_by_cust_id[project.customer_id] = []
-            projects_by_cust_id[project.customer_id].append(project)
-            prev_cust_id = project.customer_id
-            
-        #joining data
-        customers = []
-        for cust in customer_list:
-            if cust.id in projects_by_cust_id:
-                customers.append({'object': cust, 'projects': projects_by_cust_id[cust.id]})
-            else:
-                customers.append({'object': cust, 'projects': []})
-        
-        context = {
-            'customers': customers,
-        }
-        return context
-    '''   
     def setstate(self, request, pk, mode):
         state_decoder = {
             '': RecState.VIEW,
@@ -279,8 +246,21 @@ class ProjectDashboardPostedTimeReview(View):
         if not form:
             form = self.form_class(instance = self.jr_line if self.state == RecState.EDIT else None)
         project = Project.objects.select_related('customer').get(id=project_id)
+        items = Item.objects.select_related('item_group'
+                                            ).prefetch_related('translations'
+                                            ).prefetch_related('item_group__translations'
+                                            ).only('item_group'
+                                            ).order_by('item_group__id', 'id')
+        # Putting tasks(or items) into list of tuples and then sorting them by group and name
+        items = [(item.item_group.name, item.name, item.id) for item in items]
+        items.sort(key = lambda val: (val[0].lower(), val[1].lower(), val[2]))
+
         journal_raw = self.model.objects.filter(content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                  object_id = project_id).select_related('item').select_related('employee').select_related('employee__user').order_by('-work_date', 'employee_id', 'work_time_from')
+                                                  object_id = project_id
+                                                ).select_related('item'
+                                                ).select_related('employee'
+                                                ).select_related('employee__user'
+                                                ).order_by('-work_date', 'employee_id', 'work_time_from')
 
         log_raw = LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(WorkTimeJournal).pk,
                                           object_id__in=[jr_raw_line.id for jr_raw_line in journal_raw]
@@ -299,6 +279,7 @@ class ProjectDashboardPostedTimeReview(View):
                 'pk': int(pk) if pk is not None else None,
                 'project': project,
                 'customer': project.customer,
+                'items': items,
                 'form': form,
                 'journal_lines': journal_lines,
                 'journal_totals': journal_totals,

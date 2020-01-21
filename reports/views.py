@@ -38,22 +38,22 @@ class TimelistPDFView(View):
     def get_context(self, request, project_id):
         company = request.user.company;
         project = Project.objects.get(pk=project_id)
-        #print(company)
         context = {
             'company': company,
             'project': project,
             }
         context.update(self.get_journal_lines(request, project_id))
         return context
-        
-    
+
+
     def get_journal_lines(self, request, pk):
         project_id = pk
         #project_ids = request.GET.get('project_ids')
-        filter_date_from = request.GET.get('date_from')
-        filter_date_to = request.GET.get('date_to')
+        item_ids = request.GET.get('item-ids')
+        filter_date_from = request.GET.get('date-from')
+        filter_date_to = request.GET.get('date-to')
         contenttype_project = ContentType.objects.get(model='project')
-        
+
         # Building the query according URL parameters:
         q_list = []
 
@@ -63,24 +63,26 @@ class TimelistPDFView(View):
             q_list.append(Q(content_type=contenttype_project))
             q_list.append(Q(object_id__in=project_ids_list))
         '''
+        if item_ids:
+            item_ids_list = item_ids.split(',')
+            q_list.append(Q(item_id__in=item_ids_list))
+
         if project_id:
             q_list.append(Q(content_type=contenttype_project))
             q_list.append(Q(object_id=project_id))
-    
+
         if filter_date_from:
             q_list.append(Q(work_date__gte=filter_date_from))
         if filter_date_to:
             q_list.append(Q(work_date__lte=filter_date_to))
-        
-        #print(q_list)
-        
+
         journal_lines = WorkTimeJournal.objects.filter(
             reduce(operator.and_, q_list) if len(q_list) > 1 else q_list[0]).order_by('content_type',
                                                                                       'object_id',
                                                                                       '-work_date',
                                                                                       'employee',
                                                                                       'work_time_from')
-        
+
         jr_line_list = []
         pages = []
         line_count = 1
@@ -406,6 +408,15 @@ class TimeSummaryBaseView(View):
                     'meta': self._get_hdr_project_meta(col_count),
                     },
                 )
+            if kwargs.get('show_proj_cat', None):
+                self.table_col_count += 1
+                header.append(
+                    {'name': 'projcat',
+                    'type': 'str',
+                    'caption': _('Project category'),
+                    'meta': self._get_hdr_projcat_meta(col_count),
+                    }
+                )
         header.append(
                 {'name': 'total_hours',
                 'type': 'decimal',
@@ -420,6 +431,9 @@ class TimeSummaryBaseView(View):
         raise NotImplementedError("Method not implemented")
 
     def _get_hdr_project_meta(self, col_count):
+        raise NotImplementedError("Method not implemented")
+
+    def _get_hdr_projcat_meta(self, col_count):
         raise NotImplementedError("Method not implemented")
 
     def _get_hdr_totalhrs_meta(self, col_count, last_col = False):
@@ -486,15 +500,20 @@ class TimeSummaryBaseView(View):
         #    - a queryset with all visible projects + invisible projects in which any employee worked in given time period.
         # Must show projects which are hidden (visible=False) but included in the report.
         proj_ids = uniq4list([timelist_line['object_id'] for timelist_line in timelist_data])
-        full_project_data = Project.objects.only('customer__name', 'name'
+        full_project_data = Project.objects.only('customer__name', 'name', 'category__name'
                                 ).filter(Q(visible = True) | Q(id__in=proj_ids)
                                     ).select_related('customer'
-                                        ).order_by('customer__name', 'name')
+                                        ).select_related('category'
+                                            ).order_by('customer__name', 'name')
 
         project_data = {}
 
         if kwargs.get('split_by_project', False):
-            full_project_dict = {project.id: project.name + ' (' + project.description + ')' if project.description else project.name for project in full_project_data}
+            full_project_dict = {project.id: {'name': project.name + ' (' + project.description + ')' if project.description else project.name,
+                                              'cat_name': project.category.name if project.category else '',
+                                              } for project in full_project_data
+                                }
+
             for line in timelist_data:
                 if project_data.get(line['employee_id']):
                     if line['object_id'] not in project_data[line['employee_id']]:
@@ -526,20 +545,6 @@ class TimeSummaryBaseView(View):
                 'employee_id', 'object_id', 'work_date').order_by(
                     'employee_id', 'object_id', 'work_date').annotate(
                         work_time = Sum('work_time'))
-        '''
-        if kwargs['split_by_project']:
-            timelist_data = WorkTimeJournal.objects.filter(
-                reduce(operator.and_, q_list)).values(
-                    'employee_id', 'object_id', 'work_date').order_by(
-                        'employee_id', 'object_id', 'work_date').annotate(
-                            work_time = Sum('work_time'))
-        else:
-            timelist_data = WorkTimeJournal.objects.filter(
-                reduce(operator.and_, q_list)).values(
-                    'employee_id', 'work_date').order_by(
-                        'employee_id', 'work_date').annotate(
-                            work_time = Sum('work_time'))
-        '''
         return timelist_data
 
 
@@ -615,10 +620,11 @@ class TimeSummaryBaseView(View):
     def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, project_data, timelist_data, **kwargs):
         if kwargs.get('split_by_project', False):
             for employee_id in employee_data.keys():
-                for project_id, project_name in project_data[employee_id].items():
+                for project_id, project_textdata in project_data[employee_id].items():
                     if time_matrix[(employee_id, project_id)]['employee']['data']:
                         time_matrix[(employee_id, project_id)]['employee']['data'] = employee_data[employee_id]
-                    time_matrix[(employee_id, project_id)]['project']['data'] = project_name
+                    time_matrix[(employee_id, project_id)]['project']['data'] = project_textdata['name']
+                    time_matrix[(employee_id, project_id)]['projcat']['data'] = project_textdata['cat_name']
         else:
             for employee_id in employee_data.keys():
                 time_matrix[(employee_id, 0)]['employee']['data'] = employee_data[employee_id]
@@ -681,6 +687,7 @@ class TimeSummaryBaseView(View):
             'employee_ids': request.GET.get('employees'),
             'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
             'split_by_dates': str2bool(request.GET.get('split-by-dates')) if request.GET.get('split-by-dates') else True,
+            'show_proj_cat': str2bool(request.GET.get('show-proj-cat')) if request.GET.get('show-proj-cat') else True,
         }
 
         time_matrix = None
@@ -752,6 +759,9 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'css_cell_workday_even' : 'cellWrkDay-even',    #css class for workday cell (even line)
             'css_cell_wknd_odd'     : 'cellWknd-odd',       #css class for weekend cell (odd line)
             'css_cell_wknd_even'    : 'cellWknd-even',      #css class for weekend cell (even line)
+            'css_cell_projcat'      : 'cellProjCat',        #css class for project category cell
+            'css_cell_projcat_odd'  : 'cellWrkDay-odd',     #css class for project category cell (odd line)
+            'css_cell_projcat_even' : 'cellWrkDay-even',    #css class for project category cell (even line)
             'css_cell_totalhrs'     : 'cellTotalHrs',       #css class for total hours cell
             'css_cell_totalhrs_odd' : 'cellWrkDay-odd',     #css class for total-hours cell (odd line)
             'css_cell_totalhrs_even': 'cellWrkDay-even',    #css class for total-hours cell (even line)
@@ -763,6 +773,7 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'css_cell_day_hdr'      : 'colDayHdr',          #css class for day column header
             'css_cell_employee_hdr' : 'colEmployeeHdr',     #css class for employee column header
             'css_cell_project_hdr'  : 'colProjectHdr',      #css class for project column header
+            'css_cell_projcat_hdr'  : 'colProjCatHdr',      #css class for project category column header
             'css_cell_totalhrs_hdr' : 'colTotalHoursHdr',   #css class for total-hours column header
             'css_cell_day_footer'   : 'colDayFooter',       #css class for day and total column footer
             'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
@@ -847,6 +858,12 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
                     cssClass += self.meta['css_cell_employee_even']
                 else:
                     cssClass += self.meta['css_cell_employee_odd']
+            elif col == 'projcat':
+                cssClass = self.meta['css_cell_projcat'] + ' '
+                if even:
+                    cssClass += self.meta['css_cell_projcat_even']
+                else:
+                    cssClass += self.meta['css_cell_projcat_odd']
             elif col == 'project':
                 cssClass = self.meta['css_cell_project'] + ' ' if col_count > 20 else self.meta['css_cell_project_wide'] + ' '
             else:
@@ -858,6 +875,9 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
 
     def _get_hdr_project_meta(self, col_count):
         return {'cssClass': self.meta['css_cell_project_hdr'],}
+
+    def _get_hdr_projcat_meta(self, col_count):
+        return {'cssClass': self.meta['css_cell_projcat_hdr'],}
 
     def _get_hdr_totalhrs_meta(self, col_count, last_col = False):
         return {'cssClass': self.meta['css_cell_totalhrs_hdr'],}
@@ -1197,6 +1217,21 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
             'bgcolor': 'hdr',
             'font': 'default',
             'indent': 1,
+            }
+
+    def _get_hdr_projcat_meta(self, col_count):
+        return {
+            'bold': True,
+            'width': 11,
+            'align': 'left',
+            'valign': 'middle',
+            'upper': True,
+            'border': 'hdr-inner',
+            'table-border': ('top', 'bottom'),
+            'bgcolor': 'hdr',
+            'font': 'default',
+            'indent': 1,
+            'wrap': True,
             }
 
     def _get_hdr_project_meta(self, col_count):

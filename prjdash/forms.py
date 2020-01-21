@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.utils import construct_change_message
 from salary.models import Employee
 from receivables.forms import WorkTimeJournalForm
+from inventory.models import Item
 
 class PDashProjectForm(forms.ModelForm):
     name = forms.CharField(label = _('Project name'), widget=forms.TextInput(attrs={'size':'60'}))
@@ -17,7 +18,7 @@ class PDashProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ('customer', 'name', 'comment', 'description')
+        fields = ('customer', 'name', 'comment', 'category', 'description')
     
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -92,6 +93,7 @@ class ProjectDashTimeReviewForm(WorkTimeJournalForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super(ProjectDashTimeReviewForm, self).__init__(*args, **kwargs)
+        self.fields['employee'].queryset = Employee.objects.select_related('user').all()
         if self.instance.pk:
             self.mode = CHANGE
 
@@ -109,4 +111,3 @@ class ProjectDashTimeReviewForm(WorkTimeJournalForm):
                 )
 
         return obj
-        

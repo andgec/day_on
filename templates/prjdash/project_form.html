@@ -21,6 +21,10 @@
 							{{form.comment}}
 						</td>
 						<td>
+							{{form.category.errors}}
+							{{form.category}}
+						</td>
+						<td>
 							{{project.datetime_created}}</td>
 						<td class="actions-right">
 							<button class="btn-open" title="{{ _('Save') }}" type="submit">{{ _('Save') }}</button>

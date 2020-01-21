@@ -42,6 +42,13 @@ class IsEmployeeFilter(admin.SimpleListFilter):
             return queryset.filter(employee__isnull=value)
         return queryset
 
+def make_active(modeladmin, request, queryset):
+    queryset.update(is_active = True)
+make_active.short_description = _('Activate selected users')
+
+def make_inactive(modeladmin, request, queryset):
+    queryset.update(is_active = False)
+make_inactive.short_description = _('Deactivate selected users')
 
 class UserAdmin(DjangoUserAdmin):
 
@@ -62,6 +69,8 @@ class UserAdmin(DjangoUserAdmin):
     list_display=('username', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
 
     ordering = ('first_name', 'last_name')
+
+    actions = [make_active, make_inactive]
 
     def save_model(self, request, obj, form, change):
         obj.company = request.user.company

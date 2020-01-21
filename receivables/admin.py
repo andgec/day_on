@@ -5,7 +5,7 @@ from django.db import models
 from django.forms import Textarea
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import ugettext_lazy as _
-from .models import Customer, Project, SalesOrderHeader, RelatedEmployee
+from .models import Customer, ProjectCategory, Project, SalesOrderHeader
 from .forms import SalesOrderAdminForm
 from general.models import Contact
 from django.forms.widgets import CheckboxSelectMultiple
@@ -101,6 +101,16 @@ class AssignedProjectEmployeeAdminInline(admin.TabularInline):
     fields = ('employee',)
     extra = 0
 
+
+class ProjectCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description',)
+    search_fields = ('name', 'description')
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'description',)
+        }),
+    )
+
 # Form for sorting employees in filter_horizontal by first_name and last_name
 class ProjectAdminForm(forms.ModelForm):
     employees = forms.ModelMultipleChoiceField(Employee.objects.all().order_by('user__first_name', 'user__last_name'), widget=FilteredSelectMultiple(_('Employees'), False))
@@ -118,48 +128,18 @@ class ProjectAdminForm(forms.ModelForm):
 class ProjectAdmin(admin.ModelAdmin):
     form = ProjectAdminForm
 
-    list_display = ('name', 'description', 'customer', 'active',)
-    list_filter = ('active',)
-    search_fields   = ('name', 'description', 'customer__name',)
-    RelatedEmployee._meta.auto_created = True
-    #filter_horizontal = ('employees',)
+    list_display = ('name', 'description', 'category', 'customer', 'active',)
+    list_filter = ('active', 'category')
+    search_fields   = ('name', 'description', 'category', 'customer__name',)
 
     fieldsets = (
         (None, {
-            'fields': ('customer', 'name', 'description', 'comment', 'active', 'visible', 'employees',)
+            'fields': ('customer', 'name', 'category', 'description', 'comment', 'active', 'visible', 'employees',)
         }),
     )
 
-    #https://stackoverflow.com/questions/10110606/django-admin-many-to-many-intermediary-models-using-through-and-filter-horizont/10203192
-    '''
-    inlines = [
-        #SalesOrderInLine,
-        AssignedProjectEmployeeAdminInline,
-    ]
-    '''
-    '''
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        print('formfield_for_manytomany')
-        vertical = False  # change to True if you prefer boxes to be stacked vertically
-        kwargs['widget'] = widgets.FilteredSelectMultiple(
-            db_field.verbose_name,
-            vertical,
-        )
-        return super(ProjectAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
-    
-    def save_related(self, request, form, *args, **kwargs):
-        print('save_related')
-        employees = form.cleaned_data.pop('employees', ())
-        project = form.instance
-        for employee in employees:
-            RelatedEmployee.objects.create(employee=employee, project=project)
-        super(ProjectAdmin, self).save_related(request, form, *args, **kwargs)
-    
-admin.site.register(Customer, CustomerAdmin)
-admin.site.register(Project, ProjectAdmin)
-admin.site.register(SalesOrderHeader, SalesOrderAdmin)
-'''
 
 admin_site.register(Customer, CustomerAdmin)
+admin_site.register(ProjectCategory, ProjectCategoryAdmin)
 admin_site.register(Project, ProjectAdmin)
 #admin_site.register(SalesOrderHeader, SalesOrderAdmin)

@@ -39,35 +39,11 @@ class Customer(AddressMixin, models.Model):
                                      default=COMPANY,
                                      verbose_name=_('Type')
                                      )
-    '''
-    address = models.ForeignKey(Address,
-                                blank=True,
-                                null=True,
-                                on_delete=PROTECT,
-                                related_name='customer',
-                                verbose_name=_('Address'))
-    '''                                
     web_site = models.CharField(max_length=250,
                                 blank=True,
                                 default='',
                                 verbose_name=_('Web site')
                                 )
-    '''
-    shipping_address = models.ForeignKey(Address,
-                                         blank=True,
-                                         null=True,
-                                         on_delete=PROTECT,
-                                         related_name='customer_ship',
-                                         verbose_name=_('Shipping address')
-                                         )
-    billing_address = models.ForeignKey(Address,
-                                        blank=True,
-                                        null=True,
-                                        on_delete=PROTECT,
-                                        related_name='customer_bill',
-                                        verbose_name=_('Billing address')
-                                        )
-    '''                                        
     active = BooleanField(default=True,
                           verbose_name=_('Active')
                           )
@@ -75,10 +51,19 @@ class Customer(AddressMixin, models.Model):
         verbose_name = _('Customer')
         verbose_name_plural = _('Customers')
 
-    
     def __str__(self):
-        #return self.number + ' - ' + self.name
-        #return self.name + ' (' + self.number + ')' if self.number is not None and self.number != '' else ''
+        return self.name
+
+
+class ProjectCategory(models.Model):
+    name = CharField(max_length = 10, verbose_name = _('Name'))
+    description = TextField(blank = True, default= '', verbose_name = _('Description'))
+
+    class Meta:
+        verbose_name = _('Project category')
+        verbose_name_plural = _('Project categories')
+
+    def __str__(self):
         return self.name
 
 
@@ -99,6 +84,14 @@ class Project(models.Model):
                                  related_name='projects',
                                  verbose_name=_('Customer')
                                  )
+
+    category = models.ForeignKey(ProjectCategory,
+                                 on_delete=PROTECT,
+                                 blank=True,
+                                 null = True,
+                                 verbose_name = _('Category'),
+                                 )
+
     active = BooleanField(default=True,
                           verbose_name=_('Active')
                           )
@@ -111,22 +104,11 @@ class Project(models.Model):
                                 verbose_name = _('Employees'),
                                 )
 
-    '''
-    created_date_time   = models.DateTimeField(auto_now=True,
-                                               verbose_name=_('Created date/time')
-                                               )
-    created_by          = models.ForeignKey(User,
-                                            blank = True,
-                                            on_delete=PROTECT,
-                                            related_name='projects',
-                                            verbose_name=_('Created by')
-                                            )
-    '''
     class Meta:
         verbose_name = _('Project')
         verbose_name_plural = _('Projects')
         #app_label = 'reports' Just make sure to adapt the FK and M2M fields accordingly.
-    
+
     def __str__(self):
         return self.name
 
@@ -184,30 +166,6 @@ class SalesOrderHeader(models.Model):
         return self.created_date_time().strftime("%Y-%m-%d %H:%M")
         
     created_date_time_str.short_description = _('Created')
-    
-        
-        
-
-    '''    
-    created_date_time   = models.DateTimeField(auto_now=True,
-                                               verbose_name=_('Created date/time')
-                                               )
-    created_by          = models.ForeignKey(User, 
-                                            blank=True, 
-                                            on_delete=PROTECT,
-                                            related_name='sales_orders',
-                                            verbose_name=_('Created by')
-                                            )
-    last_modified_date_time = models.DateTimeField(auto_now=True,
-                                                   verbose_name=_('Last modified date/time')
-                                                   )
-    last_modified_by    = models.ForeignKey(User,
-                                            blank=True,
-                                            on_delete=PROTECT,
-                                            related_name='sales_orders_modified_by',
-                                            verbose_name=_('Last modified by'))
-    str(self.created_date_time).strftime("%Y-%m-%d %H:%M")
-    '''        
                                         
     def __str__(self):
         return self.created_date_time_str() + ' | ' + self.customer.name + ' - ' + self.project.name
@@ -268,19 +226,6 @@ class SalesOrderLine(models.Model):
                                               null=True,
                                               verbose_name=('Line amount')
                                               )
-        
-    '''
-    created_date_time   = models.DateTimeField(auto_now=True,
-                                               verbose_name=_('Created date/time')
-                                               )
-    created_by          = models.ForeignKey(User, #Todo: remove created by and created date/time fields as there is history system
-                                            blank=True,
-                                            null=True,
-                                            on_delete=PROTECT,
-                                            related_name='sales_order_lines',
-                                            verbose_name=_('Created by')
-                                            )
-    '''    
         
     class Meta:
         verbose_name = _('Sales order line')

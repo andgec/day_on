@@ -23,6 +23,7 @@
 					</td>
 					<td>{{project.name}}</td>
 					<td>{{project.comment}}</td>
+					<td>{{project.category|default:""}}</td>
 					<td style="text-align:center">{{project.datetime_created}}</td>
 					<td class="actions-right">
 					{% if not edit %}
