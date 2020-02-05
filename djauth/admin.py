@@ -34,7 +34,7 @@ class IsEmployeeFilter(admin.SimpleListFilter):
             (True, _('Yes')),
             (False, _('No')),
         )
-    
+
     def queryset(self, request, queryset):
         value = self.value()
         if value is not None:
@@ -51,29 +51,53 @@ def make_inactive(modeladmin, request, queryset):
 make_inactive.short_description = _('Deactivate selected users')
 
 class UserAdmin(DjangoUserAdmin):
-
     def get_queryset(self, request):
-        qs = super(UserAdmin, self).get_queryset(request)
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(company = request.user.company)
         return qs
 
+    def get_fieldsets(self, request, obj=None):
+        if request.user.is_superuser:
+            self.fieldsets=(
+                (None, {'fields': ('username', 'password', 'company')}),
+                (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+                (_('Permissions'), {'fields': ('is_active', 'is_staff', 'groups',)}),
+                (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+            )
+        else:
+            self.fieldsets=(
+                (None, {'fields': ('username', 'password')}),
+                (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+                (_('Permissions'), {'fields': ('is_active', 'is_staff', 'groups',)}),
+                (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+            )
+
+        return super().get_fieldsets(request, obj)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            self.list_display = ('username', 'company', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
+        else:
+            self.list_display = ('username', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
+        return super().get_list_display(request)
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser:
+            self.list_filter = ('company', 'is_staff', IsEmployeeFilter, 'is_active', 'groups')
+        else:
+            self.list_filter = ('is_staff', IsEmployeeFilter, 'is_active', 'groups')
+        return super().get_list_filter(request)
+
     readonly_fields = ('last_login', 'date_joined')
-    list_filter = ('is_staff', IsEmployeeFilter, 'is_active', 'groups')    
 
-    fieldsets=(
-        (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'groups',)}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-    )
-
-    list_display=('username', 'first_name', 'last_name', 'is_staff', 'is_employee', 'is_active')
-
-    ordering = ('first_name', 'last_name')
+    ordering = ('company', 'first_name', 'last_name')
 
     actions = [make_active, make_inactive]
 
     def save_model(self, request, obj, form, change):
-        obj.company = request.user.company
+        if not request.user.is_superuser:
+            obj.company = request.user.company
         super().save_model(request, obj, form, change)
 
     inlines = [

@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import CharField, PositiveSmallIntegerField,\
     BooleanField, TextField
 from django.db.models.deletion import PROTECT
-from general.models import UnitOfMeasure
 from conf.settings import MAX_DIGITS_PRICE, MAX_DIGITS_QTY, DECIMAL_PLACES_PRICE, DECIMAL_PLACES_QTY,\
     MAX_DIGITS_CURRENCY, DECIMAL_PLACES_CURRENCY
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -17,6 +16,7 @@ from django.db.models.fields.related import ManyToManyField
 from salary.models import Employee
 from shared.models import AddressMixin
 from inventory.models import Item
+from general.models import UnitOfMeasure, CoModel
 
 
 COMPANY = 100
@@ -27,7 +27,7 @@ CUSTOMER_TYPE_CHOICES = (
         (PERSON, _('Person')),
     )
 
-class Customer(AddressMixin, models.Model):
+class Customer(AddressMixin, CoModel):
     number = CharField(max_length=32,
                        unique=True,
                        verbose_name=_('Number')
@@ -55,7 +55,7 @@ class Customer(AddressMixin, models.Model):
         return self.name
 
 
-class ProjectCategory(models.Model):
+class ProjectCategory(CoModel):
     name = CharField(max_length = 10, verbose_name = _('Name'))
     description = TextField(blank = True, default= '', verbose_name = _('Description'))
 
@@ -67,7 +67,7 @@ class ProjectCategory(models.Model):
         return self.name
 
 
-class Project(models.Model):
+class Project(CoModel):
     name = CharField(max_length=100,
                      verbose_name=_('Name')
                      )
@@ -113,7 +113,7 @@ class Project(models.Model):
         return self.name
 
 
-class SalesOrderHeader(models.Model):
+class SalesOrderHeader(CoModel):
     customer            = models.ForeignKey(Customer,
                                             on_delete=PROTECT,
                                             related_name='sales_orders',
@@ -176,7 +176,7 @@ class SalesOrderHeader(models.Model):
         ordering = ['-id']
 
 
-class SalesOrderLine(models.Model):
+class SalesOrderLine(CoModel):
     sales_order_header  = models.ForeignKey(SalesOrderHeader, 
                                             on_delete=PROTECT,
                                             related_name='lines',
@@ -257,7 +257,7 @@ class RelatedEmployee(models.Model):
         auto_created = True
 
 
-class WorkTimeJournal(models.Model):
+class WorkTimeJournal(CoModel):
     content_type = models.ForeignKey(ContentType, 
                                      on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -319,8 +319,6 @@ class WorkTimeJournal(models.Model):
                              )
 
     def clean(self):
-        #if self.work_date is None:
-        #    raise ValidationError({'work_time_from': _('Working date is empty.')})
         if self.calc_work_hours() == 0:
             raise ValidationError({'work_time_from': _('Working time cannot be zero.')})
         if datetime.combine(self.work_date,  self.work_time_to) < datetime.combine(self.work_date, self.work_time_from):
@@ -336,10 +334,8 @@ class WorkTimeJournal(models.Model):
                                 )
 
     def time_overlap(self, rec_id, employee_id, date, time_from, time_to):
-        #dt_from_less = datetime.combine(date, time_from) - timedelta(microseconds=1)
         dt_from_more = datetime.combine(date, time_from) + timedelta(microseconds=1)
         dt_to_less = datetime.combine(date, time_to) - timedelta(microseconds=1)
-        #wdt_to_more = datetime.combine(date, time_to) + timedelta(microseconds=1)
         overlaps = WorkTimeJournal.objects.filter(Q(employee_id = employee_id) & (
                                                   Q(work_date=date,
                                                     work_time_from__gt=dt_from_more.time(),
@@ -350,7 +346,6 @@ class WorkTimeJournal(models.Model):
                                                     )
                                                   )
                                                   ).exclude(id=rec_id)
-        #print (overlaps.query)
         if overlaps.count() == 0:
             return None
         else:

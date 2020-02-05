@@ -69,4 +69,3 @@ class ContactMixin(models.Model):
                                        )
     class Meta:
         abstract = True
-        

@@ -1,14 +1,15 @@
 from django.db import models
 from django.db.models.deletion import PROTECT
-from parler.models import TranslatableModel, TranslatedField, TranslatedFields
-from general.models import UnitOfMeasure
+from django.core.exceptions import ValidationError
+from parler.models import TranslatedField, TranslatedFields
+from general.models import UnitOfMeasure, CoTranslatableModel
 from django.utils.translation import ugettext_lazy as _
 
-class ItemGroup(TranslatableModel):
+class ItemGroup(CoTranslatableModel):
     translations = TranslatedFields(
         name            = models.CharField(
                               max_length=60,
-                              unique=True,
+                              #unique=True,
                               verbose_name = _('Name')
                               ),
         description     = models.CharField(
@@ -18,23 +19,28 @@ class ItemGroup(TranslatableModel):
                               verbose_name = _('Description')
                               )
         )
-
     name = TranslatedField(any_language=True)
     description = TranslatedField(any_language=True)
-
+    '''
+    def clean(self):
+        print(self.company, self.name)
+        qs_duplicates = ItemGroup.objects.filter(company = self.company, translations__name = self.name).exclude(id=self.id)
+        if qs_duplicates.count() != 0:
+            raise ValidationError({'name': _('Item group with given name already exists.')})
+    '''
     class Meta:
         verbose_name = _('Item group')
         verbose_name_plural = _('Item groups')
-    
+
     def __str__(self):
         return self.name
 
 
-class Item(TranslatableModel):
+class Item(CoTranslatableModel):
     translations = TranslatedFields(
         name            = models.CharField(
                               max_length =100,
-                              unique=True,
+                              #unique=True,
                               verbose_name = _('Name')
                           ),
         description     = models.CharField(

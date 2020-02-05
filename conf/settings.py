@@ -36,8 +36,6 @@ DEBUG = str(os.environ.get('DEBUG', RUNTIME_ENV not in ('PROD', 'PRODUCTION'))).
 
 ALLOWED_HOSTS = ['127.0.0.1', '10.0.0.111', '10.189.88.155', os.environ.get('WEB_HOST', 'localhost'), os.environ.get('WEB_HOST_2', 'localhost')]
 
-#INTERNAL_IPS=['127.0.0.1']
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -164,7 +162,7 @@ PARLER_LANGUAGES = {
         {'code': 'lt',},
     ),
     'default': {
-        'fallback': 'lt',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        'fallbacks': ['nb', 'lt'],    # defaults to PARLER_DEFAULT_LANGUAGE_CODE
         'hide_untranslated': False,   # the default; let .active_translations() return fallbacks too.
     }
 }

@@ -5,8 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from djauth.models import User
 from shared.models import AddressMixin
+from general.models import CoModel
 
-class Employee(AddressMixin, models.Model):
+class Employee(AddressMixin, CoModel):
     user        = OneToOneField(User, primary_key=True, related_name='employee', on_delete=CASCADE)
     phone_no    = models.CharField(max_length=20,
                                    blank=True,

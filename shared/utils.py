@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.contrib.contenttypes.models import ContentType
+from django.core.checks.security.base import check_sts_include_subdomains
 
 
 def uniq4list(seq):
@@ -68,3 +69,9 @@ def write_log_message(user, text, view=None):
         message += 'VIEW: ['+ view + '] | \n '
     message += 'DATA: ' + text
     db_logger.info(message)
+
+def field_exists(model, fieldname, include_hidden = True):
+    for field in model._meta.get_fields(include_hidden):
+        if field.name == fieldname:
+            return True
+    return False
