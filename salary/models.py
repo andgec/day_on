@@ -20,6 +20,10 @@ class Employee(AddressMixin, CoModel):
                                    verbose_name = _('Mobile No.')
                                    )
 
+    def save(self, *args, **kwargs):
+        self.company = self.user.company
+        super().save(*args, **kwargs)
+
     def full_name(self):
         return self.user.get_full_name()
     full_name.short_description = _('Full name')
@@ -39,3 +43,13 @@ class Employee(AddressMixin, CoModel):
 
     def __str__(self):
         return self.user.get_full_name()
+
+
+# Automatically create an employee object for newly created user.
+def create_employee(sender, instance, created=False, **kwargs):
+    if created:
+        employee = Employee()
+        employee.user = instance
+        employee.save()
+
+models.signals.post_save.connect(create_employee, sender=User)

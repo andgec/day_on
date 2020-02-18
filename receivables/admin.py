@@ -6,12 +6,11 @@ from django.forms import Textarea
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.translation import ugettext_lazy as _
 from .models import Customer, ProjectCategory, Project, SalesOrderHeader
-from .forms import SalesOrderAdminForm
+from .forms import SalesOrderAdminForm, CustomerAdminForm, ProjectAdminForm
 from general.models import Contact
 from django.forms.widgets import CheckboxSelectMultiple
 from co_manager.admin import admin_site
-from salary.models import Employee
-from django.contrib.admin.widgets import FilteredSelectMultiple
+from general.admin import CoModelAdmin
 
 
 class AssignedSalesOrderEmployeeAdminInline(admin.TabularInline):
@@ -75,11 +74,12 @@ class ContactInLine(GenericStackedInline):
     )
 
 
-class CustomerAdmin(admin.ModelAdmin):
+class CustomerAdmin(CoModelAdmin):
+    form = CustomerAdminForm
     readonly_fields = ('full_address',)
     list_display    = ('name', 'number', 'full_address', 'type', 'active')
     list_filter     = ('active', 'type')
-    search_fields   = ('name', 'number', 'address', 'address2', 'post_code', 'city', 'web_site') 
+    search_fields   = ('name', 'number', 'address', 'address2', 'post_code', 'city', 'web_site')
 
     fieldsets = (
         (None, {
@@ -102,7 +102,7 @@ class AssignedProjectEmployeeAdminInline(admin.TabularInline):
     extra = 0
 
 
-class ProjectCategoryAdmin(admin.ModelAdmin):
+class ProjectCategoryAdmin(CoModelAdmin):
     list_display = ('name', 'description',)
     search_fields = ('name', 'description')
     fieldsets = (
@@ -111,21 +111,8 @@ class ProjectCategoryAdmin(admin.ModelAdmin):
         }),
     )
 
-# Form for sorting employees in filter_horizontal by first_name and last_name
-class ProjectAdminForm(forms.ModelForm):
-    employees = forms.ModelMultipleChoiceField(Employee.objects.all().order_by('user__first_name', 'user__last_name'), widget=FilteredSelectMultiple(_('Employees'), False))
-    employees.label = _('Employees')
-    class Meta:
-        model = Project
-        '''
-        widgets = {
-            'employees': FilteredSelectMultiple(_("Employees"), False),
-            }
-        '''
-        fields = '__all__'
 
-
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(CoModelAdmin):
     form = ProjectAdminForm
 
     list_display = ('name', 'description', 'category', 'customer', 'active',)
@@ -137,6 +124,14 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('customer', 'name', 'category', 'description', 'comment', 'active', 'visible', 'employees',)
         }),
     )
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        qs = db_field.related_model.objects.filter(
+            company = request.user.company).prefetch_related(
+            'user').order_by(
+            'user__first_name', 'user__last_name')
+        kwargs['queryset'] = qs
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 admin_site.register(Customer, CustomerAdmin)

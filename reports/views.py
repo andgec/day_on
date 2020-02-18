@@ -27,8 +27,6 @@ from conf.settings import TIMELIST_LINES_PER_PAGE
 from dateutil.relativedelta import relativedelta
 
 
-#URL:
-#http://127.0.0.1:8000/admin/timelist_pdf/?project_ids=1,2,3,4,5,6,7,8,9,10&date_from=2018-10-20&date_to=2019-01-30
 @method_decorator(staff_member_required, name='dispatch')
 class TimelistPDFView(View):
     template = get_template('reports/pdf_timelist/pdf_timelist_html4.html')
@@ -41,6 +39,7 @@ class TimelistPDFView(View):
         context = {
             'company': company,
             'project': project,
+            'dynamic_logo':  str2bool(str(request.GET.get('dynamic-logo', False))) or company.fax_no == '0123456789' # TEMPORARY for testing if logo from company works
             }
         context.update(self.get_journal_lines(request, project_id))
         return context
@@ -55,7 +54,7 @@ class TimelistPDFView(View):
         contenttype_project = ContentType.objects.get(model='project')
 
         # Building the query according URL parameters:
-        q_list = []
+        q_list = [Q(company = request.user.company)]
 
         '''
         if project_ids:
@@ -88,7 +87,6 @@ class TimelistPDFView(View):
         line_count = 1
         page_no = 0
         page_date_from = datetime.MINYEAR
-        page_date_to   = datetime.MINYEAR
         curr_work_date = datetime.MINYEAR
         prev_work_date = datetime.MINYEAR
 
@@ -100,21 +98,20 @@ class TimelistPDFView(View):
         total_transport     = 0
 
         for journal_line in journal_lines:
-            
+
             jr_line_dict = model_to_dict(journal_line)
 
             jr_line_list.append(jr_line_dict)
-            
-            #print('work_date: %s, prev_work_date: %s' % (curr_work_date, prev_work_date))
+
             curr_work_date = journal_line.work_date
-            
+
             if curr_work_date == prev_work_date:
                 work_date_str = ''
             else:
                 work_date_str = journal_line.work_date.strftime('%d.%m.%Y')
-            
+
             prev_work_date = curr_work_date                
-            
+
             jr_line_list[line_count-1].update({'work_date': work_date_str,
                                              'work_week_day': format_date(jr_line_dict['work_date'], 'EEE', locale='no').replace('.', '').title(),
                                              'item': journal_line.item.safe_translation_getter('name', language_code='nb'),
@@ -136,12 +133,12 @@ class TimelistPDFView(View):
                     'page_date_to': journal_line.work_date.strftime('%d.%m.%Y'),
                     'lines': jr_line_list,
                 }
-                
+
                 pages.append(page)
                 jr_line_list = []
                 line_count = 0
                 page_date_from = datetime.MINYEAR
-                
+
             line_count += 1
 
             total_work_time     += journal_line.work_time
@@ -150,7 +147,7 @@ class TimelistPDFView(View):
             total_distance      += (journal_line.distance or 0)
             total_diet          += (journal_line.diet or 0)
             total_transport     += (journal_line.ferry or 0) + (journal_line.toll_ring or 0)
-            
+
         totals = {'total_work_time': total_work_time,
                   'total_overtime_50': total_overtime_50,
                   'total_overtime_100': total_overtime_100,
@@ -158,10 +155,10 @@ class TimelistPDFView(View):
                   'total_diet': total_diet,
                   'total_transport': total_transport,
                   }
-        
+
         if len(pages) == 0:
             pages.append({'Empty': 'No data'})
-        
+
         context = {
             'date_from': pages[0]['lines'][0]['work_date'] if journal_lines.count() > 0 else filter_date_from,
             'date_to': journal_line.work_date.strftime('%d.%m.%Y') if journal_lines.count() > 0 else filter_date_to,
@@ -171,13 +168,10 @@ class TimelistPDFView(View):
             'totals': totals,
             'pages': pages,
         }
-        #print(journal_lines.query)
         return context
-
 
     def get(self, request, pk=None):
         context = self.get_context(request, pk)
-        #print(context)
         response = PDFTemplateResponse(request = request,
                                        template = self.template,
                                        header_template = self.header_template,
@@ -190,92 +184,6 @@ class TimelistPDFView(View):
                                                     'orientation': 'Landscape',},
                                        )
         return response
-
-
-class TimelistHTMLView(View):
-    def get_context(self, request, project_id):
-        company = request.user.company;
-        print(company)
-        context = {
-            'company': company,
-            }
-        context.update(self.get_journal_lines(request, project_id))
-        return context
-
-
-    def get_journal_lines(self, request, project_id):
-        #project_ids = request.GET.get('project_ids')
-        date_from = request.GET.get('date_from')
-        date_to = request.GET.get('date_to')
-        contenttype_project = ContentType.objects.get(model='project')
-
-        # Building the query according URL parameters:
-        q_list = []
-
-        '''
-        if project_ids:
-            project_ids_list = project_ids.split(',')
-            q_list.append(Q(content_type=contenttype_project))
-            q_list.append(Q(object_id__in=project_ids_list))
-        '''
-        if project_id:
-            q_list.append(Q(content_type=contenttype_project))
-            q_list.append(Q(object_id=project_id))
-
-        if date_from:
-            q_list.append(Q(work_date__gte=date_from))
-        if date_to:
-            q_list.append(Q(work_date__lte=date_to))
-
-        print(q_list)
-
-        journal_lines = WorkTimeJournal.objects.filter(
-            reduce(operator.and_, q_list) if len(q_list) > 1 else q_list[0]).order_by('content_type',
-                                                                                      'object_id',
-                                                                                      '-work_date',
-                                                                                      'employee',
-                                                                                      'work_time_from').values()
-        
-        jr_line_list = []
-        line_count = 0
-        page_no = 0
-        page_date_from = None
-        page_date_to = None
-
-        for journal_line in journal_lines:
-            if (line_count % TIMELIST_LINES_PER_PAGE == 0) & (line_count > 0):
-                jr_line_list[line_count-1].update({'page_break': 'LINE_OVERFLOW',
-                                                 'page_no': page_no,
-                                                 'page_date_from': page_date_from,
-                                                 'page_date_to': journal_line['work_date'],
-                                                 })
-                page_no += 1
-                line_count = 0
-
-            jr_line_list.append(journal_line)
-            line_count += 1
-
-            if line_count % TIMELIST_LINES_PER_PAGE == 1:
-                page_date_from = journal_line['work_date']
-
-        
-        context = {
-            'line_list': jr_line_list,
-            'total_pages': page_no,
-            'date_from': jr_line_list[0]['work_date'],
-            'date_to': jr_line_list[len(jr_line_list)-1]['work_date'],
-            'filter_date_from': date_from,
-            'filter_date_to': date_to,
-        }
-        
-        print(journal_lines.query)
-        return context
-    
-    def get(self, request, project_id, *args, **kwargs):
-        template = get_template('reports/pdf_timelist_html4.html')
-        context = self.get_context(request, project_id)
-        html = template.render(context)
-        return HttpResponse(html)
 
 
 class TimeSummaryPostedLineDetailView(View):
@@ -295,8 +203,9 @@ class TimeSummaryPostedLineDetailView(View):
                           str({'employee': employee, 'from': date_from, 'to': date_to, 'projects': project_ids}),
                           self.__class__.__name__)
 
-    def get_context(self, employee, date_from, date_to, project_ids):
+    def get_context(self, request, employee, date_from, date_to, project_ids):
         t_lines = WorkTimeJournal.objects.filter(
+            company = request.user.company,
             employee=employee,
             work_date__gte=date_from,
             work_date__lte=date_to
@@ -347,7 +256,7 @@ class TimeSummaryPostedLineDetailView(View):
         self.write_log(request.user, employee, date_from, date_to, project_ids)
         return render(request,
                       self.template,
-                      self.get_context(employee, date_from, date_to, request.GET.get('projects')),
+                      self.get_context(request, employee, date_from, date_to, request.GET.get('projects')),
                       )
 
 
@@ -486,8 +395,10 @@ class TimeSummaryBaseView(View):
         #   - a list for report without employees who do not have any hours registered for a given period.
         # This way only one call to the database is needed to retrieve both lists.
 
-        #users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
-        users = User.objects.only('first_name', 'last_name').filter(Q(is_active = True) | Q(id__in = empl_ids)).order_by('first_name', 'last_name')
+        users = User.objects.only('first_name', 'last_name'
+                                  ).filter(Q(company=kwargs['company'])
+                                  ).filter(Q(is_active = True) | Q(id__in = empl_ids)
+                                  ).order_by('first_name', 'last_name')
         full_employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
         employee_data = filter_employees(full_employee_data, empl_ids)
         #employee_data[-1] = _('Total') #Adding line for totals
@@ -501,11 +412,11 @@ class TimeSummaryBaseView(View):
         # Must show projects which are hidden (visible=False) but included in the report.
         proj_ids = uniq4list([timelist_line['object_id'] for timelist_line in timelist_data])
         full_project_data = Project.objects.only('customer__name', 'name', 'category__name'
+                                ).filter(Q(company = kwargs['company'])
                                 ).filter(Q(visible = True) | Q(id__in=proj_ids)
-                                    ).select_related('customer'
-                                        ).select_related('category'
-                                            ).order_by('customer__name', 'name')
-
+                                ).select_related('customer'
+                                ).select_related('category'
+                                ).order_by('customer__name', 'name')
         project_data = {}
 
         if kwargs.get('split_by_project', False):
@@ -525,7 +436,7 @@ class TimeSummaryBaseView(View):
 
 
     def get_timelist_data(self, **kwargs):
-        q_list = []
+        q_list = [Q(company=kwargs['company'])]
 
         q_list.append(Q(work_date__gte=kwargs.get('date_from')))
         q_list.append(Q(work_date__lte=kwargs.get('date_to')))
@@ -688,6 +599,7 @@ class TimeSummaryBaseView(View):
             'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
             'split_by_dates': str2bool(request.GET.get('split-by-dates')) if request.GET.get('split-by-dates') else True,
             'show_proj_cat': str2bool(request.GET.get('show-proj-cat')) if request.GET.get('show-proj-cat') else True,
+            'company': request.user.company,
         }
 
         time_matrix = None
@@ -748,7 +660,6 @@ class TimeSummaryBaseView(View):
 
 
 # ------ Time Summary report for HTML representation ------
-
 class TimeSummaryHTMLView(TimeSummaryBaseView):
     template = 'reports/time_summary/time_summary.html'
     meta = {
@@ -931,7 +842,6 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
 
 
 # ------ Time Summary report for XLSX representation ------
-#import pprint
 class TimeSummaryXLSXView(TimeSummaryBaseView):
     meta = {
         'start_row': 1,
@@ -1021,7 +931,6 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
 
     def _render_doc(self, request):
         context = self._get_context(request)
-        #pprint.pprint(context)
         return self.__get_xlsx(request, context)
 
     def __get_xlsx_format_props(self, dcell):

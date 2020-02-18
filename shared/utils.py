@@ -1,12 +1,11 @@
+import os
+import base64
 import logging
-from io import BytesIO
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
-from django.http import HttpResponse
-from django.template.loader import get_template
 from django.contrib.contenttypes.models import ContentType
-from django.core.checks.security.base import check_sts_include_subdomains
+from django.utils.text import slugify
 
 
 def uniq4list(seq):
@@ -70,8 +69,33 @@ def write_log_message(user, text, view=None):
     message += 'DATA: ' + text
     db_logger.info(message)
 
+
 def field_exists(model, fieldname, include_hidden = True):
     for field in model._meta.get_fields(include_hidden):
         if field.name == fieldname:
             return True
     return False
+
+def image_as_base64(image_file, file_format='jpg'):
+    file_format = file_format.replace('.', '')
+    try:
+        with open(image_file, 'rb') as img_f:
+            encoded_string = base64.b64encode(img_f.read())
+    except:
+        encoded_string = ''
+
+    return 'data:image/%(format)s;base64,%(encoded_string)s' % {'format': file_format, 'encoded_string': encoded_string.decode('utf-8')}
+
+def get_image_path(instance, filename):
+    ## split the file along the dots
+    file_split = filename.split('.')
+
+    ## find the file type
+    file_type = file_split[-1]
+
+    ## slugify the filename and put it together with the file_type
+    ## slugfiy removes dots, hence why we do it this way
+    filename = slugify(''.join(file_split[:-1])) + '.' + file_type
+
+    ## return a path to the new file
+    return os.path.join('pictures', instance.images_subdir, filename)

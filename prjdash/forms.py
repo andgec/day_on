@@ -7,30 +7,26 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.utils import construct_change_message
 from salary.models import Employee
 from receivables.forms import WorkTimeJournalForm
-from inventory.models import Item
+from general.forms import CoModelForm
 
-class PDashProjectForm(forms.ModelForm):
+class PDashProjectForm(CoModelForm):
     name = forms.CharField(label = _('Project name'), widget=forms.TextInput(attrs={'size':'60'}))
     comment = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 1, 'cols': 32}))
     mode = ADDITION
-    request = None
-    #customer_id = forms.IntegerField(required=True, widget=HiddenInput())
 
     class Meta:
         model = Project
         fields = ('customer', 'name', 'comment', 'category', 'description')
-    
+
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
         super(PDashProjectForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             self.mode = CHANGE
-    
+
     def save(self, commit=True):
-        #data = self.cleaned_data
         obj = super(PDashProjectForm, self).save(commit=False)
-        
         if commit:
+            obj.company = self.request.user.company
             obj.save()
             LogEntry.objects.log_action(
                 user_id         = self.request.user.pk,
@@ -41,6 +37,7 @@ class PDashProjectForm(forms.ModelForm):
                 change_message  = construct_change_message(self, formsets=None, add=(self.mode==ADDITION)),
                 )
         return obj
+
 
 class PDashAssignEmployees(forms.Form):
     fields = {}
@@ -56,7 +53,7 @@ class PDashAssignEmployees(forms.Form):
         self._init_fields()
 
     def _init_fields(self):
-        employees = Employee.objects.filter(user__is_active=True).order_by('user__first_name', 'user__last_name').select_related('user')
+        employees = Employee.objects.filter(company = self.request.user.company, user__is_active=True).order_by('user__first_name', 'user__last_name').select_related('user')
         assigned_employees = self.project.employees.all();
         self.assigned_empl_ids = [assigned_employee.user_id for assigned_employee in assigned_employees]
         for employee in employees:
@@ -64,23 +61,23 @@ class PDashAssignEmployees(forms.Form):
                                                                            required=False,
                                                                            initial=employee.user_id in self.assigned_empl_ids
                                                                            )
-    
+
     def get_employee_fields(self):
         for field_name in self.fields:
             yield self[field_name]
-            
+
     def get_add_value_list(self):
         empl_id_list = []
         for key, value in self.cleaned_data.items():
             if value:
                 empl_id_list.append(int(key.replace('empl_', '')))
         return empl_id_list
-    
+
     def get_remove_value_list(self):
         old_list = self.assigned_empl_ids
         new_list = self.get_add_value_list()
         return [id for id in old_list if id not in new_list]
-            
+
     def save(self, commit=False):
         self.project.employees.add(*self.get_add_value_list())
         self.project.employees.remove(*self.get_remove_value_list())
@@ -90,10 +87,11 @@ class ProjectDashTimeReviewForm(WorkTimeJournalForm):
     mode = ADDITION
     request = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs): #this is messy, WorkTimeJournalForm should accept request instead of company and become a subclass of CoModelForm
         self.request = kwargs.pop('request', None)
+        kwargs['company'] = self.request.user.company
         super(ProjectDashTimeReviewForm, self).__init__(*args, **kwargs)
-        self.fields['employee'].queryset = Employee.objects.select_related('user').all()
+        self.fields['employee'].queryset = Employee.objects.filter(company=self.company or -1).select_related('user').all()
         if self.instance.pk:
             self.mode = CHANGE
 

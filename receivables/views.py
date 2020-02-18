@@ -3,36 +3,35 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
-#from django.http import HttpResponse
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Max
-#from django.views.generic import ListView
-from .models import Project, SalesOrderHeader, WorkTimeJournal
+from .models import Project, WorkTimeJournal
 from .forms import WorkTimeJournalForm, WorkTimeJournalForm_V2
-#from shared import utils
-
 
 
 @login_required(login_url='/accounts/login/')
-def work_time_journal_proj_list_view(request):
-    projects = Project.objects.filter(employees__in = [request.user.employee], active = True).order_by('customer__name', 'name').select_related('customer')
+def work_time_journal_proj_list_view(request): # Legacy view
+    projects = Project.objects.filter(company = request.user.company, employees__in = [request.user.employee], active = True).order_by('customer__name', 'name').select_related('customer')
     return render(request, 'salary/v1/registration_list.html', {'projects': projects})
 
-#for validation check this source: https://stackoverflow.com/questions/7948750/custom-form-validation
-class WorkTimeJournalView(LoginRequiredMixin, View):
+
+class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
     # Time registration for a selected object (project)
     login_url='/accounts/login/'
     
     form_class = WorkTimeJournalForm
 
     def get_context(self, request, project_id, date, jrline_id, action, form):
-        project = Project.objects.get(id=project_id)
+        company = request.user.company
         employee = request.user.employee
-        jr_lines = WorkTimeJournal.objects.filter(work_date = date,
+        project = Project.objects.get(id=project_id)
+        jr_lines = WorkTimeJournal.objects.filter(company = company,
+                                                  work_date = date,
                                                   employee = employee).order_by('work_time_from').prefetch_related('content_object')
 
-        jr_totals = WorkTimeJournal.objects.filter(work_date = date,
+        jr_totals = WorkTimeJournal.objects.filter(company = company,
+                                                   work_date = date,
                                                    employee = employee).aggregate(Sum('work_time'),
                                                                                   Sum('distance'), 
                                                                                   Sum('toll_ring'), 
@@ -50,6 +49,8 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
                 }
 
     def get(self, request, project_id, date, jrline_id = 0, action='edit'):
+        company = request.user.company
+
         if jrline_id == 0:
             action = 'view'
         else:
@@ -60,12 +61,12 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
                 jrline = None
 
         if action == 'view':
-            form = self.form_class()
+            form = self.form_class(company=company)
         elif action == 'delete':
-            form = self.form_class()
+            form = self.form_class(company=company)
             jrline.delete();
         elif action == 'edit':
-            form = self.form_class(instance=jrline)
+            form = self.form_class(instance=jrline, company=company)
 
         return render(request, 
                       'salary/v1/registration_journal.html',
@@ -73,6 +74,7 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
                       )
 
     def post(self, request, project_id, date, jrline_id = 0, *args, **kwargs):
+        company = request.user.company
         work_date = datetime.strptime(date, '%Y-%m-%d').date()
         
         if jrline_id == 0:
@@ -91,12 +93,13 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
         request.POST['work_date_year'] = work_date.year
         request.POST['employee'] = request.user.employee
         
-        form =  self.form_class(request.POST, instance = journal)
+        form =  self.form_class(request.POST, instance = journal, company = company)
         
         project = Project.objects.get(id=project_id)
         employee = request.user.employee
         if form.is_valid():
             journal = form.save(commit=False)
+            journal.company = company
             journal.employee = employee 
             journal.content_type = ContentType.objects.get_for_model(Project)
             journal.content_object = project
@@ -116,7 +119,6 @@ class WorkTimeJournalView(LoginRequiredMixin, View):
         return datetime.strptime(work_date, '%Y-%m-%d').date() > last_sunday
 
 
-#for validation check this source: https://stackoverflow.com/questions/7948750/custom-form-validation
 class WorkTimeJournalView_V2(LoginRequiredMixin, View):
     # Time registration for a selected object (project)
     login_url='/accounts/login/'
@@ -131,10 +133,13 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
     def get_context(self, request, date, jrline_id, action, form):
         date = date_.today().strftime('%Y-%m-%d') if date is None else date
         employee = request.user.employee
-        jr_lines = WorkTimeJournal.objects.filter(work_date = date,
+        company = request.user.company
+        jr_lines = WorkTimeJournal.objects.filter(company = company,
+                                                  work_date = date,
                                                   employee = employee).order_by('work_time_from').prefetch_related('content_object')
 
-        jr_totals = WorkTimeJournal.objects.filter(work_date = date,
+        jr_totals = WorkTimeJournal.objects.filter(company = company,
+                                                   work_date = date,
                                                    employee = employee).aggregate(Sum('work_time'),
                                                                                   Sum('distance'),
                                                                                   Sum('toll_ring'),
@@ -156,11 +161,12 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                 'action': action,
                 'open': self.get_open(date),
                 'form': form,
-                'prj_dropdown': Project.objects.filter(employees__in = [request.user.employee], active = True).order_by('name'),
+                'prj_dropdown': Project.objects.filter(company = company, employees__in = [request.user.employee], active = True).order_by('name'),
                 'time_dropdown': {'hr': str(hour).zfill(2), 'min': str(minute).zfill(2)},
                 }
 
     def get(self, request, date = None, jrline_id = 0, action='edit'):
+        company = request.user.company
 
         if jrline_id == 0:
             action = 'view'
@@ -172,12 +178,12 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                 jrline = None
 
         if action == 'view':
-            form = self.form_class()
+            form = self.form_class(company=company)
         elif action == 'delete':
-            form = self.form_class()
+            form = self.form_class(company=company)
             jrline.delete();
         elif action == 'edit':
-            form = self.form_class(instance=jrline)
+            form = self.form_class(instance=jrline, company=company)
 
         return render(request,
                       'salary/v2/registration_journal.html',
@@ -185,6 +191,8 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                       )
 
     def post(self, request, date = None, jrline_id = 0, *args, **kwargs):
+        company = request.user.company
+
         work_date = datetime.strptime(date, '%Y-%m-%d').date() if date else date_.today()
         work_date_str = work_date.strftime('%Y-%m-%d')
         if jrline_id == 0:
@@ -203,11 +211,12 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
         request.POST['work_date_year'] = work_date.year
         request.POST['employee'] = request.user.employee
 
-        form =  self.form_class(request.POST, instance = journal)
+        form =  self.form_class(request.POST, instance = journal, company=company)
 
         employee = request.user.employee
         if form.is_valid():
             journal = form.save(commit=False)
+            journal.company = request.user.company
             journal.employee = employee
             journal.content_type = ContentType.objects.get_for_model(Project)
             journal.work_date = work_date

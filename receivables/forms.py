@@ -1,18 +1,38 @@
 from django.utils import timezone
 from django import forms
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
-from django.contrib.admin.utils import construct_change_message
-from django.contrib.contenttypes.models import ContentType
 from django_select2.forms import Select2Widget
-from .models import Project, SalesOrderHeader, WorkTimeJournal
+from .models import Project, SalesOrderHeader, WorkTimeJournal, Customer
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 from django.forms.widgets import SelectDateWidget
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from shared.widgets import SelectTimeWidget
-from inventory.models import ItemGroup, Item
-#from nntplib import ArticleInfo
+from inventory.models import ItemGroup
+from general.forms import CoModelForm
+from salary.models import Employee
 
-class SalesOrderAdminForm(forms.ModelForm):
+
+class CustomerAdminForm(CoModelForm):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+
+class ProjectAdminForm(CoModelForm):
+    # sorting employees in filter_horizontal by first_name and last_name (moved to ProjectModelAdmin).
+    #employees = forms.ModelMultipleChoiceField(Employee.objects.all().order_by('user__first_name', 'user__last_name'), widget=FilteredSelectMultiple(_('Employees'), False))
+    #employees.label = _('Employees')
+    class Meta:
+        model = Project
+
+        widgets = {
+            'employees': FilteredSelectMultiple(_("Employees"), False),
+            }
+
+        fields = '__all__'
+
+
+class SalesOrderAdminForm(forms.ModelForm): # Unused
     description = forms.CharField(widget = forms.Textarea, max_length=120)
     class Meta:
         model = SalesOrderHeader
@@ -56,6 +76,7 @@ class SalesOrderAdminForm(forms.ModelForm):
 
 class WorkTimeJournalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.company = kwargs.pop('company', None)
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
         self.work_date = kwargs.get('work_date', timezone.now())
         self.fields['work_date'].initial = self.work_date
@@ -63,9 +84,9 @@ class WorkTimeJournalForm(forms.ModelForm):
 
     def items_as_choices(self):
         item_group_list = []
-        for itemgroup in ItemGroup.objects.all().prefetch_related('translations'
-                                               ).prefetch_related('items'
-                                               ).prefetch_related('items__translations'):
+        for itemgroup in ItemGroup.objects.filter(company = self.company or -1).prefetch_related('translations'
+                                                                              ).prefetch_related('items'
+                                                                              ).prefetch_related('items__translations'):
             new_itemgroup = []
             item_list = []
             for item in itemgroup.items.all():
@@ -103,8 +124,8 @@ class WorkTimeJournalForm(forms.ModelForm):
 
 
 class WorkTimeJournalForm_V2(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
+        self.company = kwargs.pop('company', None)
         super(WorkTimeJournalForm_V2, self).__init__(*args, **kwargs)
         self.work_date = kwargs.get('work_date', timezone.now())
         self.fields['work_date'].initial = self.work_date
@@ -112,12 +133,14 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
 
     def items_as_choices(self):
         item_group_list = []
-        for itemgroup in ItemGroup.objects.all():
+        for itemgroup in ItemGroup.objects.filter(company = self.company or -1).prefetch_related('translations'
+                                                                              ).prefetch_related('items'
+                                                                              ).prefetch_related('items__translations'):
             new_itemgroup = []
             item_list = []
             for item in itemgroup.items.all():
                 item_list.append([item.id, item.name])
-                
+
             new_itemgroup = [itemgroup.name, item_list]
             item_group_list.append(new_itemgroup)
         return item_group_list

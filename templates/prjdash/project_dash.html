@@ -19,6 +19,17 @@
 
 <div class="main-container">
 	<!-- div id="debug"></div> -->
+	{% if not customers %}
+		<h1>
+			<div style="text-align: center;">
+				<br><br>
+				{{_('To be able to use <b> Project Dashboard </b> you must add customers first.')}}<br>
+				<br>
+		 		{{_('To add new customers go to top right menu')}} <b>{{_('Profile')}} > {{_('Administration')}}</b> 
+		 		{{_('and then')}} <b> {{_('Customers')}} > {{_('new customer')|capfirst}} </b> {{_('on top right of your screen')}}.
+		 	</div>
+		</h1>
+	{% endif %}
 	{% for customer in customers %}
 	  {% if customer.id == focus.customer_id %}
 		<button class="accordion active" id="accordion_active" value="{{customer.id}}">{{customer.name}}</button>

@@ -27,10 +27,9 @@ class IsActiveFilter(admin.SimpleListFilter):
 
 
 class EmployeeAdmin(MultiFieldSortableModelAdmin):
-    
     def get_queryset(self, request):
-        qs = super(EmployeeAdmin, self).get_queryset(request)
-        return qs
+        qs = super().get_queryset(request)
+        return qs.filter(company = request.user.company)
     
     list_select_related = ('user',)
     list_display = ('full_name', 'mobile_no', 'email', 'is_active',)    

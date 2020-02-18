@@ -30,13 +30,10 @@ admin.autodiscover()
 admin.site.login = login_required(login_url='/accounts/login/')
 
 if settings.DEBUG:
-    #from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-    #from django.conf.urls.static import static
-    
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
     import debug_toolbar
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),
         ] + urlpatterns
-
-    #urlpatterns += staticfiles_urlpatterns()
-    #urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
