@@ -22,7 +22,7 @@ class Company(AddressMixin, ContactMixin, models.Model):
                                         blank=True,
                                         null=True,
                                         verbose_name = _('change logo'))
-
+    domain          = models.CharField(max_length=150, unique=True, verbose_name=_('domain'))
     ## Display logo image
     def logo_tag(self):
         if self.logo:

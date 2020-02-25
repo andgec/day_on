@@ -8,6 +8,7 @@ from conf import settings
 
 from receivables.views import WorkTimeJournalView_V2
 
+from djauth      import urls as djauth_urls
 from prjdash     import urls as prjdash_urls
 from reports     import urls as reports_urls
 from receivables import urls as receivb_urls
@@ -15,6 +16,7 @@ from receivables import urls as receivb_urls
 
 urlpatterns = i18n_patterns(
     url(r'^$', WorkTimeJournalView_V2.as_view(), name='index'),
+    url(r'^accounts/', include(djauth_urls.urlpatterns)),
     url(r'^v1/', include(receivb_urls.urlpatterns_v1)),
     url(r'^v2/', include(receivb_urls.urlpatterns_v2)),
     url(r'^accounts/', include('django.contrib.auth.urls')),

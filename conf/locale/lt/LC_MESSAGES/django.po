@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-18 14:41+0100\n"
+"POT-Creation-Date: 2020-02-25 10:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,15 +20,15 @@ msgstr ""
 "11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? "
 "1 : n % 1 != 0 ? 2: 3);\n"
 
-#: co_manager/admin.py:26 templates/admin/base_site.html:16
+#: co_manager/admin.py:28 templates/admin/base_site.html:16
 msgid "Company administration"
 msgstr "VitasBygg administravimas"
 
-#: co_manager/admin.py:33
+#: co_manager/admin.py:35
 msgid "Company site admin"
 msgstr "VitasBygg administravimas"
 
-#: co_manager/admin.py:39
+#: co_manager/admin.py:41
 msgid "Site administration"
 msgstr "Įmonės administravimas"
 
@@ -76,37 +76,49 @@ msgstr "Svarbios datos"
 msgid "Authentication and authorization"
 msgstr "Autentifikacija ir įgaliojimai"
 
-#: djauth/models.py:50
+#: djauth/forms.py:48 djauth/forms.py:61
+msgid "email [accusative]"
+msgstr "el. pašto adresą"
+
+#: djauth/models.py:14
 msgid "username (email address)"
 msgstr "Vartotojo vardas (el. pašto adresas)"
 
-#: djauth/models.py:53
+#: djauth/models.py:16
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 "Privalomas. 150 arba mažiau simbolių. Raidės, skaičiai bei @/./+/-/_ "
 "simboliai."
 
-#: djauth/models.py:56
+#: djauth/models.py:19
 msgid "A user with that username already exists."
 msgstr "Vartotojas tokiu vardu jau egzistuoja."
 
-#: djauth/models.py:59
+#: djauth/models.py:22
 msgid "email address"
-msgstr "El. pašto adresas"
+msgstr "el. pašto adresas"
 
-#: djauth/models.py:66
+#: djauth/models.py:29
 msgid "Employee status"
 msgstr "Darbuotojas"
 
-#: general/admin.py:27 general/models.py:86
+#: djauth/models.py:35
+msgid "user"
+msgstr "vartotojas"
+
+#: djauth/models.py:36
+msgid "users"
+msgstr "vartotojai"
+
+#: general/admin.py:28 general/models.py:85
 msgid "Address"
 msgstr "Adresas"
 
-#: general/admin.py:30 receivables/admin.py:71 salary/admin.py:51
+#: general/admin.py:31 receivables/admin.py:71 salary/admin.py:51
 msgid "Contact information"
 msgstr "Kontaktinė informacija"
 
-#: general/admin.py:33
+#: general/admin.py:34
 msgid "Other"
 msgstr "Kita"
 
@@ -133,7 +145,7 @@ msgstr "Įvedėte besidubliuojantį pavadinimą."
 msgid "%s with this name already exists"
 msgstr "%s tokiu vardu jau yra"
 
-#: general/models.py:17 general/models.py:95 inventory/models.py:13
+#: general/models.py:17 general/models.py:94 inventory/models.py:13
 #: inventory/models.py:44 receivables/models.py:35 receivables/models.py:61
 #: receivables/models.py:74
 msgid "Name"
@@ -151,59 +163,63 @@ msgstr "Interneto puslapis"
 msgid "change logo"
 msgstr "keisti logotipą"
 
+#: general/models.py:25
+msgid "domain"
+msgstr "domenas"
+
 #: general/models.py:31
 msgid "not selected"
 msgstr "nepasirinktas"
 
-#: general/models.py:34
+#: general/models.py:33
 msgid "logo"
 msgstr "logotipas"
 
-#: general/models.py:42 receivables/models.py:26
+#: general/models.py:41 receivables/models.py:26
 msgid "Company"
 msgstr "Įmonė"
 
-#: general/models.py:43
+#: general/models.py:42
 msgid "Companies"
 msgstr "Duomenys apie įmonę"
 
-#: general/models.py:65
+#: general/models.py:64
 msgid "First name"
 msgstr "Vardas"
 
-#: general/models.py:66
+#: general/models.py:65
 msgid "Last name"
 msgstr "Pavardė"
 
-#: general/models.py:72
+#: general/models.py:71
 msgid "Contact"
 msgstr "Kontaktas"
 
-#: general/models.py:73
+#: general/models.py:72
 msgid "Contacts"
 msgstr "Kontaktai"
 
-#: general/models.py:87
+#: general/models.py:86
 msgid "Addresses"
 msgstr "Adresai"
 
-#: general/models.py:96 inventory/models.py:19 inventory/models.py:50
+#: general/models.py:95 inventory/models.py:19 inventory/models.py:50
 #: receivables/models.py:62 receivables/models.py:78 receivables/models.py:133
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:82
 msgid "Description"
 msgstr "Aprašymas"
 
-#: general/models.py:97 inventory/models.py:70 receivables/models.py:47
+#: general/models.py:96 inventory/models.py:70 receivables/models.py:47
 #: receivables/models.py:98 salary/admin.py:12 salary/admin.py:64
 #: salary/models.py:38
 msgid "Active"
 msgstr "Aktyvus"
 
-#: general/models.py:99 inventory/models.py:66 receivables/models.py:198
+#: general/models.py:98 inventory/models.py:66 receivables/models.py:198
 msgid "Unit of measure"
 msgstr "Matavimo vienetai"
 
-#: general/models.py:100
+#: general/models.py:99
 msgid "Units of measure"
 msgstr "Matavimo vienetai"
 
@@ -274,13 +290,13 @@ msgstr "Kita informacija"
 msgid "Receivables"
 msgstr "Įplaukos"
 
-#: receivables/forms.py:32 receivables/models.py:106 receivables/models.py:138
+#: receivables/forms.py:29 receivables/models.py:106 receivables/models.py:138
 #: salary/models.py:42
 #: templates/reports/time_summary/time_table_filters.html:63
 msgid "Employees"
 msgstr "Darbuotojai"
 
-#: receivables/forms.py:69 receivables/models.py:110 receivables/models.py:128
+#: receivables/forms.py:66 receivables/models.py:110 receivables/models.py:128
 #: reports/views.py:316 templates/prjdash/project_dash.html:46
 #: templates/reports/time_summary/posted_time.html:47
 #: templates/salary/v1/registration_journal.html:51

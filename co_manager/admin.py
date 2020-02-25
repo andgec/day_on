@@ -2,9 +2,11 @@ from django.contrib.admin import AdminSite
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import GroupAdmin
 from django.apps import apps
+from djauth.forms import CoAdminAuthenticationForm
 
 
 class CoAdminSite(AdminSite):
+    login_form = CoAdminAuthenticationForm
 
     def get_urls(self):
         from django.conf.urls import url

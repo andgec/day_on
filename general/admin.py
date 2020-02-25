@@ -20,20 +20,26 @@ class CompanyAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
 
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'number')
-        }),
-        (_('Address'), {
-            'fields': ('address', 'city', 'post_code', 'country')
-        }),
-        (_('Contact information'), {
-            'fields': ('email', 'phone_no', 'mobile_no', 'fax_no')
-        }),
-        (_('Other'), {
-            'fields': ('web_site', 'logo_tag', 'logo', 'logo_base64')
-        }),
-    )
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = (
+                (None, {
+                    'fields': ('name', 'number')
+                }),
+                (_('Address'), {
+                    'fields': ('address', 'city', 'post_code', 'country')
+                }),
+                (_('Contact information'), {
+                    'fields': ('email', 'phone_no', 'mobile_no', 'fax_no')
+                }),
+                (_('Other'), {
+                    'fields': ('web_site', 'logo_tag', 'logo', 'logo_base64')
+                }),
+            )
+
+        if request.user.is_superuser:
+            fieldsets[0][1]['fields'] = ('domain', 'name', 'number')
+
+        return fieldsets
 
     readonly_fields = ('logo_tag', 'logo_base64')
 
