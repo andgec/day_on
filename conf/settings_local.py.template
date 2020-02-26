@@ -1,6 +1,7 @@
 import os
+
 '''
-# Uncomment for testing migrations
+# Uncomment for testing migrations from start on
 from .settings import BASE_DIR
 
 DATABASES = {
@@ -10,10 +11,11 @@ DATABASES = {
     }
 }
 '''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'vitasbygg_dev_drift2'),
+        'NAME': os.environ.get('DB_NAME', 'vitasbygg-dev-drift'),
         'USER': os.environ.get('DB_USER', 'postgres'),
         'PASSWORD': os.environ.get('DB_PASSWORD', None),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
@@ -25,4 +27,6 @@ DATABASES = {
 MEDIA_ROOT = '/home/andrius/workspace/python/data_bucket/co_manager/media'
 MEDIA_URL = '/media/'
 
-INTERNAL_IPS=['127.0.0.1']
+#INTERNAL_IPS=['127.0.0.1'] # Uncomment to enable debug toolbar
+
+ALLOWED_HOSTS = ['127.0.0.1', '10.0.0.111', '10.189.88.155', 'localhost']

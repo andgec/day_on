@@ -3,7 +3,7 @@ from functools import reduce
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import UniqueConstraint, Q
-from django.forms import ModelForm, ModelChoiceField
+from django.forms import ModelForm
 from parler.forms import TranslatableModelForm
 
 
@@ -15,6 +15,11 @@ class CoModelForm(ModelForm):
     request = None
     co_field = 'company'
     co_object = None
+
+    error_messages = {
+        'unique_violation'          : _('%s with this value already exists'),
+        'unique_violation_multiple' : _('%s with these values already exists'),
+    }
 
     class Meta:
         abstract = True
@@ -62,9 +67,9 @@ class CoModelForm(ModelForm):
         if q.count() > 0:
             for field in constraint:
                 if len(constraint) > 1:
-                    self.add_error(field, _('%s with these values already exists') % self.instance._meta.verbose_name.title().capitalize() + '.')
+                    self.add_error(field, self.error_messages['unique_violation_multiple'] % self.instance._meta.verbose_name.title().capitalize() + '.')
                 else:
-                    self.add_error(field, _('%s with this value already exists') % self.instance._meta.verbose_name.title().capitalize() + '.')
+                    self.add_error(field, self.error_messages['unique_violation'] % self.instance._meta.verbose_name.title().capitalize() + '.')
 
     def clean(self):
         cleaned_data = super().clean()

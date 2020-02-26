@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, UsernameField
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from general.models import Company
+from general.forms import CoModelForm
 from djauth.models import User
 
 UserModel = get_user_model()
@@ -61,3 +62,25 @@ class CoAdminAuthenticationForm(CoAuthenticationForm, AdminAuthenticationForm):
                 params={'username': _('email [accusative]')}
             )
         super().confirm_login_allowed(user)
+
+
+class CoUserCreationForm(CoModelForm, UserCreationForm):
+    class Meta:
+        model = User
+        fields = ("username",)
+        field_classes = {'username': UsernameField}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.error_messages['unique_violation'] = _('%s with this name already exists')
+
+
+class CoUserChangeForm(CoModelForm, UserChangeForm):
+    class Meta:
+        model = User
+        fields = '__all__'
+        field_classes = {'username': UsernameField}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.error_messages['unique_violation'] = _('%s with this name already exists')

@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 from receivables.models import Employee
@@ -7,6 +6,7 @@ from django.contrib.admin.options import StackedInline
 from co_manager.admin import admin_site
 
 from .models import User
+from .forms import CoUserCreationForm, CoUserChangeForm
 
 
 class EmployeeInLine(StackedInline):
@@ -42,15 +42,21 @@ class IsEmployeeFilter(admin.SimpleListFilter):
             return queryset.filter(employee__isnull=value)
         return queryset
 
+
 def make_active(modeladmin, request, queryset):
     queryset.update(is_active = True)
 make_active.short_description = _('Activate selected users')
+
 
 def make_inactive(modeladmin, request, queryset):
     queryset.update(is_active = False)
 make_inactive.short_description = _('Deactivate selected users')
 
+
 class UserAdmin(DjangoUserAdmin):
+    form = CoUserChangeForm
+    add_form = CoUserCreationForm
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
@@ -103,5 +109,13 @@ class UserAdmin(DjangoUserAdmin):
     inlines = [
         EmployeeInLine,
     ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        AdminForm = super().get_form(request, obj, **kwargs)
+        class AdminFormWithRequest(AdminForm):
+            def __new__(cls, *args, **kwargs):
+                kwargs['request'] = request
+                return AdminForm(*args, **kwargs)
+        return AdminFormWithRequest
 
 admin_site.register(User, UserAdmin)

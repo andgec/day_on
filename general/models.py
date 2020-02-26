@@ -33,8 +33,10 @@ class Company(AddressMixin, ContactMixin, models.Model):
     logo_tag.short_description = _('logo')
 
     def logo_base64(self):
-        image_format = (os.path.splitext(self.logo.path))[1]
-        return image_as_base64(self.logo.path, image_format)
+        if self.logo:
+            image_format = (os.path.splitext(self.logo.path))[1]
+            return image_as_base64(self.logo.path, image_format)
+        return ''
 
     class Meta:
         abstract = False

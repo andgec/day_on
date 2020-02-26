@@ -20,8 +20,8 @@ class User(AbstractUser):
         },
     )
     email = models.EmailField(_('email address'))
-    company = ForeignKey(Company, default=1, on_delete=CASCADE, related_name='user')
-    
+    company = ForeignKey(Company, default=1, on_delete=CASCADE, related_name='user', verbose_name = _('Company'))
+
     def is_employee(self):
         return hasattr(self, 'employee')
 

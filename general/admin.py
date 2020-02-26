@@ -48,6 +48,7 @@ class CompanyAdmin(admin.ModelAdmin):
 class CoModelAdmin(admin.ModelAdmin):
     form = CoModelForm
     exclude = ('company',)
+
     def get_queryset(self, request):
         qs=super().get_queryset(request)
         return qs.filter(company = request.user.company)

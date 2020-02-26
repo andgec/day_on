@@ -20,6 +20,9 @@ staticfiles
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-#Temporary backup files
+# Temporary backup files
 *.bak.py
+
+# Local settings file
+settings_local.py
 
