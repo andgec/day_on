@@ -30,3 +30,11 @@ MEDIA_URL = '/media/'
 #INTERNAL_IPS=['127.0.0.1'] # Uncomment to enable debug toolbar
 
 ALLOWED_HOSTS = ['127.0.0.1', '10.0.0.111', '10.189.88.155', 'localhost']
+
+MAINTENANCE_MODE = False
+#MAINTENANCE_MODE = True
+
+# Invalidating all user sessions by temporarily changing the secret key. This forces all users to log in by which they get maintenance page.
+# Sessions will be restored when maintenance mode is off again (and secret key is old one again.
+if MAINTENANCE_MODE:
+    SECRET_KEY = '&tk10jc)02p71+l^fv0$s$*!pljdcq#wq@^m!x82ut9!wa*$rv'

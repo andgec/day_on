@@ -8,6 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 't(auwl)iz9o_ovf6lstrql_w)9kt@6(m_nw_nn5r3&nyvdv_!%')
+MAINTENANCE_KEY = os.environ.get('MAINTENANCE_KEY', '&tk10jc)02p71+l^fv0$s$*!pljdcq#wq@^m!x82ut9!wa*$rv')
 
 RUNTIME_ENV = os.environ.get('RUNTIME_ENV', 'local')
 
@@ -19,7 +20,13 @@ DEBUG = str(os.environ.get('DEBUG', RUNTIME_ENV not in ('PROD', 'PRODUCTION'))).
 
 ALLOWED_HOSTS = [os.environ.get('WEB_HOST', 'localhost'), os.environ.get('WEB_HOST_2', 'localhost')]
 
-# Application definition
+MAINTENANCE_MODE = str(os.environ.get('MAINTENANCE', 'False')).lower() in ('true', 'yes', '1')
+
+# Invalidating all user sessions by temporarily changing the secret key. This forces all users to log in by which they get maintenance page.
+# Sessions will be restored when maintenance mode is off again (and secret key is old one again.
+if MAINTENANCE_MODE:
+    SECRET_KEY = MAINTENANCE_KEY
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -28,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'maintenancemode',
     'django_db_logger',
     'debug_toolbar',
     'django_select2',
@@ -60,6 +68,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'maintenancemode.middleware.MaintenanceModeMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
