@@ -10,7 +10,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from shared.utils import get_image_path
 from conf.settings import MEDIA_URL
-from shared.utils import image_as_base64
+from shared.utils import imagefield_as_base64
 
 
 class Company(AddressMixin, ContactMixin, models.Model):
@@ -33,10 +33,7 @@ class Company(AddressMixin, ContactMixin, models.Model):
     logo_tag.short_description = _('logo')
 
     def logo_base64(self):
-        if self.logo:
-            image_format = (os.path.splitext(self.logo.path))[1]
-            return image_as_base64(self.logo.path, image_format)
-        return ''
+        return imagefield_as_base64(self.logo)
 
     class Meta:
         abstract = False

@@ -32,7 +32,7 @@ class CompanyAdmin(admin.ModelAdmin):
                     'fields': ('email', 'phone_no', 'mobile_no', 'fax_no')
                 }),
                 (_('Other'), {
-                    'fields': ('web_site', 'logo_tag', 'logo', 'logo_base64')
+                    'fields': ('web_site', 'logo_tag', 'logo',)
                 }),
             )
 
@@ -41,7 +41,7 @@ class CompanyAdmin(admin.ModelAdmin):
 
         return fieldsets
 
-    readonly_fields = ('logo_tag', 'logo_base64')
+    readonly_fields = ('logo_tag',)
 
 
 # Base class to exchange ModelAdmin

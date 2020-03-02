@@ -76,15 +76,17 @@ def field_exists(model, fieldname, include_hidden = True):
             return True
     return False
 
-def image_as_base64(image_file, file_format='jpg'):
-    file_format = file_format.replace('.', '')
-    try:
-        with open(image_file, 'rb') as img_f:
-            encoded_string = base64.b64encode(img_f.read())
-    except:
-        encoded_string = ''
+
+def imagefield_as_base64(image_field):
+    if not image_field:
+        return ''
+
+    path_parts = str(image_field).split('.')
+    file_format = path_parts[len(path_parts) - 1]
+    encoded_string = base64.b64encode(image_field.read())
 
     return 'data:image/%(format)s;base64,%(encoded_string)s' % {'format': file_format, 'encoded_string': encoded_string.decode('utf-8')}
+
 
 def get_image_path(instance, filename):
     ## split the file along the dots
