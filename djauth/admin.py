@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from receivables.models import Employee
 from django.contrib.admin.options import StackedInline
 from co_manager.admin import admin_site
+from django.apps import apps
+from django.contrib.auth.admin import GroupAdmin
 
 from .models import User
 from .forms import CoUserCreationForm, CoUserChangeForm
@@ -118,4 +120,9 @@ class UserAdmin(DjangoUserAdmin):
                 return AdminForm(*args, **kwargs)
         return AdminFormWithRequest
 
+
+Group = apps.get_model('auth.Group')
+
+
+admin_site.register(Group, GroupAdmin)
 admin_site.register(User, UserAdmin)

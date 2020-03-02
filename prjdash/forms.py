@@ -53,11 +53,11 @@ class PDashAssignEmployees(forms.Form):
         self._init_fields()
 
     def _init_fields(self):
-        employees = Employee.objects.filter(company = self.request.user.company, user__is_active=True).order_by('user__first_name', 'user__last_name').select_related('user')
+        employees = Employee.objects.filter(company = self.request.user.company, user__is_active=True).order_by('user__first_name', 'user__last_name', 'user__username').select_related('user')
         assigned_employees = self.project.employees.all();
         self.assigned_empl_ids = [assigned_employee.user_id for assigned_employee in assigned_employees]
         for employee in employees:
-            self.fields['empl_%s' % employee.user_id] = forms.BooleanField(label=employee.full_name(),
+            self.fields['empl_%s' % employee.user_id] = forms.BooleanField(label=employee.__str__(),
                                                                            required=False,
                                                                            initial=employee.user_id in self.assigned_empl_ids
                                                                            )

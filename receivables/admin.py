@@ -117,7 +117,7 @@ class ProjectAdmin(CoModelAdmin):
 
     list_display = ('name', 'description', 'category', 'customer', 'active',)
     list_filter = ('active', 'category')
-    search_fields   = ('name', 'description', 'category', 'customer__name',)
+    search_fields   = ('name', 'description', 'category__name', 'customer__name',)
 
     fieldsets = (
         (None, {

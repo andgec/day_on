@@ -31,7 +31,7 @@ admin.autodiscover()
 #admin.site.login = login_required(admin.site.login)
 admin.site.login = login_required(login_url='/accounts/login/')
 
-if settings.DEBUG:
+if settings.LOCAL_ENV and settings.DEBUG:
     from django.conf.urls.static import static
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -1,6 +1,12 @@
 {% extends "admin/base_site.html" %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('Site admin') }}{% endblock %}
+{% block title %}
+	{% if company %} {{ company.name }} | {{ title }}
+	{% elif user.id %} {{ user.company.name }} | {{ title }}
+	{% else %} {{ title }}
+	{% endif %}
+{% endblock %}
+
 
 {% block branding %}
 <h1 id="site-name">

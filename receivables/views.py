@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Max
+from django.utils.translation import ugettext_lazy as _
 from .models import Project, WorkTimeJournal
 from .forms import WorkTimeJournalForm, WorkTimeJournalForm_V2
 
@@ -13,7 +14,7 @@ from .forms import WorkTimeJournalForm, WorkTimeJournalForm_V2
 @login_required(login_url='/accounts/login/')
 def work_time_journal_proj_list_view(request): # Legacy view
     projects = Project.objects.filter(company = request.user.company, employees__in = [request.user.employee], active = True).order_by('customer__name', 'name').select_related('customer')
-    return render(request, 'salary/v1/registration_list.html', {'projects': projects})
+    return render(request, 'salary/v1/registration_list.html', {'title': _('Time registration'), 'projects': projects})
 
 
 class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
@@ -37,7 +38,8 @@ class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
                                                                                   Sum('toll_ring'), 
                                                                                   Sum('ferry'), 
                                                                                   Sum('diet'))
-        return {'date': date,
+        return {'title': _('Time registration'),
+                'date': date,
                 'project': project,
                 'employee': employee,
                 'jr_lines': jr_lines,
@@ -153,7 +155,8 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
             hour = self.work_day_start['hour']
             minute = self.work_day_start['minute']
 
-        return {'date': date,
+        return {'title': _('Time registration'),
+                'date': date,
                 'employee': employee,
                 'jr_lines': jr_lines,
                 'jr_totals': jr_totals,

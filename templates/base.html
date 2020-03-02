@@ -1,7 +1,17 @@
 {% load static %}
 <html>
 	<head>
-		<title>Time registration</title>
+		<title>
+		{% block title %}
+			{% if company %} {{ company.name }}
+			{% elif user.id %} {{ user.company.name }}
+			{% endif %}
+			{% if company or user.id %}
+				{% if title %} | {% endif %}
+			{% endif %}
+			{% if title %} {{ title }} {% endif %}
+		{% endblock %}
+		</title>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'css/menus.css' %}">
@@ -14,7 +24,6 @@
 		<div id = "container">
 			<div id = "header" style="overflow: visible;">
 			    <div id = "branding">
-					<!-- h1 id="site-name">{{ _('Vitasbygg AS') }}</h1> -->
 					<h1 id="site-name">{{user.company.name}}</h1>
 				</div>
 				<div id="user-tools">

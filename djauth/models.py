@@ -22,15 +22,6 @@ class User(AbstractUser):
     email = models.EmailField(_('email address'))
     company = ForeignKey(Company, default=1, on_delete=CASCADE, related_name='user', verbose_name = _('Company'))
 
-    def is_employee(self):
-        return hasattr(self, 'employee')
-
-    is_employee.boolean = True
-    is_employee.short_description = _('Employee status')
-
-    USERNAME_FIELD = 'id'
-    REQUIRED_FIELDS = []
-
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
@@ -38,6 +29,18 @@ class User(AbstractUser):
             models.UniqueConstraint(fields=['company', 'username'], name='company_username'),
             models.UniqueConstraint(fields=['company', 'email'], name='company_useremail'),
         ]
+
+    def is_employee(self):
+        return hasattr(self, 'employee')
+
+    def name_or_username(self):
+        return self.get_full_name() if self.get_full_name() else self.username
+
+    is_employee.boolean = True
+    is_employee.short_description = _('Employee status')
+
+    USERNAME_FIELD = 'id'
+    REQUIRED_FIELDS = []
 
     def clean(self):
         self.username = self.__class__.objects.normalize_email(self.username)

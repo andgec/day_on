@@ -15,7 +15,6 @@ RUNTIME_ENV = os.environ.get('RUNTIME_ENV', 'local')
 LOCAL_ENV = RUNTIME_ENV not in ('PROD', 'PRODUCTION', 'PROD-DEBUG', 'STAGING', 'DEV')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
 DEBUG = str(os.environ.get('DEBUG', RUNTIME_ENV not in ('PROD', 'PRODUCTION'))).lower() in ('true', '1')
 
 ALLOWED_HOSTS = [os.environ.get('WEB_HOST', 'localhost'), os.environ.get('WEB_HOST_2', 'localhost')]

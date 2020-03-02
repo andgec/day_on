@@ -10,9 +10,9 @@
 		<div class="breadcrumbs">
 			<!-- a href={% url 'report-time-summary' %}>{{ _('Time summary') }}</a -->
 			<a href="javascript:history.back()">{{ _('Time summary') }}</a>
-			 › {{lines.0.employee.user.first_name}} {{lines.0.employee.user.last_name}}
+			 › {{lines.0.employee.user.name_or_username}}
 			 › {% if filters.one_day %}
-			     {{filters.date_from}} 
+			     {{filters.date_from}}
 			   {% else %}
 			     {{filters.date_from_str}} - {{filters.date_to_str}}
 			   {% endif %}
@@ -26,7 +26,7 @@
 		<br>
 		
 		<h2 style="text-align:left;">
-		    <b>{{lines.0.employee.user.first_name}} {{lines.0.employee.user.last_name}} &#8226
+		    <b>{{lines.0.employee.user.name_or_username}} &#8226
 		       {% if filters.one_day %}
 			     {{filters.date_from}} 
 			   {% else %}

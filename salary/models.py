@@ -42,7 +42,7 @@ class Employee(AddressMixin, CoModel):
         verbose_name_plural = _('Employees')
 
     def __str__(self):
-        return self.user.get_full_name()
+        return self.user.name_or_username()
 
 
 # Automatically create an employee object for newly created user.

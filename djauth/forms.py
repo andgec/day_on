@@ -73,6 +73,8 @@ class CoUserCreationForm(CoModelForm, UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.error_messages['unique_violation'] = _('%s with this name already exists')
+        if not self.instance.id and self.request.user.is_superuser: # Superuser will create new users on "system" company to avoid duplicates
+            self.co_object = 1
 
 
 class CoUserChangeForm(CoModelForm, UserChangeForm):

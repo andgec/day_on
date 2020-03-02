@@ -130,7 +130,8 @@ class ProjectDashboardView(View):
 
         form = self.form_class(instance = self.project if self.state == RecState.EDIT else None, request = request)
 
-        context = {'edit': self.state == RecState.EDIT,
+        context = {'title': _('Project management'),
+                   'edit': self.state == RecState.EDIT,
                    'focus': {'customer_id': int(self.customer_id) if self.customer_id else None,
                              'project_id': int(pk) if pk else None,
                             },
@@ -207,6 +208,7 @@ class ProjectDashboardAssignEmployeesView(View):
     def get_context(self, request, project):
         form = self.form_class(request=request, project=project)
         context = {
+                'title': _('Project management'),
                 'form': form,
                 'customer': project.customer,
                 'project': project
@@ -285,6 +287,7 @@ class ProjectDashboardPostedTimeReview(View):
                                                                                  Sum('ferry'), 
                                                                                  Sum('diet'))
         context = {
+                'title': _('Project management'),
                 'mode': mode,
                 'pk': int(pk) if pk is not None else None,
                 'project': project,

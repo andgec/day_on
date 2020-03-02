@@ -233,6 +233,7 @@ class TimeSummaryPostedLineDetailView(View):
             total_diet += 0 if line.diet is None else line.diet;
 
         context = {
+            'title': _('Time summary'),
             'filters': {
                     'date_from_str': date_from,
                     'date_to_str': date_to,
@@ -398,8 +399,8 @@ class TimeSummaryBaseView(View):
         users = User.objects.only('first_name', 'last_name'
                                   ).filter(Q(company=kwargs['company'])
                                   ).filter(Q(is_active = True) | Q(id__in = empl_ids)
-                                  ).order_by('first_name', 'last_name')
-        full_employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
+                                  ).order_by('first_name', 'last_name', 'username')
+        full_employee_data = {user.id: user.name_or_username() for user in users}
         employee_data = filter_employees(full_employee_data, empl_ids)
         #employee_data[-1] = _('Total') #Adding line for totals
         return employee_data, full_employee_data
@@ -631,6 +632,7 @@ class TimeSummaryBaseView(View):
         meta = self._get_report_meta(**filters)
 
         context = {
+            'title': _('Time summary'),
             'filters': filters,
             'meta': meta,
             'header': header_data,

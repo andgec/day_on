@@ -1,6 +1,11 @@
 {% extends "admin/base.html" %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('Log in') }}{% endblock %}
+{% block title %}
+	{% if company %} {{ company.name }} | {{ title }}
+	{% elif user.id %} {{ user.company.name }} | {{ title }}
+	{% else %} {{ title }}
+	{% endif %}
+{% endblock %}
 
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'index' %}">{{ site_header|default:_('Log in') }}</a></h1>
