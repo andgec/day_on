@@ -39,7 +39,6 @@ class TimelistPDFView(View):
         context = {
             'company': company,
             'project': project,
-            'dynamic_logo':  str2bool(str(request.GET.get('dynamic-logo', False))) or company.fax_no == '0123456789' # TEMPORARY for testing if logo from company works
             }
         context.update(self.get_journal_lines(request, project_id))
         return context
