@@ -314,11 +314,16 @@ class WorkTimeJournal(CoModel):
                                 blank = True, 
                                 verbose_name = _('Diet')
                                 )
+    parking = models.DecimalField(max_digits = 7,
+                                decimal_places = 2,
+                                null = True,
+                                blank = True,
+                                verbose_name = _('Parking')
+                                )
     created_date_time = models.DateTimeField(
                              auto_now = True,
                              verbose_name = _('Created date/time')
                              )
-
     def clean(self):
         if self.calc_work_hours() == 0:
             raise ValidationError({'work_time_from': _('Working time cannot be zero.')})

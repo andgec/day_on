@@ -147,6 +147,7 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                                                                                   Sum('toll_ring'),
                                                                                   Sum('ferry'),
                                                                                   Sum('diet'),
+                                                                                  Sum('parking'),
                                                                                   Max('work_time_to'))
         if jr_lines.count() > 0:
             hour = jr_totals['work_time_to__max'].hour
