@@ -47,7 +47,8 @@ class TimelistPDFView(View):
     def get_journal_lines(self, request, pk):
         project_id = pk
         #project_ids = request.GET.get('project_ids')
-        item_ids = request.GET.get('item-ids')
+        employee_ids = request.GET.get('employees')
+        item_ids = request.GET.get('items')
         filter_date_from = request.GET.get('date-from')
         filter_date_to = request.GET.get('date-to')
         contenttype_project = ContentType.objects.get(model='project')
@@ -64,6 +65,10 @@ class TimelistPDFView(View):
         if item_ids:
             item_ids_list = item_ids.split(',')
             q_list.append(Q(item_id__in=item_ids_list))
+
+        if employee_ids:
+            employee_ids_list = employee_ids.split(',')
+            q_list.append(Q(employee_id__in=employee_ids_list))
 
         if project_id:
             q_list.append(Q(content_type=contenttype_project))

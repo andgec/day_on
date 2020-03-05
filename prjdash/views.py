@@ -15,6 +15,7 @@ from .forms import PDashProjectForm, PDashAssignEmployees, ProjectDashTimeReview
 #from botocore.vendored.requests.api import request
 from receivables.models import WorkTimeJournal
 from inventory.models import Item
+from djauth.models import User
 
 
 class RecState:
@@ -265,6 +266,11 @@ class ProjectDashboardPostedTimeReview(View):
         items = [(item.item_group.name, item.name, item.id) for item in items]
         items.sort(key = lambda val: (val[0].lower(), val[1].lower(), val[2]))
 
+        employees = User.objects.filter(company = request.user.company
+                                        ).only('first_name', 'last_name', 'username'
+                                        ).order_by('first_name', 'last_name', 'username')
+        employees = [(employee.name_or_username(), employee.id) for employee in employees]
+
         journal_raw = self.model.objects.filter(company = request.user.company,
                                                 content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                                 object_id = project_id
@@ -292,6 +298,7 @@ class ProjectDashboardPostedTimeReview(View):
                 'pk': int(pk) if pk is not None else None,
                 'project': project,
                 'customer': project.customer,
+                'employees': employees,
                 'items': items,
                 'form': form,
                 'journal_lines': journal_lines,
