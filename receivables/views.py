@@ -37,7 +37,9 @@ class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
                                                                                   Sum('distance'), 
                                                                                   Sum('toll_ring'), 
                                                                                   Sum('ferry'), 
-                                                                                  Sum('diet'))
+                                                                                  Sum('diet'),
+                                                                                  Sum('parking'),
+                                                                                  )
         return {'title': _('Time registration'),
                 'date': date,
                 'project': project,

@@ -48,10 +48,14 @@
 							<th id="num-col">{{ _('Distance (km)') }}</th>
 							<th id="num-col">{{ _('Toll ring') }}</th>
 							<th id="num-col">{{ _('Ferry') }}</th>
+							<th id="num-col" scope="col">{{ _('Parking') }}</th>
 							<th id="num-col" scope="col">{{ _('Diet') }}</th>
 							<th scope="col">
 						</tr>
 					</thead>
+					{% if mode != 'edit' %}
+						{% include 'prjdash/posted_time_form.html' %}
+					{% endif %}
 					{% for journal_line in journal_lines %}
 					    {% if mode == 'edit' and pk == journal_line.id %}
 							{% include 'prjdash/posted_time_form.html' %}
@@ -59,9 +63,6 @@
 						    {% include 'prjdash/posted_time_jrline.html' %}
 						{% endif %}
 					{% endfor %}
-					{% if mode != 'edit' %}
-						{% include 'prjdash/posted_time_form.html' %}
-					{% endif %}
 					<tr style="font-weight:bold">
 						<td></td>
 						<td></td>
@@ -72,6 +73,7 @@
 						<td id="num-col">{{ journal_totals.distance__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.toll_ring__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.ferry__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ journal_totals.parking__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.diet__sum|default_if_none:"" }}</td>
 						<td id="num-col"></td>
 					</tr>

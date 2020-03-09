@@ -120,7 +120,7 @@ class TimelistPDFView(View):
                                              'work_week_day': format_date(jr_line_dict['work_date'], 'EEE', locale='no').replace('.', '').title(),
                                              'item': journal_line.item.safe_translation_getter('name', language_code='nb'),
                                              'employee': journal_line.employee,
-                                             'transport': (journal_line.ferry or 0) + (journal_line.toll_ring or 0),
+                                             'transport': (journal_line.ferry or 0) + (journal_line.toll_ring or 0) + (journal_line.parking or 0),
                                              })
 
 
@@ -150,7 +150,7 @@ class TimelistPDFView(View):
             total_overtime_100  += (journal_line.overtime_100 or 0)
             total_distance      += (journal_line.distance or 0)
             total_diet          += (journal_line.diet or 0)
-            total_transport     += (journal_line.ferry or 0) + (journal_line.toll_ring or 0)
+            total_transport     += (journal_line.ferry or 0) + (journal_line.toll_ring or 0) + (journal_line.parking or 0)
 
         totals = {'total_work_time': total_work_time,
                   'total_overtime_50': total_overtime_50,
@@ -228,6 +228,7 @@ class TimeSummaryPostedLineDetailView(View):
         total_toll  = 0;
         total_ferry = 0;
         total_diet  = 0;
+        total_parking = 0;
 
         for line in t_lines:
             total_time += 0 if line.work_time is None else line.work_time;
@@ -235,6 +236,7 @@ class TimeSummaryPostedLineDetailView(View):
             total_toll += 0 if line.toll_ring is None else line.toll_ring;
             total_ferry += 0 if line.ferry is None else line.ferry;
             total_diet += 0 if line.diet is None else line.diet;
+            total_parking += 0 if line.parking is None else line.parking;
 
         context = {
             'title': _('Time summary'),
@@ -251,6 +253,7 @@ class TimeSummaryPostedLineDetailView(View):
                     'toll': None if total_toll == 0 else total_toll,
                     'ferry': None if total_ferry == 0 else total_ferry,
                     'diet': None if total_diet == 0 else total_diet,
+                    'parking': None if total_parking == 0 else total_parking,
                 },
             'lines': t_lines,
             }

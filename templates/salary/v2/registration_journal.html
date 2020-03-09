@@ -56,8 +56,8 @@
 							<th id="num-col">{{ _('Distance (km)') }}</th>
 							<th id="num-col">{{ _('Toll ring') }}</th>
 							<th id="num-col">{{ _('Ferry') }}</th>
+							<th id="num-col">{{ _('Parking') }}</th>
 							<th id="num-col" scope="col">{{ _('Diet') }}</th>
-							<th id="num-col" scope="col">{{ _('Parking') }}</th>
 							<th scope="col">
 						</tr>
 					</thead>
@@ -80,8 +80,8 @@
 						<td id="num-col">{{ jr_totals.distance__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ jr_totals.toll_ring__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ jr_totals.ferry__sum|default_if_none:"" }}</td>
-						<td id="num-col">{{ jr_totals.diet__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ jr_totals.parking__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ jr_totals.diet__sum|default_if_none:"" }}</td>
 						<td id="num-col"></td>
 					</tr>
 				</table>

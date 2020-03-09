@@ -51,6 +51,7 @@
 							<th id="num-col">{{ _('Distance (km)') }}</th>
 							<th id="num-col">{{ _('Toll ring') }}</th>
 							<th id="num-col">{{ _('Ferry') }}</th>
+							<th id="num-col">{{ _('Parking') }}</th>
 							<th id="num-col" scope="col">{{ _('Diet') }}</th>
 						</tr>
 						<tr><td class = "separator" colspan="99"></td><tr>
@@ -72,6 +73,7 @@
 						<td id="num-col">{{ totals.distance|default_if_none:"" }}</td>
 						<td id="num-col">{{ totals.toll|default_if_none:"" }}</td>
 						<td id="num-col">{{ totals.ferry|default_if_none:"" }}</td>
+						<td id="num-col">{{ totals.parking|default_if_none:"" }}</td>
 						<td id="num-col">{{ totals.diet|default_if_none:"" }}</td>
 					</tr>
 				</table>

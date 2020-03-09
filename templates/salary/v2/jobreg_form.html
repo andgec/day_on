@@ -11,7 +11,7 @@
 							<script>
 							  sel = document.getElementById('proj_sel')
 							  obj_id = document.getElementById('id_object_id');
-							  
+
 							  if ('{{jr_line.content_object.id}}'.length == 0) {
 							    if (sessionStorage.getItem('lastSelectedProject') != null) {
 							      sel.value = sessionStorage.getItem('lastSelectedProject');
@@ -19,13 +19,13 @@
 							  } else {
 							    sel.value = '{{jr_line.content_object.id}}';
 							  }
-							  
+
 							  onSelProjChange = function(sel) {
 							    //obj_id.value = sel.options[sel.selectedIndex].value;
 							    obj_id.value = sel.value;
 							    window.sessionStorage.setItem("lastSelectedProject", obj_id.value)
 							  }
-							  
+
 							  onSelProjChange(sel);
 							</script>
 						</td>
@@ -69,12 +69,12 @@
 							{{ form.ferry }}
 						</td>
 						<td id="num-col">
-							{{ form.diet.errors }}
-							{{ form.diet }}
-						</td>
-						<td id="num-col">
 							{{ form.parking.errors }}
 							{{ form.parking }}
+						</td>
+						<td id="num-col">
+							{{ form.diet.errors }}
+							{{ form.diet }}
 						</td>
 						<td id="button-save-col">
 							<button class="btn-create" title = {{ _('Register') }} type="submit">

@@ -107,7 +107,8 @@ class WorkTimeJournalForm(forms.ModelForm):
                   'distance',
                   'toll_ring',
                   'ferry',
-                  'diet'
+                  'diet',
+                  'parking',
                   ]
 
         widgets = {
@@ -120,6 +121,7 @@ class WorkTimeJournalForm(forms.ModelForm):
             'toll_ring': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'ferry': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'diet': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
+            'parking': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
         }
 
 

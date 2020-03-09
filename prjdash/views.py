@@ -288,10 +288,12 @@ class ProjectDashboardPostedTimeReview(View):
         journal_totals = self.model.objects.filter(company = request.user.company,
                                                    content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                                    object_id = project_id).aggregate(Sum('work_time'),
-                                                                                 Sum('distance'), 
-                                                                                 Sum('toll_ring'), 
-                                                                                 Sum('ferry'), 
-                                                                                 Sum('diet'))
+                                                                                 Sum('distance'),
+                                                                                 Sum('toll_ring'),
+                                                                                 Sum('ferry'),
+                                                                                 Sum('diet'),
+                                                                                 Sum('parking'),
+                                                                                 )
         context = {
                 'title': _('Project management'),
                 'mode': mode,
