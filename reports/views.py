@@ -99,6 +99,8 @@ class TimelistPDFView(View):
         total_overtime_100  = 0
         total_distance      = 0
         total_diet          = 0
+        total_toll_ring     = 0
+        total_parking       = 0
         total_transport     = 0
 
         for journal_line in journal_lines:
@@ -120,7 +122,9 @@ class TimelistPDFView(View):
                                              'work_week_day': format_date(jr_line_dict['work_date'], 'EEE', locale='no').replace('.', '').title(),
                                              'item': journal_line.item.safe_translation_getter('name', language_code='nb'),
                                              'employee': journal_line.employee,
-                                             'transport': (journal_line.ferry or 0) + (journal_line.toll_ring or 0) + (journal_line.parking or 0),
+                                             'bom': journal_line.toll_ring,
+                                             'parking': journal_line.parking,
+                                             'transport': (journal_line.ferry or 0) + (journal_line.toll_ring or 0) #+ (journal_line.parking or 0),
                                              })
 
 
@@ -150,13 +154,17 @@ class TimelistPDFView(View):
             total_overtime_100  += (journal_line.overtime_100 or 0)
             total_distance      += (journal_line.distance or 0)
             total_diet          += (journal_line.diet or 0)
-            total_transport     += (journal_line.ferry or 0) + (journal_line.toll_ring or 0) + (journal_line.parking or 0)
+            total_toll_ring     += (journal_line.toll_ring or 0)
+            total_parking       += (journal_line.parking or 0)
+            total_transport     += (journal_line.ferry or 0) + (journal_line.toll_ring or 0) #+ (journal_line.parking or 0)
 
         totals = {'total_work_time': total_work_time,
                   'total_overtime_50': total_overtime_50,
                   'total_overtime_100': total_overtime_100,
                   'total_distance': total_distance,
                   'total_diet': total_diet,
+                  'total_toll_ring': total_toll_ring,
+                  'total_parking': total_parking,
                   'total_transport': total_transport,
                   }
 

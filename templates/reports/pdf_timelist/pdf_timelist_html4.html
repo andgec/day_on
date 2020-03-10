@@ -85,8 +85,10 @@
 						<th style="width:40px">50%</th>
 						<th style="width:40px">100%</th>
 						<th style="width:40px">Km</th>
+						{#<th style="width:40px">{{ _('Bom') }}</th>#}
+						<th style="width:40px">{{ _('Transport') }}</th>
+						<th style="width:40px">{{ _('Parking') }}</th>
 						<th style="width:40px">{{ _('Diet') }}</th>
-						<th style="width:40px">{{ _('Transport Nok') }}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -102,21 +104,24 @@
 							<td class="num">{{ line.overtime_50|default:"" }}</td>
 							<td class="num">{{ line.overtime_100|default:"" }}</td>
 							<td class="num">{{ line.distance|default:"" }}</td>
-							<!-- td class="num">{{ line.toll_ring|default:"" }}</td> -->
-							<td class="num">{{ line.diet|default:"" }}</td>
 							<td class="num">{{ line.transport|default:"" }}</td>
+							{#<td class="num">{{ line.toll_ring|default:"" }}</td>#}
+							<td class="num">{{ line.parking|default:"" }}</td>
+							<td class="num">{{ line.diet|default:"" }}</td>
 						</tr>
 					{%endfor%}
 					<tfoot>
 						<tr>
-							<td colspan="4">Totals</td>
+							<td colspan="4">{{ _('Totals') }}</td>
 							<td class="num">{{ totals.total_work_time|default:"" }}</td>
 							<td></td>
 							<td class="num">{{ totals.total_overtime_50|default:"" }}</td>
 							<td class="num">{{ totals.total_overtime_100|default:"" }}</td>
 							<td class="num">{{ totals.total_distance|default:"" }}</td>
-							<td class="num">{{ totals.total_diet|default:"" }}</td>
 							<td class="num">{{ totals.total_transport|default:"" }}</td>
+							{#<td class="num">{{ totals.total_toll_ring|default:"" }}</td>#}
+							<td class="num">{{ totals.total_parking|default:"" }}</td>
+							<td class="num">{{ totals.total_diet|default:"" }}</td>
 						</tr>					
 					</tfoot>
 				</tbody>
