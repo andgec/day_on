@@ -86,3 +86,9 @@ class CoUserChangeForm(CoModelForm, UserChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.error_messages['unique_violation'] = _('%s with this name already exists')
+
+    def clean(self):
+        if self.request.user.is_superuser:
+            self.co_object = self.data['company']
+        cleaned_data = super().clean()
+        return cleaned_data

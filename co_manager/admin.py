@@ -5,6 +5,7 @@ from djauth.forms import CoAdminAuthenticationForm
 
 class CoAdminSite(AdminSite):
     login_form = CoAdminAuthenticationForm
+    index_title = _('Company administration')
 
     def get_urls(self):
         from django.conf.urls import url

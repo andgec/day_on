@@ -652,7 +652,7 @@ msgstr "Administravimas"
 
 #: templates/admin/base_site.html:22
 msgid "Company administration"
-msgstr "VitasBygg administravimas"
+msgstr "Įmonės administravimas"
 
 #: templates/admin/index.html:11
 #, python-format

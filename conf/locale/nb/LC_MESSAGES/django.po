@@ -169,7 +169,7 @@ msgstr "logo"
 
 #: general/models.py:41
 msgid "Companies"
-msgstr "Selskaper"
+msgstr "Selskapsopplysninger"
 
 #: general/models.py:63
 msgid "First name"
@@ -646,7 +646,7 @@ msgstr "Administrasjon"
 
 #: templates/admin/base_site.html:22
 msgid "Company administration"
-msgstr "VitasBygg administrasjon"
+msgstr "Selskapsadministrasjon"
 
 #: templates/admin/index.html:11
 #, python-format
