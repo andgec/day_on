@@ -57,7 +57,7 @@ class ItemAdmin(CoTranslatableAdmin):
     fields = ('item_group', 'name', 'description', 'unit_of_measure', 'price', 'active')
     #list_filter     = ('item_group', 'active',)
     list_filter     = (ItemGroupListFilter, 'active',)
-    search_fields   = ('name', 'description', 'unit_of_measure__description', 'item_group__name')
+    search_fields   = ('translations__name', 'translations__description', 'unit_of_measure__description', 'item_group__translations__name')
     form            = ItemAdminForm
 
     def get_queryset(self, request):

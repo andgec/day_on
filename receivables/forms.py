@@ -9,7 +9,6 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from shared.widgets import SelectTimeWidget
 from inventory.models import ItemGroup
 from general.forms import CoModelForm
-from salary.models import Employee
 
 
 class CustomerAdminForm(CoModelForm):
@@ -132,9 +131,12 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
         self.work_date = kwargs.get('work_date', timezone.now())
         self.fields['work_date'].initial = self.work_date
         self.fields['item'].choices = self.items_as_choices()
+        self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
 
     def items_as_choices(self):
         item_group_list = []
+        # Adding an empty value to the top of the list:
+        item_group_list.append([0, '----------------------'])
         for itemgroup in ItemGroup.objects.filter(company = self.company or -1).prefetch_related('translations'
                                                                               ).prefetch_related('items'
                                                                               ).prefetch_related('items__translations'):
@@ -142,7 +144,6 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
             item_list = []
             for item in itemgroup.items.all():
                 item_list.append([item.id, item.name])
-
             new_itemgroup = [itemgroup.name, item_list]
             item_group_list.append(new_itemgroup)
         return item_group_list

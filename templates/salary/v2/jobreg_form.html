@@ -2,8 +2,10 @@
 				{% csrf_token %}
 					<tr class="edit-row">
 						<td style="padding-left:5px;">
-							{{ form.object_id}}
+							{{ form.object_id }}
+							{{ form.object_id.errors }}
 						    <select id="proj_sel", onChange="onSelProjChange(this)">
+						      <option value={{ 0 }}>{{ '----------------------' }}</option>
 						      {% for proj_item in prj_dropdown %}
 						        <option value={{proj_item.id}}>{{proj_item.name}}</option>
 						      {% endfor %}
@@ -11,7 +13,7 @@
 							<script>
 							  sel = document.getElementById('proj_sel')
 							  obj_id = document.getElementById('id_object_id');
-
+							  /*
 							  if ('{{jr_line.content_object.id}}'.length == 0) {
 							    if (sessionStorage.getItem('lastSelectedProject') != null) {
 							      sel.value = sessionStorage.getItem('lastSelectedProject');
@@ -19,13 +21,15 @@
 							  } else {
 							    sel.value = '{{jr_line.content_object.id}}';
 							  }
-
+							  */
+							  {% if form.data.object_id %}
+								sel.value = {{form.data.object_id}}
+							  {% endif %}
 							  onSelProjChange = function(sel) {
 							    //obj_id.value = sel.options[sel.selectedIndex].value;
 							    obj_id.value = sel.value;
 							    window.sessionStorage.setItem("lastSelectedProject", obj_id.value)
 							  }
-
 							  onSelProjChange(sel);
 							</script>
 						</td>
@@ -34,12 +38,14 @@
 							{{ form.item }}
 						</td>
 						<td>
-							<div style="width: 130px; float: left">
+							<div style="max-width: 270px; float: top">
 							{{ form.work_time_from.errors }}
+							{{ form.work_time_to.errors }}
+							</div>
+							<div style="width: 130px; float: left">
 							{{ form.work_time_from }} {{ _('to') }}
 							</div>
 							<div style="width: 130px; float: left">
-							{{ form.work_time_to.errors }}
 							{{ form.work_time_to }}
 							</div>
 							<script>

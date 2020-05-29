@@ -23,8 +23,8 @@ class EmployeeInLine(StackedInline):
             'fields': ('address', 'post_code', 'city', 'country')
         }),
     )
-    verbose_name = 'Employee'
-    verbose_name_plural = 'Employee'
+    verbose_name = _('Employee')
+    verbose_name_plural = _('Employee')
 
 
 class IsEmployeeFilter(admin.SimpleListFilter):
