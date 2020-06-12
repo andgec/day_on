@@ -107,6 +107,9 @@ class UserAdmin(DjangoUserAdmin):
         if not request.user.is_superuser:
             obj.company = request.user.company
         super().save_model(request, obj, form, change)
+        if hasattr(obj, 'employee'):
+            obj.employee.company = obj.company
+            obj.employee.save()
 
     inlines = [
         EmployeeInLine,

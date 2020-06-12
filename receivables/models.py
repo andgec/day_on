@@ -370,7 +370,7 @@ class WorkTimeJournal(CoModel):
                    datetime.combine(self.work_date, self.work_time_from)
         timediff_hours = timediff.total_seconds() / 3600
         return round(timediff_hours, 2)
-                    
+
     def save(self, *args, **kwargs):
         self.work_time = self.calc_work_hours()
         self.company = self.employee.company
@@ -380,3 +380,5 @@ class WorkTimeJournal(CoModel):
         verbose_name = ('Work time journal')
         verbose_name_plural = _('Work time journal')
 
+    def __str__(self):
+        return 'Work time journal line (%s)' % self.employee.full_name()
