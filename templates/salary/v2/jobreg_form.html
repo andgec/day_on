@@ -22,8 +22,10 @@
 							    sel.value = '{{jr_line.content_object.id}}';
 							  }
 							  */
-							  {% if form.data.object_id %}
-								sel.value = {{form.data.object_id}}
+							  {% if form.data.object_id %} {# If error then set value from the form object #}
+								sel.value = {{form.data.object_id}};
+							  {% elif jr_line.content_object.id %} {# If edit then set value from the active journal line #}
+								sel.value = '{{jr_line.content_object.id}}';
 							  {% endif %}
 							  onSelProjChange = function(sel) {
 							    //obj_id.value = sel.options[sel.selectedIndex].value;

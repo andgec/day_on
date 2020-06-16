@@ -128,7 +128,7 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
     login_url='/accounts/login/'
 
     form_class = WorkTimeJournalForm_V2
-    
+
     work_day_start = {
         'hour': 7,
         'minute': 0,

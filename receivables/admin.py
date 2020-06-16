@@ -114,7 +114,7 @@ class ProjectCategoryAdmin(CoModelAdmin):
 
 
 class ProjectCategoryListFilter(SimpleListFilter):
-    title = _('Project category')
+    title = _('Category')
     parameter_name = 'project_category__id__exact'
     def lookups(self, request, model_admin):
         """
@@ -148,7 +148,7 @@ class ProjectAdmin(CoModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('customer', 'name', 'category', 'description', 'comment', 'active', 'visible', 'employees',)
+            'fields': ('customer', 'name', 'category', 'description', 'comment', 'active', 'employees',)
         }),
     )
 
