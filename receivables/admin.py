@@ -81,7 +81,7 @@ class CustomerAdmin(CoModelAdmin):
     list_display    = ('name', 'number', 'full_address', 'type', 'active')
     list_filter     = ('active', 'type')
     search_fields   = ('name', 'number', 'address', 'address2', 'post_code', 'city', 'web_site')
-
+    ordering = ('name',)
     fieldsets = (
         (None, {
             'fields': ('type', 'name', 'number', 'active')
@@ -154,7 +154,7 @@ class ProjectAdmin(CoModelAdmin):
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         qs = db_field.related_model.objects.filter(
-            company = request.user.company).prefetch_related(
+            company = request.user.company, user__is_active = True).prefetch_related(
             'user').order_by(
             'user__first_name', 'user__last_name')
         kwargs['queryset'] = qs

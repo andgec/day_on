@@ -167,7 +167,11 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                 'action': action,
                 'open': self.get_open(date),
                 'form': form,
-                'prj_dropdown': Project.objects.filter(company = company, employees__in = [request.user.employee], active = True).order_by('name'),
+                'prj_dropdown': Project.objects.filter(company = company,
+                                                       employees__in = [request.user.employee],
+                                                       active = True,
+                                                       customer__active = True,
+                                                       ).order_by('name'),
                 'time_dropdown': {'hr': str(hour).zfill(2), 'min': str(minute).zfill(2)},
                 }
 
