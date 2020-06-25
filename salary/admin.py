@@ -83,6 +83,4 @@ class EmployeeAdmin(MultiFieldSortableModelAdmin):
     def has_add_permission(self, request):
         return False
 
-Employee = apps.get_model('salary.Employee')
-Employee._meta.app_name = 'djauth'
 admin_site.register(Employee, EmployeeAdmin)
