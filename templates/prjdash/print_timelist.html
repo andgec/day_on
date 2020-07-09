@@ -67,7 +67,7 @@
 	    });
 
   	</script>
-	<div style="border: 2px solid #CCC; border-radius: 7px; width: 1450px;">
+	<div style="border: 2px solid #CCC; border-radius: 7px; width: {% if fvisible.item %}1465px{% else %}1060px{% endif %};">
 		<br>
 		&nbsp&nbsp
 		{{ _('Date from') }} <input type="text" id="datepicker-from"> {{ _('to') }}  <input type="text" id="datepicker-to">
@@ -81,6 +81,7 @@
 			{% endfor %}
 			</optgroup>
 		</select>
+		{% if fvisible.item %}
 		&nbsp&nbsp&nbsp&nbsp
 		{{_('Task filter')}}:
 		<select data-placeholder="{{_('Select tasks...')}}" id="select-tasks" class="chosen-select" multiple tabindex="5">
@@ -95,7 +96,7 @@
 			{% endfor %}
 			</optgroup>
 		</select>
-		<!--  br><br>-->
+		{% endif %}
 		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 
 		<a class="btn-cancel" 

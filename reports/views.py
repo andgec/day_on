@@ -25,6 +25,7 @@ from receivables.models import Project, WorkTimeJournal
 from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
 from dateutil.relativedelta import relativedelta
+from general.utils import get_fields_visible
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -39,6 +40,7 @@ class TimelistPDFView(View):
         context = {
             'company': company,
             'project': project,
+            'fvisible': get_fields_visible(request.user.company),
             }
         context.update(self.get_journal_lines(request, project_id))
         return context
@@ -264,6 +266,7 @@ class TimeSummaryPostedLineDetailView(View):
                     'parking': None if total_parking == 0 else total_parking,
                 },
             'lines': t_lines,
+            'fvisible': get_fields_visible(request.user.company),
             }
 
         return context

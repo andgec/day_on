@@ -39,6 +39,17 @@ class Company(AddressMixin, ContactMixin, models.Model):
     def logo_base64(self):
         return imagefield_as_base64(self.logo)
 
+    def get_config_value(self, config_key):
+        try:
+            value_rec = ConfigValue.objects.filter(company = self, key=config_key)[0] # Key set per company
+            return value_rec.value
+        except:
+            try:
+                cfg_key_rec = ConfigKey.objects.get(key=config_key) # Key set per system
+                return cfg_key_rec.default_value()
+            except:
+                return ''
+
     class Meta:
         abstract = False
         verbose_name = _('Company')

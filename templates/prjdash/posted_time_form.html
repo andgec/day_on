@@ -12,6 +12,8 @@
 						</td>
 						<td id = employee_cell>
 						  <div id="employee_input">
+						  {{ form.company.errors }}
+						  {{ form.company }}
 						  {{ form.employee.errors }}
 						  {{ form.employee }}
 						  </div>
@@ -29,6 +31,8 @@
 						<td>
 							{{ form.item.errors }}
 							{{ form.item }}
+							{{ form.description.errors }}
+							{{ form.description }}
 						</td>
 						<td>
 							{{ form.work_date.errors }}
