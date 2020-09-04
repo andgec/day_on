@@ -49,6 +49,7 @@
 	  	  set_print_url();
 	  	};
 	  	*/
+
 	  	function printButtonClick(){
 	  	  document.date_from = $("#datepicker-from")[0].value;
 	  	  document.date_to = $("#datepicker-to")[0].value;
@@ -66,6 +67,28 @@
 	    	});
 	    });
 
+	  	// Updates select component by dynamically selecting options by values which are in the array "values" (used on initializing filter)
+	  	var selectItemsByValues = function(elmnt, values) {
+	  	  var selected_texts = [];
+	  	  for(var i=0; i < elmnt.options.length; i++)
+	  	  {
+	  	    if($.inArray(elmnt.options[i].value, values) >= 0) {
+	  	      elmnt.options[i].selected = true;
+	  	      selected_texts[i] = elmnt.options[i].text;
+	  	    }
+	  	    else {
+	  	      elmnt.options[i].selected = false;
+	  	    }
+	  	  }
+	  	  $(elmnt).trigger('chosen:updated'); // Refresh select component (when items are removed dynamically component does not refresh automatically)
+	  	  return selected_texts;
+	  	};
+
+	  	// Refreshes JQuery multiple selects when browser's back button is hit
+	  	$(window).load(function () {
+			selectItemsByValues($("#select-tasks")[0], $("#select-tasks").val())
+			selectItemsByValues($("#select-employees")[0], $("#select-employees").val())
+	  	})
   	</script>
 	<div style="border: 2px solid #CCC; border-radius: 7px; width: {% if fvisible.item %}1465px{% else %}1060px{% endif %};">
 		<br>
