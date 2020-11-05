@@ -16,6 +16,7 @@ from .forms import PDashProjectForm, PDashAssignEmployees, ProjectDashTimeReview
 from receivables.models import WorkTimeJournal
 from inventory.models import Item
 from djauth.models import User
+from general.utils import get_fields_visible
 
 
 class RecState:
@@ -305,6 +306,7 @@ class ProjectDashboardPostedTimeReview(View):
                 'form': form,
                 'journal_lines': journal_lines,
                 'journal_totals': journal_totals,
+                'fvisible': get_fields_visible(request.user.company),
                 }
         return context
 

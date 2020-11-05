@@ -4,11 +4,12 @@ from django_select2.forms import Select2Widget
 from .models import Project, SalesOrderHeader, WorkTimeJournal, Customer
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
-from django.forms.widgets import SelectDateWidget
+from django.forms.widgets import SelectDateWidget, HiddenInput
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from shared.widgets import SelectTimeWidget
 from inventory.models import ItemGroup
 from general.forms import CoModelForm
+from general.models import ConfigValue, ConfigKey
 
 
 class CustomerAdminForm(CoModelForm):
@@ -78,8 +79,15 @@ class WorkTimeJournalForm(forms.ModelForm):
         self.company = kwargs.pop('company', None)
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
         self.work_date = kwargs.get('work_date', timezone.now())
+        self.fields['company'].initial = self.company
         self.fields['work_date'].initial = self.work_date
-        self.fields['item'].choices = self.items_as_choices()
+        if self.company.get_config_value('TIMEREG_TASK_MODE') == '2000': # Task as text input
+            self.fields['item'].widget = HiddenInput()
+            self.fields['item'].choices = [(0, '----------------------'),]
+        else:
+            self.fields['description'].widget = HiddenInput()
+            self.fields['item'].choices = self.items_as_choices()
+            self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
 
     def items_as_choices(self):
         item_group_list = []
@@ -98,7 +106,9 @@ class WorkTimeJournalForm(forms.ModelForm):
     class Meta:
         model = WorkTimeJournal
         readonly_fields = ['empty',]
-        fields = ['item',
+        fields = ['company',
+                  'item',
+                  'description',
                   'employee',
                   'work_date',
                   'work_time_from',
@@ -111,7 +121,9 @@ class WorkTimeJournalForm(forms.ModelForm):
                   ]
 
         widgets = {
+            'company': HiddenInput(),
             'item': Select2Widget,
+            'description': forms.Textarea(attrs={'rows': 1}),
             'employee': Select2Widget,
             'work_date': SelectDateWidget(years = range(2010, 2030)),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
@@ -130,8 +142,14 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
         super(WorkTimeJournalForm_V2, self).__init__(*args, **kwargs)
         self.work_date = kwargs.get('work_date', timezone.now())
         self.fields['work_date'].initial = self.work_date
-        self.fields['item'].choices = self.items_as_choices()
-        self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
+        self.fields['company'].initial = self.company
+        if self.company.get_config_value('TIMEREG_TASK_MODE') == '2000': # Task as text input
+            self.fields['item'].widget = HiddenInput()
+            self.fields['item'].choices = [(0, '----------------------'),]
+        else: # Task as dropdown list choice input
+            self.fields['description'].widget = HiddenInput()
+            self.fields['item'].choices = self.items_as_choices()
+            self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
 
     def items_as_choices(self):
         item_group_list = []
@@ -151,8 +169,10 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
     class Meta:
         model = WorkTimeJournal
         readonly_fields = ['empty',]
-        fields = ['object_id',
+        fields = ['company',
+                  'object_id',
                   'item',
+                  'description',
                   'employee',
                   'work_date',
                   'work_time_from',
@@ -165,8 +185,10 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
                   ]
 
         widgets = {
+            'company': forms.TextInput(attrs={'hidden': True}),
             'object_id': forms.NumberInput(attrs={'hidden': True}),
             'item': Select2Widget,
+            'description': forms.Textarea(attrs={'rows': 1}),
             'work_date': SelectDateWidget(years = range(2010, 2030)),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),

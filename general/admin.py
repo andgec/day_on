@@ -3,9 +3,10 @@ from parler.admin import TranslatableAdmin, TranslatableTabularInline
 from parler.forms import TranslatableBaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
 from co_manager.admin import admin_site
-from .models import Company, UnitOfMeasure
-from .forms import CoModelForm
+from .models import Company, UnitOfMeasure, ConfigKey, ConfigValue
+from .forms import CoModelForm, ConfigValueAdminForm
 from shared.utils import field_exists
+
 
 class CompanyAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
@@ -66,11 +67,16 @@ class CoModelAdmin(admin.ModelAdmin):
         return AdminFormWithRequest
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        qs = db_field.related_model.objects.filter(company = request.user.company)
+        if field_exists(db_field.related_model, 'company'):
+            qs = db_field.related_model.objects.filter(company = request.user.company)
+        else:
+            qs = db_field.related_model.objects.all()
+
         if field_exists(db_field.related_model, 'name'):
             qs = qs.order_by('name')
         else:
             qs = qs.order_by('id')
+
         kwargs['queryset'] = qs
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -176,5 +182,29 @@ class CoTranslatableTabularInline(TranslatableTabularInline):
         return formset
 
 
+class ConfigKeyAdmin(TranslatableAdmin):
+    list_display = ('key', 'node', 'type', 'name', 'default_value')
+    readonly_fields = ('default_value',)
+
+    # Only available for superusers
+    def get_model_perms(self, request):
+        if request.user.is_superuser:
+            return super().get_model_perms(request)
+        return {}
+
+
+class ConfigValueAdmin(CoModelAdmin):
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    list_display = ('key_name', 'key_value', 'node')
+    form = ConfigValueAdminForm
+
+
 admin_site.register(Company, CompanyAdmin)
 admin_site.register(UnitOfMeasure, CoModelAdmin)
+admin_site.register(ConfigKey, ConfigKeyAdmin)
+admin_site.register(ConfigValue, ConfigValueAdmin)

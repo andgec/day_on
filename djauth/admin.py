@@ -26,6 +26,9 @@ class EmployeeInLine(StackedInline):
     verbose_name = _('Employee')
     verbose_name_plural = _('Employee')
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class IsEmployeeFilter(admin.SimpleListFilter):
     title = _('Employee')

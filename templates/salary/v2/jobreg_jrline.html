@@ -1,6 +1,12 @@
 						<tr>
 							<td>{{jr_line.content_object.name}}</td>
-							<td>{{jr_line.item}}</td>
+							<td><div style="max-width: 350px;">
+							{% if fvisible.item %}
+								{{jr_line.item}}
+							{% elif fvisible.description %}
+								{{jr_line.description}}
+							{% endif %}
+							</div></td>
 							<!-- td>{{jr_line.work_date}}</td>  -->
 							<td>{{jr_line.work_time_from}} - {{jr_line.work_time_to}}</td>
 							<td id="num-col" >{{jr_line.work_time}}</td>

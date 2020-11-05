@@ -269,10 +269,16 @@ class WorkTimeJournal(CoModel):
                                  related_name = 'journal_lines',
                                  verbose_name = _('Employee'))
     item = models.ForeignKey(Item,
+                             default = 0,
                              on_delete = PROTECT,
                              related_name = 'journal_lines',
                              verbose_name = _('Item')
                              )
+    description = models.TextField(blank = True,
+                               null = False,
+                               default = '',
+                               verbose_name = ('Description')
+                               )
     work_date = models.DateField(verbose_name = _('Date'))
     work_time_from = models.TimeField(verbose_name = _('From'))
     work_time_to = models.TimeField(verbose_name = _('To'))
@@ -337,12 +343,22 @@ class WorkTimeJournal(CoModel):
                                      'time_to': overlap.work_time_to.strftime('%H:%M'),
                                      'job': overlap.item,
                                     }
-        if self.object_id == 0: # Project presence validation
+
+        # Project presence validation
+        if self.object_id == 0:
             v_errors['object_id'] = _('Please select a project')
-        try: # Item presence validation
-            self.item # No Item object if empty value is selected. Call throws an error which we catch here
-        except:
-            v_errors['item'] = _('Please select an item')
+
+        # Item presence validation
+        cfg = self.company.get_config_value('TIMEREG_TASK_MODE')
+        if not self.company or self.company == 1:
+            v_errors['company'] = _('System error: company field is empty')
+        if cfg == '1000': # Task selected from a list
+            if self.item_id == 0:
+                v_errors['item'] = _('Please select an item')
+        elif cfg == '2000': # Task input as text
+            if self.description == '':
+                v_errors['description'] = _('Please specify the job')
+
         if len(v_errors) > 0:
             raise ValidationError(v_errors, code='invalid_choice')
 
@@ -377,8 +393,8 @@ class WorkTimeJournal(CoModel):
         super(WorkTimeJournal, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = ('Work time journal')
+        verbose_name = _('Work time journal')
         verbose_name_plural = _('Work time journal')
 
     def __str__(self):
-        return 'Work time journal line (%s)' % self.employee.full_name()
+        return _('Work time journal line') + ' (%s)' % self.employee.full_name()

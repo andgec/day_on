@@ -9,6 +9,7 @@ from django.db.models import Sum, Max
 from django.utils.translation import ugettext_lazy as _
 from .models import Project, WorkTimeJournal
 from .forms import WorkTimeJournalForm, WorkTimeJournalForm_V2
+from general.utils import get_fields_visible
 
 
 @login_required(login_url='/accounts/login/')
@@ -128,7 +129,7 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
     login_url='/accounts/login/'
 
     form_class = WorkTimeJournalForm_V2
-    
+
     work_day_start = {
         'hour': 7,
         'minute': 0,
@@ -167,8 +168,13 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                 'action': action,
                 'open': self.get_open(date),
                 'form': form,
-                'prj_dropdown': Project.objects.filter(company = company, employees__in = [request.user.employee], active = True).order_by('name'),
+                'prj_dropdown': Project.objects.filter(company = company,
+                                                       employees__in = [request.user.employee],
+                                                       active = True,
+                                                       customer__active = True,
+                                                       ).order_by('name'),
                 'time_dropdown': {'hr': str(hour).zfill(2), 'min': str(minute).zfill(2)},
+                'fvisible': get_fields_visible(company),
                 }
 
     def get(self, request, date = None, jrline_id = 0, action='edit'):

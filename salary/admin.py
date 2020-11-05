@@ -27,6 +27,10 @@ class IsActiveFilter(admin.SimpleListFilter):
 
 
 class EmployeeAdmin(MultiFieldSortableModelAdmin):
+    def get_model_perms(self, request):
+        # Hide model from admin index
+        return {}
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.filter(company = request.user.company)
@@ -79,6 +83,4 @@ class EmployeeAdmin(MultiFieldSortableModelAdmin):
     def has_add_permission(self, request):
         return False
 
-Employee = apps.get_model('salary.Employee')
-Employee._meta.app_name = 'djauth'
 admin_site.register(Employee, EmployeeAdmin)

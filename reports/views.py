@@ -25,6 +25,7 @@ from receivables.models import Project, WorkTimeJournal
 from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
 from dateutil.relativedelta import relativedelta
+from general.utils import get_fields_visible
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -39,6 +40,7 @@ class TimelistPDFView(View):
         context = {
             'company': company,
             'project': project,
+            'fvisible': get_fields_visible(request.user.company),
             }
         context.update(self.get_journal_lines(request, project_id))
         return context
@@ -53,15 +55,9 @@ class TimelistPDFView(View):
         filter_date_to = request.GET.get('date-to')
         contenttype_project = ContentType.objects.get(model='project')
 
-        # Building the query according URL parameters:
+        # Building the query according to URL parameters:
         q_list = [Q(company = request.user.company)]
 
-        '''
-        if project_ids:
-            project_ids_list = project_ids.split(',')
-            q_list.append(Q(content_type=contenttype_project))
-            q_list.append(Q(object_id__in=project_ids_list))
-        '''
         if item_ids:
             item_ids_list = item_ids.split(',')
             q_list.append(Q(item_id__in=item_ids_list))
@@ -264,6 +260,7 @@ class TimeSummaryPostedLineDetailView(View):
                     'parking': None if total_parking == 0 else total_parking,
                 },
             'lines': t_lines,
+            'fvisible': get_fields_visible(request.user.company),
             }
 
         return context

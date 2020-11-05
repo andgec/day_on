@@ -29,3 +29,24 @@ MONTH_CHOICES = (
     (NOVEMBER,  _('November')),
     (DECEMBER,  _('December')),
 )
+
+# ---------------------
+# Company configuration
+# ---------------------
+
+# Configuration variable types
+BOOLEAN     = 0
+INTEGER     = 1
+DECIMAL     = 3
+STRING      = 4
+OPTION      = 5
+MULTIPLE    = 6
+
+VARIABLE_TYPE_CHOICES = (
+    (BOOLEAN, 'Boolean'),
+    (INTEGER, 'Integer'),
+    (DECIMAL, 'Decimal'),
+    (STRING, 'String'),
+    (OPTION, 'Option'),
+    (MULTIPLE, 'Multiple options'),
+)

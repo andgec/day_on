@@ -17,7 +17,13 @@
                               </div>
 							</td>
 							<td>{{journal_line.employee}}</td>
-							<td>{{journal_line.item}}</td>
+							<td><div style="max-width: 350px;">
+							{% if fvisible.item %}
+								{{journal_line.item}}
+							{% elif fvisible.description %}
+								{{journal_line.description}}
+							</div></td>
+						{% endif %}
 							<td>{{journal_line.work_date|date:'Y-m-d'}}</td>
 							<td>{{journal_line.work_time_from}} - {{journal_line.work_time_to}}</td>
 							<td id="num-col" >{{journal_line.work_time}}</td>

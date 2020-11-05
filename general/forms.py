@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import UniqueConstraint, Q
 from django.forms import ModelForm
 from parler.forms import TranslatableModelForm
+from .models import ConfigValue
 
 
 # Base class form ModelForm with validation for unique constraints
@@ -128,3 +129,17 @@ class UniqNameTranslatableModelForm(TranslatableModelForm):
             '''
             raise ValidationError(_('%s with this name already exists' % obj._meta.verbose_name.title().capitalize()) + '.')
         return self.cleaned_data["name"]
+
+
+class ConfigValueAdminForm(CoModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        fvalue = self.fields['value']
+        fvalue.label = self.instance.key_name()
+        fvalue.widget = self.instance.key_widget
+
+    class Meta:
+        model = ConfigValue
+        fields = ('value',)
+        exclude = ('key', 'company',)

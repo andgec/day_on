@@ -138,11 +138,11 @@ LANGUAGES=(
 
 PARLER_LANGUAGES = {
     None: (
-        {'code': 'nb',},
         {'code': 'lt',},
+        {'code': 'nb',},
     ),
     'default': {
-        'fallbacks': ['nb', 'lt'],    # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        'fallbacks': ['lt', 'nb'],    # defaults to PARLER_DEFAULT_LANGUAGE_CODE
         'hide_untranslated': False,   # the default; let .active_translations() return fallbacks too.
     }
 }
