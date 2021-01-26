@@ -1,0 +1,395 @@
+# -- OLD All-in-one TimeSummary view (for historical ref.)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class TimeSummaryXLSXView(View):
+    #template = get_template('reports/time_summary/time_summary.html')
+    template = 'reports/time_summary/time_summary.html'
+
+    ctp_proj = None
+
+    meta = {
+            'css_cell_empty'        : 'cellEmpty',          #css class for empty cell (without any data)
+            'css_cell_click'        : 'cellClick',          #css class for clickable cell (with working hours data)
+            'css_cell_day'          : 'cellDay',            #css class for any day cell
+            'css_cell_workday_odd'  : 'cellWrkDay-odd',     #css class for workday cell (odd line)
+            'css_cell_workday_even' : 'cellWrkDay-even',    #css class for workday cell (even line)
+            'css_cell_wknd_odd'     : 'cellWknd-odd',       #css class for weekend cell (odd line)
+            'css_cell_wknd_even'    : 'cellWknd-even',      #css class for weekend cell (even line)
+            'css_cell_totalhrs'     : 'cellTotalHrs',       #css class for total hours cell
+            'css_cell_totalhrs_odd' : 'cellWrkDay-odd',     #css class for total-hours cell (odd line)
+            'css_cell_totalhrs_even': 'cellWrkDay-even',    #css class for total-hours cell (even line)
+            'css_cell_employee'     : 'cellEmployee',       #css class for employee cell
+            'css_cell_employee_odd' : 'cellWrkDay-odd',     #css class for employee cell (odd line)
+            'css_cell_employee_even': 'cellWrkDay-even',    #css class for employee cell (odd line)
+            'css_cell_day_hdr'      : 'colDayHdr',          #css class for day column header
+            'css_cell_totalhrs_hdr' : 'colTotalHoursHdr',   #css class for total-hours column header
+            'css_cell_employee_hdr' : 'colEmployeeHdr',     #css class for employee column header
+            'css_cell_day_footer'   : 'colDayFooter',       #css class for day and total column footer
+            'css_cell_empl_footer'  : 'colEmplFooter',      #css class for employee column footer
+            'js_on_click_data_cell' : 'onClick=showTLines(\'%(empl)s\',\'%(date_from)s\',\'%(date_to)s\')',
+            'js_on_cell_click_func' : '<script> function showTLines(emplId, dFrom, dTo){window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo%(projects)s} </script>',
+        }
+
+    whitebar_col_span = 0;
+
+    def get_context(self, request):
+        context = self.get_report_lines(request)
+        return context
+
+    def __get_contenttype_project(self):
+        if not self.ctp_proj:
+            self.ctp_proj = ContentType.objects.get(model='project')
+        return self.ctp_proj
+
+    def __get_default_start_date(self):
+        return start_of_current_month()
+    
+    def __get_default_end_date(self):
+        return end_of_current_month()
+        
+    contenttype_project = property(__get_contenttype_project)
+    default_start_date = property(__get_default_start_date) 
+    default_end_date = property(__get_default_end_date)
+
+    def get_meta(self, **kwargs):
+        def get_month_meta(date):
+            return {
+                'num': date.strftime("%m"),
+                'name': _(date.strftime('%B')),
+                'start': date2str(start_of_month(date)),
+                'end': date2str(end_of_month(date)),
+            }
+
+        def get_js():
+            return self.meta['js_on_cell_click_func'] % {
+                'urlbase': reverse('report-time-summary-details'),
+                'projects': ' + "?projects=' + kwargs.get('project_ids', '') + '"' if kwargs.get('project_ids') else '',
+            }
+
+        meta = {
+            'date_filter_ctrls': {
+                'this_month': get_month_meta(self.default_start_date),
+                'prev_month': get_month_meta(self.default_start_date + relativedelta(months=-1)),
+                'pprev_month': get_month_meta(self.default_start_date + relativedelta(months=-2)),
+                'str_from': date2str(kwargs['date_from']),
+                'str_to': date2str(kwargs['date_to']),
+            },
+            'js': {
+                'cell_click': get_js(),
+            },
+            'table_header': {
+                'whitebar_col_span': self.whitebar_col_span,
+            }
+        }
+        return meta
+
+    def make_report_header(self, **kwargs):
+        header = [
+                {'name': 'employee',
+                'type': 'str',
+                'caption': _('Employee'),
+                'meta': {
+                    'cssClass': self.meta['css_cell_employee_hdr'],
+                    }
+                },
+                {'name': 'total_hours',
+                'type': 'decimal',
+                'caption': _('Total hours'),
+                'meta': {
+                    'cssClass': self.meta['css_cell_totalhrs_hdr'],
+                    },
+                },
+                #{'name': 'remarks',
+                #'type': 'str',
+                #'caption': _('Remarks')
+                #}
+            ]
+        self.make_day_header(header, **kwargs)
+        
+        return header
+
+
+    def make_day_header(self, header, **kwargs):
+        def get_month_col_span(date, date_from, date_to):
+            span = monthrange(date.year, date.month)[1]
+            if date.year == date_from.year and date.month == date_from.month:
+                span = monthrange(date.year, date.month)[1] - date_from.day + 1
+            if date.year == date_to.year and date.month == date_to.month:
+                span = span - (monthrange(date.year, date.month)[1] - date_to.day) if span else date_to.day
+            return span
+
+        date_from = kwargs.get('date_from')
+        date_to = kwargs.get('date_to')
+        loopdate = date_from
+        month = 0;
+        wbcspan = 0;
+        while loopdate <= date_to:
+            header.append({'name': loopdate,
+                           'type': 'date',
+                           'caption': str(loopdate.day),
+                           'caption_weekday': _(loopdate.strftime('%a')),
+                           'caption_month': _(loopdate.strftime('%B')),
+                           'meta': {
+                               'month_col_span': get_month_col_span(loopdate, date_from, date_to), #calculating colspan for month header
+                               'cssClass': self.meta['css_cell_day_hdr'],
+                               },
+                          })
+            loopdate = loopdate + datetime.timedelta(days=1)
+
+        # Whitebar is the thin white bar at the very top of data table header.
+        # Wee need to know how many columns to the right it must span.
+            if month != loopdate.month:
+                month = loopdate.month
+                wbcspan += get_month_col_span(loopdate, date_from, date_to)
+
+        self.whitebar_col_span = wbcspan + 3
+
+
+    def get_employee_data(self, empl_ids, **kwargs):
+        def filter_employees(empl_dict, empl_ids):
+            return {empl_id: empl_dict[empl_id] for empl_id in empl_dict if empl_id in empl_ids}
+
+        # Optimized version returns two employee lists:
+        #   - a list for employee filter (full list of active employees);
+        #   - a list for report without employees who do not have any hours registered for a given period.
+        # This way only one call to the database is needed to retrieve both lists.
+
+        #users = User.objects.only('first_name', 'last_name').filter(id__in=empl_ids, is_active = True).order_by('first_name', 'last_name')
+        users = User.objects.only('first_name', 'last_name').filter(is_active = True).order_by('first_name', 'last_name')
+        full_employee_data = {user.id: user.first_name + ' ' + user.last_name for user in users}
+        employee_data = filter_employees(full_employee_data, empl_ids)
+        employee_data[-1] = _('Total') #Adding line for totals
+        return employee_data, full_employee_data
+
+
+    def get_project_data(self):
+        projects = Project.objects.only('customer__name', 'name').filter(visible = True).select_related('customer').order_by('customer__name', 'name')
+        return projects
+
+    def get_timelist_data(self, **kwargs):
+        q_list = []
+
+        q_list.append(Q(work_date__gte=kwargs.get('date_from')))
+        q_list.append(Q(work_date__lte=kwargs.get('date_to')))
+
+        employee_ids = kwargs.get('employee_ids')
+        if employee_ids:
+            q_list.append(Q(employee_id__in=employee_ids.split(',')))
+
+        project_ids = kwargs.get('project_ids')
+        if project_ids:
+            project_ids_list = project_ids.split(',')
+            q_list.append(Q(content_type=self.contenttype_project))
+            q_list.append(Q(object_id__in=project_ids_list))
+
+        if kwargs['split_by_project']:
+            timelist_data = WorkTimeJournal.objects.filter(
+                reduce(operator.and_, q_list)).values(
+                    'employee_id', 'object_id', 'work_date').order_by(
+                        'employee_id', 'object_id', 'work_date').annotate(
+                            work_time = Sum('work_time'))
+        else:
+            timelist_data = WorkTimeJournal.objects.filter(
+                reduce(operator.and_, q_list)).values(
+                    'employee_id', 'work_date').order_by(
+                        'employee_id', 'work_date').annotate(
+                            work_time = Sum('work_time'))
+
+        return timelist_data
+
+
+    def get_distinct_empl_ids(self, timelist_data):
+        # get distinct employee ids from timelist data
+        empl_ids = []
+        prev_empl_id = 0
+        for line in timelist_data:
+            if line['employee_id'] != prev_empl_id:
+                empl_ids.append(line['employee_id'])
+                prev_empl_id = line['employee_id']
+
+        return empl_ids        
+
+    def get_css_class_for_cell(self, col, even):
+        try:
+            cssClass = self.meta['css_cell_day'] + ' '
+            if col.isoweekday() in (6,7):
+                if even:
+                    cssClass += self.meta['css_cell_wknd_even']
+                else:
+                    cssClass += self.meta['css_cell_wknd_odd']
+            else:
+                if even:
+                    cssClass += self.meta['css_cell_workday_even']
+                else:
+                    cssClass += self.meta['css_cell_workday_odd']
+        except:
+            if col == 'total_hours':
+                cssClass = self.meta['css_cell_totalhrs'] + ' '
+                if even:
+                    cssClass += self.meta['css_cell_totalhrs_even']
+                else:
+                    cssClass += self.meta['css_cell_totalhrs_odd']
+            elif col == 'employee':
+                cssClass = self.meta['css_cell_employee'] + ' '
+                if even:
+                    cssClass += self.meta['css_cell_employee_even']
+                else:
+                    cssClass += self.meta['css_cell_employee_odd']
+            else:
+                cssClass = ''
+
+        return cssClass
+
+
+    def build_employee_time_matrix(self, header_data, employee_data, **kwargs):
+        # makes an empty matrix with rows for employees and columns for dates
+        time_matrix = {}
+        if kwargs['split_by_project']:
+            time_matrix = {'result': '-- not yet implemented --'}
+        else:
+            even = True;
+            for employee_id in employee_data.keys():
+                time_matrix_line = {}
+                even = not even;
+                for col in header_data:
+                    time_matrix_line[col['name']] = {'data': 0, 'meta': {'cssClass': self.get_css_class_for_cell(col['name'], even)}}
+
+                time_matrix[employee_id] = time_matrix_line
+        return time_matrix
+
+    def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, timelist_data, **kwargs):
+        for employee_id in employee_data.keys():
+            time_matrix[employee_id]['employee']['data'] = employee_data[employee_id]
+
+        loop_empl_id = 0
+        empl_total_work_time = 0
+        
+        for line in timelist_data:
+            time_matrix[line['employee_id']][line['work_date']]['data'] = line['work_time']
+            time_matrix[line['employee_id']][line['work_date']]['meta'] = self.get_day_cell_meta(line, time_matrix[line['employee_id']][line['work_date']]['meta'])
+
+            if loop_empl_id == 0:
+                loop_empl_id = line['employee_id']
+
+            #calculating and adding total hours worked
+            if loop_empl_id == line['employee_id']:
+                empl_total_work_time += line['work_time']
+            else:
+                time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
+                time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, time_matrix[loop_empl_id]['total_hours']['meta'], **kwargs)
+                empl_total_work_time = line['work_time']
+                loop_empl_id = line['employee_id']
+
+            #adding totals
+            time_matrix[-1]['total_hours']['data'] += line['work_time'];       #grand total
+            time_matrix[-1][line['work_date']]['data'] += line['work_time'];   #day total
+
+        #adding total hours worked for the last employee
+        time_matrix[loop_empl_id]['total_hours']['data'] = empl_total_work_time
+        time_matrix[loop_empl_id]['total_hours']['meta'] = self.get_total_cell_meta(loop_empl_id, time_matrix[loop_empl_id]['total_hours']['meta'], **kwargs)
+
+        self.set_total_line_meta(time_matrix[-1])
+
+        return time_matrix
+
+    def get_day_cell_meta(self, line, meta):
+        meta['onClick'] = self.meta['js_on_click_data_cell'] % {
+                    'empl': str(line['employee_id']),
+                    'date_from': line['work_date'].strftime("%Y-%m-%d"),
+                    'date_to': line['work_date'].strftime("%Y-%m-%d"),
+                    }
+
+        if meta.get('cssClass'):
+            meta['cssClass'] += ' ' + self.meta['css_cell_click'] if meta['cssClass'] != '' else self.meta['css_cell_click']
+        else:
+            meta['cssClass'] = self.meta['css_cell_click']
+
+        return meta
+
+    def get_total_cell_meta(self, employee_id, meta, **kwargs):
+        meta['onClick'] = self.meta['js_on_click_data_cell'] % {
+                    'empl': employee_id,
+                    'date_from': kwargs['date_from'].strftime("%Y-%m-%d"),
+                    'date_to': kwargs['date_to'].strftime("%Y-%m-%d"),
+                    }
+        if meta.get('cssClass'):
+            meta['cssClass'] += ' ' + self.meta['css_cell_click'] if meta['cssClass'] != '' else self.meta['css_cell_click']
+        else:
+            meta['cssClass'] = self.meta['css_cell_click']
+
+        return meta
+
+
+    def set_total_line_meta(self, total_line):
+        for col_name, col in total_line.items():
+            if col_name != 'employee':
+                col['meta']['cssClass'] += ' ' + self.meta['css_cell_day_footer']
+            else:
+                col['meta']['cssClass'] += ' ' + self.meta['css_cell_empl_footer']
+
+
+    def get_report_lines(self, request):
+        filters = {
+            #Adding default values and converting string dates to date data type.
+            'date_from': datetime.datetime.strptime(
+                request.GET.get('date-from', self.default_start_date.strftime("%Y-%m-%d")),
+                "%Y-%m-%d").date(),
+            'date_to': datetime.datetime.strptime(
+                request.GET.get('date-to', self.default_end_date.strftime("%Y-%m-%d")),
+                "%Y-%m-%d").date(),
+            'project_ids': request.GET.get('projects'),
+            'employee_ids': request.GET.get('employees'),
+            'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
+        }
+
+        time_matrix = None
+        header_data = self.make_report_header(**filters)
+        timelist_data = self.get_timelist_data(**filters)
+
+        distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
+        employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
+
+        if len(timelist_data) > 0:
+            # distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
+            # employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
+
+            time_matrix = self.build_employee_time_matrix(
+                header_data,
+                employee_data,
+                **filters)
+
+            time_matrix = self.fill_employee_time_matrix(
+                time_matrix,
+                header_data,
+                employee_data,
+                timelist_data,
+                **filters)
+
+        meta = self.get_meta(**filters)
+
+        context = {
+            'filters': filters,
+            'meta': meta,
+            'header': header_data,
+            'timelist': time_matrix,
+            'employees': select_empl_list,
+            'projects': self.get_project_data(),
+            'message': _('No timelist entries for given period.') if time_matrix is None else ''
+        }
+
+        self.write_log(request.user, filters)
+
+        return context
+
+    def write_log(self, user, filters):
+        write_log_message(user,
+                          str(filters),
+                          self.__class__.__name__)
+
+    def get(self, request):
+        context = self.get_context(request)
+        return render(request,
+                      self.template,
+                      context
+                      )

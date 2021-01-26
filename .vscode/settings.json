@@ -1,3 +1,15 @@
 {
-    "python.pythonPath": "/home/andrius/pvenv/co_manager/bin/python"
+    "python.pythonPath": "/home/andrius/pvenv/co_manager/bin/python",
+    "python.testing.pytestArgs": [
+        "co_manager"
+    ],
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "-p",
+        "*test*.py"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
 }

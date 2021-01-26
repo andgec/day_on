@@ -25,3 +25,6 @@ DATABASES = {
         'CONN_MAX_AGE': 20,  # 20 seconds connection age.
     }
 }
+
+TEST_URL = 'http://127.0.0.1:8000/' # URL for automated testing
+

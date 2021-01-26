@@ -35,7 +35,10 @@ class TimelistPDFView(View):
     footer_template = get_template('reports/pdf_timelist/pdf_footer_html4_page_number_right.html')
 
     def get_context(self, request, project_id):
-        company = request.user.company;
+        '''
+            Context calculation
+        '''
+        company = request.user.company
         project = Project.objects.get(pk=project_id)
         context = {
             'company': company,
@@ -86,6 +89,7 @@ class TimelistPDFView(View):
         pages = []
         line_count = 1
         page_no = 0
+        journal_line = None
         page_date_from = datetime.MINYEAR
         curr_work_date = datetime.MINYEAR
         prev_work_date = datetime.MINYEAR
@@ -112,7 +116,7 @@ class TimelistPDFView(View):
             else:
                 work_date_str = journal_line.work_date.strftime('%d.%m.%Y')
 
-            prev_work_date = curr_work_date                
+            prev_work_date = curr_work_date
 
             jr_line_list[line_count-1].update({'work_date': work_date_str,
                                              'work_week_day': format_date(jr_line_dict['work_date'], 'EEE', locale='no').replace('.', '').title(),
@@ -195,7 +199,7 @@ class TimelistPDFView(View):
 
 
 class TimeSummaryPostedLineDetailView(View):
-    template = 'reports/time_summary/posted_time.html';
+    template = 'reports/time_summary/posted_time.html'
 
     ctp_proj = None
 
@@ -227,20 +231,20 @@ class TimeSummaryPostedLineDetailView(View):
         if project_ids:
             t_lines = t_lines.filter(content_type=self.contenttype_project, object_id__in=project_ids.split(','))
 
-        total_time  = 0;
-        total_dist  = 0;
-        total_toll  = 0;
-        total_ferry = 0;
-        total_diet  = 0;
-        total_parking = 0;
+        total_time  = 0
+        total_dist  = 0
+        total_toll  = 0
+        total_ferry = 0
+        total_diet  = 0
+        total_parking = 0
 
         for line in t_lines:
-            total_time += 0 if line.work_time is None else line.work_time;
-            total_dist += 0 if line.distance is None else line.distance;
-            total_toll += 0 if line.toll_ring is None else line.toll_ring;
-            total_ferry += 0 if line.ferry is None else line.ferry;
-            total_diet += 0 if line.diet is None else line.diet;
-            total_parking += 0 if line.parking is None else line.parking;
+            total_time += 0 if line.work_time is None else line.work_time
+            total_dist += 0 if line.distance is None else line.distance
+            total_toll += 0 if line.toll_ring is None else line.toll_ring
+            total_ferry += 0 if line.ferry is None else line.ferry
+            total_diet += 0 if line.diet is None else line.diet
+            total_parking += 0 if line.parking is None else line.parking
 
         context = {
             'title': _('Time summary'),
@@ -379,8 +383,8 @@ class TimeSummaryBaseView(View):
         date_from = kwargs.get('date_from')
         date_to = kwargs.get('date_to')
         loopdate = date_from
-        month = 0;
-        day_col_count = 0;
+        month = 0
+        day_col_count = 0
         while loopdate <= date_to:
             header.append({'name': loopdate,
                            'type': 'date',
@@ -481,7 +485,7 @@ class TimeSummaryBaseView(View):
                 empl_ids.append(line['employee_id'])
                 prev_empl_id = line['employee_id']
 
-        return empl_ids        
+        return empl_ids
 
     def _get_cell_meta(self, col, even, col_count, new_section = False, last_col = False):
         """
@@ -494,7 +498,7 @@ class TimeSummaryBaseView(View):
     def build_employee_time_matrix(self, header_data, employee_data, project_data, **kwargs):
         # makes an empty matrix with rows for employees (and projects if requested) and columns for dates (if requested)
         time_matrix = {}
-        even = True;
+        even = True
         prev_empl_id = 0
         col_count = self.__get_report_col_count(**kwargs)
         if kwargs.get('split_by_project', False):
@@ -503,7 +507,7 @@ class TimeSummaryBaseView(View):
                     col_num = 0
                     is_next_empl = prev_empl_id != employee_id
                     time_matrix_line = {}
-                    even = not even;
+                    even = not even
                     for col in header_data:
                         col_num += 1
                         is_last_col = col_num == len(header_data)
@@ -518,7 +522,7 @@ class TimeSummaryBaseView(View):
             for employee_id in employee_data.keys():
                 time_matrix_line = {}
                 col_num = 0
-                even = not even;
+                even = not even
                 for col in header_data:
                     col_num += 1
                     is_last_col = col_num == len(header_data)
@@ -577,9 +581,9 @@ class TimeSummaryBaseView(View):
                 loop_id = (eid, pid)
 
             #adding totals
-            time_matrix[(-1,-1)]['total_hours']['data'] += line['work_time'];           #grand total
+            time_matrix[(-1,-1)]['total_hours']['data'] += line['work_time']           #grand total
             if kwargs.get('split_by_dates', True):
-                time_matrix[(-1,-1)][line['work_date']]['data'] += line['work_time'];   #day total
+                time_matrix[(-1,-1)][line['work_date']]['data'] += line['work_time']   #day total
 
         #adding total hours worked for the last employee
         time_matrix[loop_id]['total_hours']['data'] = line_total_work_time
@@ -995,7 +999,7 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
     def __get_xlsx(self, request, context):
         # get xlsx format object by dictionary cell metadata
         def get_xlsx_format(workbook, format_dict, dcell):
-            xlsx_format_props = self.__get_xlsx_format_props(dcell);
+            xlsx_format_props = self.__get_xlsx_format_props(dcell)
             #print(xlsx_format_props)
             xlsx_format = format_dict.get(str(xlsx_format_props), None)
             if not xlsx_format:
@@ -1119,7 +1123,7 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
                 else:
                     sheet.write_blank(row, col, None, get_xlsx_format(book, fd, cell))
 
-                col += 1;
+                col += 1
 
         book.close()
         return response

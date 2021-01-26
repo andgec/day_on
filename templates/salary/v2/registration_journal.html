@@ -41,13 +41,13 @@
 {% block content %}
 		<h2 id="userAgent">User agent</h2>
 		<script>
-		    if (/Mobi/.test(navigator.userAgent)) {
+		    if (/Mobi/.test(navigator.userAgent)) { //Looking for "Mobi" substring in navigator.userAgent string
   				document.getElementById("userAgent").innerHTML = 'Mobile device<br>' + navigator.userAgent;
 		    }
 		    else {
   				document.getElementById("userAgent").innerHTML = 'Desktop<br>' + navigator.userAgent; 
 		    }
-		</script>		
+		</script>
 		{#{ _('Date:') }#}
 		<div id="datepicker"></div>
 		<p></p>

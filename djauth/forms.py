@@ -12,6 +12,9 @@ UserModel = get_user_model()
 
 
 class CoAuthenticationForm(AuthenticationForm):
+    '''
+    Custom authentication form used for admin site
+    '''
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request, *args, **kwargs)
         try:

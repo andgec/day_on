@@ -69,7 +69,7 @@ class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
             form = self.form_class(company=company)
         elif action == 'delete':
             form = self.form_class(company=company)
-            jrline.delete();
+            jrline.delete()
         elif action == 'edit':
             form = self.form_class(instance=jrline, company=company)
 

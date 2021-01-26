@@ -199,6 +199,17 @@ LOGOUT_REDIRECT_URL = '/'
 
 TIMELIST_LINES_PER_PAGE = 28
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    )
+}
+
 try:
     if LOCAL_ENV:
         from .settings_local import *

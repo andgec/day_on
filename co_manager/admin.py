@@ -8,7 +8,6 @@ class CoAdminSite(AdminSite):
     index_title = _('Company administration')
 
     def get_urls(self):
-        from django.conf.urls import url
         urls = super(CoAdminSite, self).get_urls()
         urls += [
             #url(r'^timelist_html/$', TimelistHTMLView.as_view()),

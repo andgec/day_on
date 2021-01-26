@@ -21,3 +21,5 @@ urllib3==1.24.2
 django-db-logger==0.1.7
 XlsxWriter==1.2.2
 django-maintenancemode==0.11.3
+djangorestframework==3.12.1
+djangorestframework-jwt==1.11.0
