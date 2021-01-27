@@ -29,7 +29,7 @@
 						<td class="actions-right">
 							<button class="btn-open" title="{{ _('Save') }}" type="submit">{{ _('Save') }}</button>
 							{% if edit == True %}
-								<a href="{% url 'pdash' pk=project.id %}" class="btn-close">{{ _('Cancel') }}</a>
+								&nbsp<a href="{% url 'pdash' pk=project.id %}" class="btn-close" id="pd-btn-cancel">{{ _('Cancel') }}</a>
 							{% endif %}
 						</td>
 					</tr>

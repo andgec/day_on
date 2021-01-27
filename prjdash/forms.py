@@ -10,8 +10,8 @@ from receivables.forms import WorkTimeJournalForm
 from general.forms import CoModelForm
 
 class PDashProjectForm(CoModelForm):
-    name = forms.CharField(label = _('Project name'), widget=forms.TextInput(attrs={'size':'60'}))
-    comment = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 1, 'cols': 32}))
+    name = forms.CharField(label = _('Project name'), widget=forms.TextInput())
+    comment = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 1, 'cols': 20}))
     mode = ADDITION
 
     class Meta:

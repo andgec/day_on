@@ -5,9 +5,10 @@
 	margin-top: 50px;
 	margin-left: auto;
 	margin-right: auto;
+	padding: 5px;
 }
 
-th, td{
+th, td {
 	padding: 3px;
 	height: 35px;
 	vertical-align: middle;
@@ -16,13 +17,19 @@ th, td{
 
 td.actions-right {
 	text-align: left;
-	padding-left: 11px;
-}
-td.actions-left {
-	text-align: center;
-	padding-left: 11px;
+	padding-left: 7px;
+	min-width: 220px;
+	max-width: 220px;
+	width:  220px;
 }
 
+td.actions-left {
+	text-align: center;
+	padding-left: 5px;
+	min-width: 110px;
+	max-width: 110px;
+	width: 110px;
+}
 
 tr:nth-child(even){
 	background-color: #fafafa;
@@ -72,5 +79,31 @@ td {
 .scont {
 	padding-bottom: 18;
 	padding-top: 18
+}
+
+#id_name {
+	width: 100%;
+}
+
+#id_comment {
+	width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+	#id_name {
+		width: 100%;
+	}
+}
+
+@media only screen and (min-width: 1800px) {
+	.main-container {
+		max-width: 1600px;
+	}
+}
+
+@media only screen and (min-width: 2000px) {
+	.main-container {
+		max-width: 2000px;
+	}
 }
 

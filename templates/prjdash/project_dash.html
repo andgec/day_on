@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block linked_files %}
+	<meta name="viewport" content="width=device-width>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/buttons.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash.css' %}">
@@ -34,7 +35,7 @@
 	  {% if customer.id == focus.customer_id %}
 		<button class="accordion active" id="accordion_active" value="{{customer.id}}">{{customer.name}}</button>
 		<div class="panel panel-active" id="panel_active">
-	  {% else %}	
+	  {% else %}
 		<button class="accordion" value="{{customer.id}}">{{customer.name}}</button>
 		<div class="panel">
 	  {% endif %}
@@ -45,14 +46,14 @@
 						<th class="tb">&nbsp {{_('Lists')}}</th></th>
 						<th class="tb">&nbsp {{_('Project')}}</th>
 						<th class="tb">&nbsp {{_('Comment')}}</th>
-						<th class="tb">&nbsp {{_('Category')}}</th>
+						<th style="min-width:80px" class="tb">&nbsp {{_('Category')}}</th>
 						<th style="width:95px" class="tb">&nbsp {{_('Date created')}}</th>
 						<th class="tb">&nbsp {{_('Actions')}}</th>
 					</thead>
 	   			    {% if edit == False %}
 						{% include 'prjdash/project_form.html' %}
 					{% endif %}
-					
+
 					{% for project in customer.projects %}
 						{% if edit == True and focus.project_id == project.id %}
 							{% include 'prjdash/project_form.html' %}
@@ -95,7 +96,7 @@
 		      panel.style.maxHeight = panel.scrollHeight + "px";
 		      setTimeout(function(panel){panel.style.transition='none'}, 200);
 		    }
-		    
+
 		    // Closing all other open sections
 			var btns = document.getElementsByClassName("accordion")
 			for (k = 0; k < btns.length; k++) {

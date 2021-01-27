@@ -81,8 +81,9 @@ button::-moz-focus-inner {
 }
 
 .accordion::after {
-  content: '\02795'; /* Unicode character for "plus" sign (+) */
-  font-size: 13px;
+  content: '+';
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
   color: #2b758e;
   float: right;
   margin-left: 5px;
@@ -93,7 +94,7 @@ button::-moz-focus-inner {
 }
 
 .active::after {
-  content: "\2796"; /* Unicode character for "minus" sign (-) */
+  content: "\2212";
   color: #ffffff;
 }
 
@@ -109,9 +110,8 @@ button::-moz-focus-inner {
    	position: relative;
    	top: -2px;
    }
-   
+
    .active::after {
   		content: "\2212"; /* Unicode character for "minus" sign (-) */
 	}
 }
-
