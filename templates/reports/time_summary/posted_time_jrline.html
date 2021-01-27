@@ -7,8 +7,13 @@
 		{{line.item}}
 	{% elif fvisible.description %}
 		{{line.description}}
+	{% elif fvisible.item_and_description %}
+		{{line.item}}
+		{% if line.description %}
+			<br><span class = "treg_ln_descr"> {{line.description}} </span>
+		{% endif %}
+	{% endif %}
 	</div></td>
-{% endif %}
 	<td>{{line.work_time_from}} - {{line.work_time_to}}</td>
 	<td id="num-col">{{line.work_time}}</td>
 	<td id="num-col">{{line.distance|default_if_none:""}}</td>

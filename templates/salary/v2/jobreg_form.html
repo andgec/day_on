@@ -41,7 +41,11 @@
 							{{ form.item.errors }}
 							{{ form.item }}
 							{{ form.description.errors }}
-							{{ form.description }}
+							{% if fvisible.item_and_description %}
+								<div class="treg_form_descr">{{ form.description }}</div>
+							{% else %}
+								{{ form.description }}
+							{% endif %}
 						</td>
 						<td>
 							<div style="max-width: 270px; float: top">

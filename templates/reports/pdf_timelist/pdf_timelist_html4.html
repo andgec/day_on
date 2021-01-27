@@ -103,6 +103,13 @@
 								{{line.item}}
 							{% elif fvisible.description %}
 								{{line.description}}
+							{% elif fvisible.item_and_description %}
+								{% if line.description %}
+									{{line.item}}
+									<br><i>{{line.description}}</i>
+								{% else %}
+									{{line.item}}
+								{% endif %}
 							{% endif %}
 							</td>
 							<td class="num">{{line.work_time}}</td>

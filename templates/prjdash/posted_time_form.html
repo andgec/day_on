@@ -32,7 +32,7 @@
 							{{ form.item.errors }}
 							{{ form.item }}
 							{{ form.description.errors }}
-							{{ form.description }}
+							<div class="treg_form_descr">{{ form.description }}</div>
 						</td>
 						<td>
 							{{ form.work_date.errors }}
@@ -40,7 +40,7 @@
 						</td>
 						<td>
 							{{ form.work_time_from.errors }}
-							{{ form.work_time_from }} {{ _('to') }} 
+							{{ form.work_time_from }} {{ _('to') }}
 							{{ form.work_time_to.errors }}
 							{{ form.work_time_to }}
 						</td>

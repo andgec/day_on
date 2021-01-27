@@ -22,8 +22,14 @@
 								{{journal_line.item}}
 							{% elif fvisible.description %}
 								{{journal_line.description}}
+							{% elif fvisible.item_and_description %}
+								{{journal_line.item}}
+								{% if journal_line.description %}
+									<br><span class = "treg_ln_descr"> {{journal_line.description}} </span>
+								{% endif %}
+							{% endif %}
 							</div></td>
-						{% endif %}
+
 							<td>{{journal_line.work_date|date:'Y-m-d'}}</td>
 							<td>{{journal_line.work_time_from}} - {{journal_line.work_time_to}}</td>
 							<td id="num-col" >{{journal_line.work_time}}</td>

@@ -352,7 +352,7 @@ class WorkTimeJournal(CoModel):
         cfg = self.company.get_config_value('TIMEREG_TASK_MODE')
         if not self.company or self.company == 1:
             v_errors['company'] = _('System error: company field is empty')
-        if cfg == '1000': # Task selected from a list
+        if cfg in ('1000', '3000'): # Task selected from a list
             if self.item_id == 0:
                 v_errors['item'] = _('Please select an item')
         elif cfg == '2000': # Task input as text

@@ -81,13 +81,18 @@ class WorkTimeJournalForm(forms.ModelForm):
         self.work_date = kwargs.get('work_date', timezone.now())
         self.fields['company'].initial = self.company
         self.fields['work_date'].initial = self.work_date
-        if self.company.get_config_value('TIMEREG_TASK_MODE') == '2000': # Task as text input
+        cfg_value = self.company.get_config_value('TIMEREG_TASK_MODE')
+        if cfg_value == '2000': # Task as text input (hide Item input)
             self.fields['item'].widget = HiddenInput()
             self.fields['item'].choices = [(0, '----------------------'),]
-        else:
+        elif cfg_value == '1000': # Task as dropdown list choice input (hide description input)
             self.fields['description'].widget = HiddenInput()
             self.fields['item'].choices = self.items_as_choices()
             self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
+        elif cfg_value == '3000': # Task as dropdown list choice with text comment input
+            self.fields['item'].choices = self.items_as_choices()
+            self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
+            self.fields['description'].widget = forms.Textarea(attrs={'rows': 1, 'placeholder': _('Comment')})
 
     def items_as_choices(self):
         item_group_list = []
@@ -143,13 +148,18 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
         self.work_date = kwargs.get('work_date', timezone.now())
         self.fields['work_date'].initial = self.work_date
         self.fields['company'].initial = self.company
-        if self.company.get_config_value('TIMEREG_TASK_MODE') == '2000': # Task as text input
+        cfg_value = self.company.get_config_value('TIMEREG_TASK_MODE')
+        if cfg_value == '2000': # Task as text input (hide item input)
             self.fields['item'].widget = HiddenInput()
             self.fields['item'].choices = [(0, '----------------------'),]
-        else: # Task as dropdown list choice input
+        elif cfg_value == '1000': # Task as dropdown list choice input (hide description input)
             self.fields['description'].widget = HiddenInput()
             self.fields['item'].choices = self.items_as_choices()
             self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
+        elif cfg_value == '3000': # Task as dropdown list choice with text comment input
+            self.fields['item'].choices = self.items_as_choices()
+            self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
+            self.fields['description'].widget = forms.Textarea(attrs={'rows': 1, "placeholder": _('Comment')})
 
     def items_as_choices(self):
         item_group_list = []

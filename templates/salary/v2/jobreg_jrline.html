@@ -5,6 +5,11 @@
 								{{jr_line.item}}
 							{% elif fvisible.description %}
 								{{jr_line.description}}
+							{% elif fvisible.item_and_description %}
+								{{jr_line.item}}
+								{% if jr_line.description %}
+									<br><span class = "treg_ln_descr"> {{jr_line.description}} </span>
+								{% endif %}
 							{% endif %}
 							</div></td>
 							<!-- td>{{jr_line.work_date}}</td>  -->
