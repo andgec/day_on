@@ -64,6 +64,7 @@ class ProjectDashboardView(View):
             JOIN "django_admin_log" ON ("django_admin_log"."object_id" = "receivables_project"."id"::text)
             LEFT OUTER JOIN "receivables_projectcategory" pc ON (pc."id" = "receivables_project"."category_id")
             WHERE "receivables_project"."company_id" = %(company_id)s
+              AND "receivables_project"."visible" = %(visible)s
               AND "django_admin_log"."content_type_id" = %(content_type_id)s
               AND "django_admin_log"."action_flag" = 1
             ) Proj ON (Proj."customer_id" = "receivables_customer"."id")
@@ -126,6 +127,7 @@ class ProjectDashboardView(View):
             cursor.execute(self.proj_sql,
                               {'content_type_id': self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                'company_id': request.user.company_id,
+                               'visible': True
                               }
                           )
             result_dicts = self.dictfetchall(cursor)

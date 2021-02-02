@@ -126,6 +126,7 @@ class ProjectCategoryListFilter(SimpleListFilter):
         """
         q_project_categories = ProjectCategory.objects.filter(company = request.user.company).order_by('name')
         project_categories = list(q_project_categories.values_list('id', 'name'))
+
         return project_categories
 
     def queryset(self, request, queryset):
@@ -139,16 +140,44 @@ class ProjectCategoryListFilter(SimpleListFilter):
         return queryset.filter(category_id = self.value())
 
 
+class ProjectCustomerListFilter(SimpleListFilter):
+    title = _('Customer')
+    parameter_name = 'customer__id__exact'
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+
+        q_project_customers = Customer.objects.filter(company = request.user.company).order_by('name')
+        project_customers = list(q_project_customers.values_list('id', 'name'))
+
+        return project_customers
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if self.value() is None:
+            return queryset
+        return queryset.filter(customer_id = self.value())
+
+
 class ProjectAdmin(CoModelAdmin):
     form = ProjectAdminForm
 
-    list_display = ('name', 'description', 'category', 'customer', 'active',)
-    list_filter = ('active', ProjectCategoryListFilter)
+    list_display = ('name', 'description', 'category', 'customer', 'active', 'visible')
+    list_filter = ('active', 'visible', ProjectCategoryListFilter, ProjectCustomerListFilter)
     search_fields   = ('name', 'description', 'category__name', 'customer__name',)
 
     fieldsets = (
         (None, {
-            'fields': ('customer', 'name', 'category', 'description', 'comment', 'active', 'employees',)
+            'fields': ('customer', 'name', 'category', 'description', 'comment', 'active', 'visible', 'employees',)
         }),
     )
 

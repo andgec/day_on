@@ -17,8 +17,25 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="main-container">
+<!-- --------------------- PAKEITIMAI ---------------------------- -->
+{% if not edit %}
+	<div class="pd-filters">
+		<div style = "text-align: center">
+			<!-- div>
+				<a href="{% url 'pdash' %}?search=625" class="btn-edit">{{_('Archive')}}</a>
+			</div>
+			<div style = "height: 1em;"></div -->
+			<div class="pd-search">
+				<input id = "pdSearchText" class="pd-search" type="text" placeholder="{{_('Project name')}}">
+				<button class="pd-search" id="pdSearch"><i class="fas fa-search"></i> &nbsp {{_('Search')}}</button>
+				<div id="pd-s-error"></div>
+			</div>
+		</div>
+	</div>
+	<div class = "pd_filters_spbar" style="width:100%; height:2em;"></div>
+{% endif %}
+<!-- --------------------- PAKEITIMAI ---------------------------- -->
 	<!-- div id="debug"></div> -->
 	{% if not customers %}
 		<h1>
@@ -39,7 +56,6 @@
 		<button class="accordion" value="{{customer.id}}">{{customer.name}}</button>
 		<div class="panel">
 	  {% endif %}
-		<!-- div class="panel"> -->
 			<div class="scont">
 				<table class = "tb">
 					<thead class="tb">
@@ -68,8 +84,8 @@
 		</div>
 	{% endfor %}
    	<script>
+   		var timeout;
    		var i;
-   		
    	    panel_active = document.getElementById("panel_active");
 		if (panel_active) {
 		  panel_active.style.transition = 'none'
@@ -86,33 +102,158 @@
 		var acc = document.getElementsByClassName("accordion");
 		for (i = 0; i < acc.length; i++) {
 		  acc[i].addEventListener("click", function() {
-		    this.classList.toggle("active");
-		    var panel = this.nextElementSibling;
-		    panel.classList.toggle("panel-active")
-		    if (panel.style.maxHeight){
-		      panel.style.maxHeight = null;
-		      panel.style.transition = 'max-height 0.2s ease-out';
-		    } else {
-		      panel.style.maxHeight = panel.scrollHeight + "px";
-		      setTimeout(function(panel){panel.style.transition='none'}, 200);
-		    }
-
-		    // Closing all other open sections
-			var btns = document.getElementsByClassName("accordion")
-			for (k = 0; k < btns.length; k++) {
-			  var btn = btns[k]			 
-			 	if (btn != this) {
-			 		btn.classList.remove("active")
-			 		var xpanel = btn.nextElementSibling;
-			 		xpanel.style.maxHeight = null;
-			 		xpanel.classList.remove("panel-active")
-			 	}
-			 };
+		    switchAccordionForButton(this, 'TOGGLE');
 		  });
 		}
  		{% if focus.project_id %}
 		  document.getElementById("proj_{{focus.project_id}}").scrollIntoView();
 		{% endif %}
-	</script>		
+
+		var findProjectDivByName = function(pSearchName) {
+		  // -------------------------------
+		  // Search by project name function
+		  // Return <div> element containing found project name if any is found
+		  // -------------------------------
+		  var projNameDivs = document.getElementsByClassName("pd_prj_name"); 	// Collecting all DIV elements containing project names
+		  matchIndex = -1; 											    	 	// Initial value for index
+		  for (i=0; i < projNameDivs.length; i++) { 							// Looping through DIV element collection
+		    if (projNameDivs[i].textContent.toLowerCase().includes(searchByName.toLowerCase())) { //Checking if project name contains a match
+		      matchIndex = i;
+		      break; //Stopping the loop at first match
+		    }
+		  }
+		  // Return project DIV element or NULL
+	      if (matchIndex != -1) {
+	        return projNameDivs[matchIndex];
+	      }
+	      else {
+	        return null;
+	      }
+		}
+
+		var locatePanelForProjName = function(pNameDiv) {
+		  // Locating the PANEL with project list which has to be "opened" for view:
+		  //   1. Going up DOM to locate first element containing "panel" class.
+		  //   2. Then we will get button element which is previous sibling of the panel class.
+		  //   3. Button contains customer name, panel contains projects.
+		  if (!pNameDiv) {return null};
+		  var iNode = pNameDiv;
+		  while (!(iNode.classList.contains("panel"))) {
+		    iNode = iNode.parentNode;
+		    if (iNode == null) {break};
+		  }
+		  //alert(iNode.innerHTML);
+		  return iNode;
+		}
+
+		var switchAccordionForButton = function(pAccordionButton, action = 'TOGGLE') {
+		  //if (!pAccordionButton) {break};
+		  // Switching given accordion button to opposite or open state.
+		  // Valid actions: OPEN, CLOSE, TOGGLE.
+		  var panel = pAccordionButton.nextElementSibling;
+		  switch (action) {
+		  	case 'OPEN':
+		  	  pAccordionButton.classList.add("active");
+		  	  panel.classList.add("panel-active");
+			  panel.style.maxHeight = panel.scrollHeight + "px";
+			  setTimeout(function(panel){panel.style.transition='none'}, 200);
+		  	  break;
+		  	case 'CLOSE':
+		  	  pAccordionButton.classList.remove("active");
+		  	  panel.classList.remove("panel-active");
+		      panel.style.maxHeight = null;
+			  panel.style.transition = 'max-height 0.2s ease-out';
+		  	  break;
+		  	default: // TOGGLE:
+		  	  pAccordionButton.classList.toggle("active");
+		  	  panel.classList.toggle("panel-active");
+			  if (panel.style.maxHeight){
+			    panel.style.maxHeight = null;
+			    panel.style.transition = 'max-height 0.2s ease-out';
+			  } else {
+			    panel.style.maxHeight = panel.scrollHeight + "px";
+			    setTimeout(function(panel){panel.style.transition='none'}, 200);
+			  }
+		  	  break;
+		  };
+
+		  // Closing all other open sections
+		  var btns = document.getElementsByClassName("accordion");
+		  for (k = 0; k < btns.length; k++) {
+			var btn = btns[k];
+			  if (btn != pAccordionButton) {
+			 	btn.classList.remove("active");
+			 	var xpanel = btn.nextElementSibling;
+			 	xpanel.style.maxHeight = null;
+			 	xpanel.classList.remove("panel-active");
+			  };
+		  };
+		};
+
+		var blinkFocusLine = function(divProjName) {
+		  // Finds Table Row element for project name DIV
+		  // Blinks background for project name DIV
+		  var iNode = divProjName;
+		  while (!(iNode instanceof HTMLTableRowElement)) { // Searching for <TR> element
+		    iNode = iNode.parentNode;
+		    if (!(iNode)) {break};
+		  };
+		  iNode.classList.add("focused"); // Blinking (adding class with animation)
+		  setTimeout(function(){iNode.classList.remove("focused");}, 6000); //Removing class with animation
+		};
+
+		var showSearchError = function(pMessage) {
+		  var msgDiv = document.getElementById("pd-s-error");
+		  if (msgDiv) {
+		    msgDiv.style.transition = "1s";
+		    msgDiv.style.height = "30px";
+		    msgDiv.style.color = "#ec4444";
+		    msgDiv.style.opacity = "80%";
+		    msgDiv.style.padding = "15px 0px 0px 0px";
+		    msgDiv.style.fontSize = "1.5em";
+		    msgDiv.textContent = pMessage;
+		  };
+		  setTimeout(function(){
+		    msgDiv.style.height = "0px";
+		    msgDiv.style.fontSize = "0em";
+		    msgDiv.style.padding = "0px";
+		  }, 2000);
+		};
+
+		var findAndLocateProject = function() {
+		  // -------- MAIN SEARCH FUNCTION ---------
+		  // FIX NEEDED: Last line in the list is somewhat out of view
+		  // 1. Reads search name from a text box;
+		  // 2. Tries to find a project in a project list;
+		  // 3. If a project is found then opens relevant accordion and scrolls to the project location;
+		  // ---------------------------------------
+		  searchByName = document.getElementById("pdSearchText").value; //Read value from a text field;
+		  if (searchByName == '') {return};
+		  iNameDiv = findProjectDivByName(searchByName); // find DIV element for given search string
+		  if (!(iNameDiv)) {
+		    showSearchError("{{_('project not found')|capfirst}}");
+		  };
+		  panelDiv = locatePanelForProjName(iNameDiv);   // get accordion panel element
+		  if (panelDiv) {
+		  	custButton = panelDiv.previousElementSibling; //get accordion button element
+		  	switchAccordionForButton(custButton, "OPEN");
+		  	setTimeout(function(){ iNameDiv.scrollIntoView(); window.scrollBy(0, -50); }, 250); // Due to an animation it takes some time to open a panel.
+		  																// Timeout is set to wait until the panel is open; 
+		  																// otherwise scrolls to a wrong location.
+		  	blinkFocusLine(iNameDiv); //Blink animation on found project line
+	      }
+		}
+
+		// Assign search function to the search button
+		document.getElementById("pdSearch").onclick = findAndLocateProject;
+
+		document.getElementById("pdSearchText").addEventListener("keyup", function(event) {
+		  // Project search field on press ENTER
+		  if (event.keyCode === 13) {
+		    findAndLocateProject();
+		  }
+		});
+
+	</script>
 </div>
 {% endblock %}
