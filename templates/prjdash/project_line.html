@@ -1,23 +1,11 @@
 				<tr class="tb{% if not project.active %} closed {% endif %}" {% if focus.project_id == project.id  %} id="proj_{{project.id}}" {% endif %}>
 					<td class="actions-left">
-						<a href="{% url 'pdash-time-review' project_id=project.id %}" title = "{{ _('Time review and approval') }}" class="btn-detail">
+						<a href="{% url 'pdash-time-review' location=location project_id=project.id %}" title = "{{ _('Time review and approval') }}" class="btn-detail">
 							<i class="fas fa-bars"></i>
-							<!-- i class="far fa-address-card"></i>
-							<i class="fas fa-address-card"></i>
-							<i class="far fa-address-book"></i>
-							<i class="fas fa-address-book"></i>
-							<i class="fas fa-pen-alt"></i>
-							-->
 						</a>
 						&nbsp;
-						<a href="{% url 'pdash-assign-employees' pk=project.id %}" title = "{{ _('Assign employees') }}" class="btn-detail">
+						<a href="{% url 'pdash-assign-employees' location=location pk=project.id %}" title = "{{ _('Assign employees') }}" class="btn-detail">
 							<i class="far fa-address-book"></i>
-							<!-- i class="far fa-address-card"></i>
-							<i class="fas fa-address-card"></i>
-							<i class="far fa-address-book"></i>
-							<i class="fas fa-address-book"></i>
-							<i class="fas fa-pen-alt"></i>
-							-->
 						</a>
 						<input type="hidden" id="customer_id" name="customer_id" value="{{customer.id}}">
 					</td>
@@ -27,11 +15,19 @@
 					<td style="text-align:center">{{project.datetime_created}}</td>
 					<td class="actions-right">
 					{% if not edit %}
-					    <a href="{% url 'pdash' pk=project.id mode='edit'%}" class="btn-edit">{{_('Edit')}}</a>&nbsp&nbsp
+					    {% if location == 'desktop' %}
+					      <a href="{% url 'pdash' location=location pk=project.id mode='edit'%}" title="{{_('Edit')}}" class="btn-edit pd"><i class="fa fa-edit"></i></a>&nbsp&nbsp
+					    {% endif %}
 					  {% if project.active %}
-					  	<a href="{% url 'pdash' pk=project.id %}?action=close" class="btn-close">{{_('Close')}}</a>
+					  	<a href="{% url 'pdash' location=location pk=project.id %}?action=close" title = "{{_('Close')}}" class="btn-close pd"><i class="fas fa-lock"></i></a>
 					  {% else %}
-					  	<a href="{% url 'pdash' pk=project.id %}?action=open" class="btn-open">{{_('Open')}}</a>
+					  	{% if location == 'desktop' %}<a href="{% url 'pdash' location=location pk=project.id %}?action=open" title = "{{_('Open')}}" class="btn-open pd"><i class="fas fa-lock-open"></i></a>{% endif %}
+					  	{% if project.visible %}
+					  	  &nbsp&nbsp&nbsp&nbsp
+					  	  <a href="{% url 'pdash' location=location pk=project.id %}?action=toarchive" title="{{_('Move to archive')}}" class="btn-archive pd"><i class="fas fa-box-open"></i></a>
+					  	{% else %}
+					  	  <a href="{% url 'pdash' location=location pk=project.id %}?action=todesktop" title="{{_('Return to desktop')}}" class="btn-archive pd"><i class="fas fa-chalkboard"></i>&nbsp&nbsp{{_('Return to desktop')}}</a>
+					  	{% endif %}
 					  {% endif %}
 					{% endif %}
 					</td>

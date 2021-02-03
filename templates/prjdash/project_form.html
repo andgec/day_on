@@ -27,11 +27,10 @@
 						<td>
 							{{project.datetime_created}}</td>
 						<td class="actions-right">
-							<button class="btn-open" title="{{ _('Save') }}" type="submit">{{ _('Save') }}</button>
+							<button class="btn-open" title="{{ _('Save') }}" type="submit"><!-- i class="fas fa-check"></i--> {{ _('Save') }}</button>
 							{% if edit == True %}
-								&nbsp<a href="{% url 'pdash' pk=project.id %}" class="btn-close" id="pd-btn-cancel">{{ _('Cancel') }}</a>
+								&nbsp<a href="{% url 'pdash' location=location pk=project.id %}" class="btn-close" id="pd-btn-cancel">{{ _('Cancel') }}</a>
 							{% endif %}
 						</td>
 					</tr>
 				</form>
-				

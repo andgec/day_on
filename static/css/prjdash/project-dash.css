@@ -42,7 +42,7 @@ input.pd-search::::-ms-input-placeholder { /* Microsoft Edge/IE */
   color: #DDDDDD;
 }
 
-
+/* Search button */
 button.pd-search {
 	color:#3a8a9e;
 	font-family:Arial;
@@ -61,7 +61,58 @@ button.pd-search:hover {
 	color: #79AEC8;
 	background-color: white;
 	border: 2px solid #EEEEEE;
+	cursor: pointer;
 }
+
+/* -------- SWITCH ------- */
+
+button.pd-switch {
+	color: #F8F8F8;
+	font-family: Arial;
+	font-size: 1.8em;
+	font-weight: bold;
+	padding: 7px 20px 7px 20px;
+	height: 2.5em;
+	width: 9em;
+	border-radius: 0em;
+	transition: 0.5s;
+	background-color: #3a8a9e;
+	border: 3px solid #2b6776;
+}
+
+button.pd-switch.left {
+	border-radius:2em 0em 0em 2em;
+}
+
+button.pd-switch.right {
+	border-radius:0em 2em 2em 0em;
+}
+
+button.pd-switch.activated {
+	cursor: pointer;
+	color: #3a8a9e;
+	background-color: #F8F8F8;
+	border-color: #DDDDDD;
+}
+
+.btn-edit.pd {
+	padding: 7px 12px;
+}
+
+.btn-close.pd {
+	padding: 7px 28px;
+}
+
+.btn-archive.pd {
+	padding: 7px 10px;
+	color: #FFFFFF;
+}
+
+.btn-open.pd {
+	padding: 7px 27px;
+}
+
+/* -------- END SWITCH ------- */
 
 th, td {
 	padding: 3px;

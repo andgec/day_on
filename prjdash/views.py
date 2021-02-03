@@ -26,15 +26,17 @@ class RecState:
     DELETE  = 3
     OPEN    = 4
     CLOSE   = 5
+    ARCHIVE = 6
+    DESKTOP = 7
     
-    pk_states = (EDIT, DELETE, OPEN, CLOSE) 
-
+    pk_states = (EDIT, DELETE, OPEN, CLOSE, ARCHIVE, DESKTOP)
 
 @method_decorator(staff_member_required, name='dispatch')
 class ProjectDashboardView(View):
     template = 'prjdash/project_dash.html'
     form_class = PDashProjectForm
     state = RecState.VIEW
+    location = 'DESKTOP'
     project = None
     customer_id = None
     content_type_id_by_name = None
@@ -48,6 +50,7 @@ class ProjectDashboardView(View):
           Proj."project_category",
           Proj."project_comment",
           Proj."project_active",
+          Proj."project_visible",
           Proj."datetime_created"
         FROM "receivables_customer"
         LEFT OUTER JOIN 
@@ -59,6 +62,7 @@ class ProjectDashboardView(View):
                 pc."name" as "project_category",
                 "receivables_project"."comment" as "project_comment", 
                 "receivables_project"."active" as "project_active",
+                "receivables_project"."visible" as "project_visible",
                 "django_admin_log"."action_time" as "datetime_created"
             FROM "receivables_project"
             JOIN "django_admin_log" ON ("django_admin_log"."object_id" = "receivables_project"."id"::text)
@@ -89,7 +93,7 @@ class ProjectDashboardView(View):
     def build_result_list(self, result_dicts):
         customers = []
         projects = []
-        cust_count = 0;
+        cust_count = 0
         prev_cust_id = None
 
         for line in result_dicts:
@@ -113,28 +117,39 @@ class ProjectDashboardView(View):
                                  'category': line['project_category'],
                                  'comment': line['project_comment'],
                                  'active': line['project_active'],
+                                 'visible': line['project_visible'],
                                  'datetime_created': line['datetime_created'].strftime("%Y-%m-%d"),
                                  })
         # Adding projects for the last customer
         if cust_count > 0:
             customers[cust_count-1]['projects'] = projects
 
-        return customers
+        # If location is ARCHIVE then removing customers without projects
+        # as creating new projects is not allowed inside ARCHIVE.
+        if self.location == 'ARCHIVE':
+            arch_customers = [];
+            for customer in customers:
+                if len(customer['projects']):
+                    arch_customers.append(customer)
+            customers = arch_customers;
 
+        return customers
 
     def get_context(self, request, pk, form = None):
         with connection.cursor() as cursor:
             cursor.execute(self.proj_sql,
                               {'content_type_id': self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                'company_id': request.user.company_id,
-                               'visible': True
+                               'visible': not self.location == 'ARCHIVE', # All other location values than ARCHIVE must show visible.
                               }
                           )
-            result_dicts = self.dictfetchall(cursor)
+            result_dicts = self.dictfetchall(cursor);
 
         form = self.form_class(instance = self.project if self.state == RecState.EDIT else None, request = request)
 
         context = {'title': _('Project management'),
+                   'location': self.location.lower(),
+                   'state': self.state,
                    'edit': self.state == RecState.EDIT,
                    'focus': {'customer_id': int(self.customer_id) if self.customer_id else None,
                              'project_id': int(pk) if pk else None,
@@ -145,12 +160,16 @@ class ProjectDashboardView(View):
 
         return context
 
-    def setstate(self, request, pk, mode):
+    def setstate(self, request, location, pk, mode):
+        self.location = location.upper();
+
         state_decoder = {
             '': RecState.VIEW,
             #  'edit': RecState.EDIT,
             'close': RecState.CLOSE,
             'open': RecState.OPEN,
+            'toarchive': RecState.ARCHIVE,
+            'todesktop': RecState.DESKTOP,
         }
 
         if mode == 'edit':
@@ -178,25 +197,30 @@ class ProjectDashboardView(View):
         if self.state == RecState.CLOSE:
             project.active = False
             project.save()
-            
         elif self.state == RecState.OPEN:
             project.active = True
             project.save()
+        elif self.state == RecState.ARCHIVE:
+            project.visible = False
+            project.save()
+        elif self.state == RecState.DESKTOP:
+            project.visible = True
+            project.save()
 
-    def get(self, request, pk=None, mode=None):
-        self.setstate(request, pk, mode)
+    def get(self, request, location='DESKTOP', pk=None, mode=None):
+        self.setstate(request, location, pk, mode)
         self.process(request, pk)
         return render(request,
                       self.template,
                       self.get_context(request, pk)
                       )
 
-    def post(self, request, pk=None, mode=None):
-        self.setstate(request, pk, mode)
+    def post(self, request, location = 'DESKTOP', pk=None, mode=None):
+        self.setstate(request, location, pk, mode)
         form = self.form_class(request.POST, instance=self.project, request=request)
         if form.is_valid():
             project = form.save(commit=True)
-            return redirect(reverse('pdash')+str(project.pk))
+            return redirect('pdash', location, project.pk)
         else:
             return render(request,
                           self.template,
@@ -208,10 +232,12 @@ class ProjectDashboardView(View):
 class ProjectDashboardAssignEmployeesView(View):
     template = 'prjdash/assign_employees.html'
     form_class = PDashAssignEmployees
+    location = ''
 
-    def get_context(self, request, project):
+    def get_context(self, request, location, project):
         form = self.form_class(request=request, project=project)
         context = {
+                'location': location,
                 'title': _('Project management'),
                 'form': form,
                 'customer': project.customer,
@@ -219,25 +245,25 @@ class ProjectDashboardAssignEmployeesView(View):
                 }
         return context
 
-    def get(self, request, pk=None, mode=None):
+    def get(self, request, location, pk=None, mode=None):
         if pk:
             project = Project.objects.select_related('customer').get(id=pk)
         return render(request,
                       self.template,
-                      self.get_context(request, project)
+                      self.get_context(request, location, project)
                       )
 
-    def post(self, request, pk=None):
+    def post(self, request, location, pk=None):
         if pk:
             project = Project.objects.select_related('customer').get(id=pk)
         form = self.form_class(request.POST, request=request, project=project)
         if form.is_valid():
             form.save(commit=True)
-            return redirect(reverse('pdash')+str(pk))
+            return redirect('pdash', location, pk)
         else:
             return render(request,
                           self.template,
-                          self.get_context(request, pk)
+                          self.get_context(request, location, pk)
                           )
 
 
@@ -249,12 +275,13 @@ class ProjectDashboardPostedTimeReview(View):
     model = WorkTimeJournal
     state = RecState.VIEW
     jr_line = None
+    location = ''
 
     def __init__(self, **kwargs):
         self.content_type_id_by_name = get_contenttypes()
         super(ProjectDashboardPostedTimeReview, self).__init__(**kwargs)
 
-    def get_context(self, request, project_id, pk=None, mode=None, form=None):
+    def get_context(self, request, location, project_id, pk=None, mode=None, form=None):
         if not form:
             form = self.form_class(instance = self.jr_line if self.state == RecState.EDIT else None, request = request)
         project = Project.objects.select_related('customer').get(id=project_id)
@@ -298,6 +325,7 @@ class ProjectDashboardPostedTimeReview(View):
                                                                                  Sum('parking'),
                                                                                  )
         context = {
+                'location': location,
                 'title': _('Project management'),
                 'mode': mode,
                 'pk': int(pk) if pk is not None else None,
@@ -354,17 +382,17 @@ class ProjectDashboardPostedTimeReview(View):
 
         return jr_raw
 
-    def get(self, request, project_id=None, pk=None, mode='view'):
-        self.setstate(request, pk, mode)
+    def get(self, request, location, project_id=None, pk=None, mode='view'):
+        self.setstate(request, location, pk, mode)
         self.process(request, pk)
 
         return render(request,
                       self.template,
-                      self.get_context(request, project_id, pk, mode)
+                      self.get_context(request, location, project_id, pk, mode)
                       )
 
-    def post(self, request, project_id=None, pk=None, mode=None):
-        self.setstate(request, pk, mode)
+    def post(self, request, location, project_id=None, pk=None, mode=None):
+        self.setstate(request, location, pk, mode)
 
         form = self.form_class(request.POST, instance=self.jr_line, request=request)
 
@@ -379,14 +407,14 @@ class ProjectDashboardPostedTimeReview(View):
             finally:
                 form.save(commit=True) #this only writes a log action, not the record itself
             # Redirect to GET.
-            return redirect('pdash-time-review', project_id=project_id)
+            return redirect('pdash-time-review', location=location, project_id=project_id)
         else:
             return render(request,
                           self.template,
-                          self.get_context(request, project_id, pk, mode, form)
+                          self.get_context(request, location, project_id, pk, mode, form)
                           )
 
-    def setstate(self, request, pk, mode):
+    def setstate(self, request, location, pk, mode):
         state_decoder = {
             'view': RecState.VIEW,
             'edit': RecState.EDIT,
@@ -394,6 +422,7 @@ class ProjectDashboardPostedTimeReview(View):
         }
 
         self.state = state_decoder.get(mode)
+        self.location = location
 
         if self.state in RecState.pk_states and pk:
             try:

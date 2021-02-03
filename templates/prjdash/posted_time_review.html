@@ -22,7 +22,9 @@
 
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
-			<a href={% url 'pdash' pk=project.id %}>{{ _('Project dashboard') }}</a> › {{customer.name}} › {{project.name}} › {{ _('Time review and approval') }}
+			<a href={% url 'pdash' location=location pk=project.id %}>{{ _('Project dashboard') }}</a> ›
+			{% if location == 'desktop' %}{{_('desktop')|title}}{% else %}{{_('Archive')|title}}{% endif %} › 
+			{{customer.name}} › {{project.name}} › {{ _('Time review and approval') }}
 		</div>
 {% endblock %}
 

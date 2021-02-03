@@ -12,7 +12,7 @@
 
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
-			{{ _('Project dashboard') }}
+			{{ _('Project dashboard') }} › {% if location == 'desktop' %}{{_('desktop')|title}}{% else %}{{_('Archive')|title}}{% endif %}
 		</div>
 {% endblock %}
 
@@ -22,10 +22,11 @@
 {% if not edit %}
 	<div class="pd-filters">
 		<div style = "text-align: center">
-			<!-- div>
-				<a href="{% url 'pdash' %}?search=625" class="btn-edit">{{_('Archive')}}</a>
+			<div>
+				<button class="pd-switch left {% if location == 'archive' %} activated {% endif %}" id="pd-desktop"><i class="fas fa-desktop"></i> &nbsp{{_('desktop')|title}}</button>
+				<button class="pd-switch right {% if location == 'desktop' %} activated {% endif %}" id="pd-archive"><i class="fas fa-archive"></i> &nbsp{{_('archive')|title}}</button>
 			</div>
-			<div style = "height: 1em;"></div -->
+			<div style = "height: 3em;"></div>
 			<div class="pd-search">
 				<input id = "pdSearchText" class="pd-search" type="text" placeholder="{{_('Project name')}}">
 				<button class="pd-search" id="pdSearch"><i class="fas fa-search"></i> &nbsp {{_('Search')}}</button>
@@ -66,7 +67,7 @@
 						<th style="width:95px" class="tb">&nbsp {{_('Date created')}}</th>
 						<th class="tb">&nbsp {{_('Actions')}}</th>
 					</thead>
-	   			    {% if edit == False %}
+	   			    {% if edit == False and location == 'desktop' %} {# Create new project is only available for DESKTOP location #}
 						{% include 'prjdash/project_form.html' %}
 					{% endif %}
 
@@ -105,8 +106,11 @@
 		    switchAccordionForButton(this, 'TOGGLE');
 		  });
 		}
- 		{% if focus.project_id %}
-		  document.getElementById("proj_{{focus.project_id}}").scrollIntoView();
+
+		{% if focus.project_id and state < 6 %}
+			{# Do not scroll into view if moving to/from archive (states 6 and 7): in that case record does not exist, create exception and breaks further code #}
+		  	document.getElementById("proj_{{focus.project_id}}").scrollIntoView();
+		  	window.scrollBy(0, -50);
 		{% endif %}
 
 		var findProjectDivByName = function(pSearchName) {
@@ -121,14 +125,14 @@
 		      matchIndex = i;
 		      break; //Stopping the loop at first match
 		    }
-		  }
+		  };
 		  // Return project DIV element or NULL
 	      if (matchIndex != -1) {
 	        return projNameDivs[matchIndex];
 	      }
 	      else {
 	        return null;
-	      }
+	      };
 		}
 
 		var locatePanelForProjName = function(pNameDiv) {
@@ -245,15 +249,32 @@
 		}
 
 		// Assign search function to the search button
-		document.getElementById("pdSearch").onclick = findAndLocateProject;
+		if (document.getElementById("pdSearch")) {
+			document.getElementById("pdSearch").onclick = findAndLocateProject;
+		};
 
-		document.getElementById("pdSearchText").addEventListener("keyup", function(event) {
-		  // Project search field on press ENTER
-		  if (event.keyCode === 13) {
-		    findAndLocateProject();
-		  }
-		});
+		if (document.getElementById("pdSearchText")) {
+		  document.getElementById("pdSearchText").addEventListener("keyup", function(event) {
+		    // Project search field on press ENTER
+		    if (event.keyCode === 13) {
+		      findAndLocateProject();
+		    }
+		  });
+		};
 
+		{% if location == 'desktop' %}
+			btnLoc = 'archive'
+			btnUrl = "{% url 'pdash' location='archive' %}"
+		{% else %}
+			btnLoc = 'desktop'
+			btnUrl = "{% url 'pdash' location='desktop' %}"
+		{% endif %}
+
+		if (document.getElementById("pd-" + btnLoc)) {
+			document.getElementById("pd-" + btnLoc).addEventListener("click", function(event) {
+		  	window.location.href = btnUrl;
+			});
+		};
 	</script>
 </div>
 {% endblock %}

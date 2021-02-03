@@ -50,7 +50,7 @@
     btnCancel.onclick = closeDialog;
 
     function get_delete_url (jr_line_id) {
-      var url_base = '{% url 'pdash-time-review' project_id=project.id%}';
+      var url_base = '{% url 'pdash-time-review' location=location project_id=project.id%}';
       var url = url_base + '/' + jr_line_id + '/delete';
       return url
     }

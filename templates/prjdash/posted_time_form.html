@@ -73,7 +73,7 @@
 							</button>
 							&nbsp&nbsp
 							{% if mode == 'edit' %}
-							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
+							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' location=location project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
 							{% endif %}
 						</td>
 

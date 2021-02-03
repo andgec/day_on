@@ -10,13 +10,14 @@
     <!-- link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/prjdash/project-dash-accordion.css' %}">
-	
 	 -->
 {% endblock %}
 
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
-			<a href={% url 'pdash' pk=project.id %}>{{ _('Project dashboard') }}</a> › {{customer.name}} › {{project.name}} › {{_('Assign employees')}}
+			<a href={% url 'pdash' location='desktop' pk=project.id %}>{{ _('Project dashboard') }}</a> ›
+			{% if location == 'desktop' %}{{_('desktop')|title}}{% else %}{{_('Archive')|title}}{% endif %} ›
+			{{customer.name}} › {{project.name}} › {{_('Assign employees')}}
 		</div>
 
 {% endblock %}
@@ -34,7 +35,7 @@
 	  	{% endfor %}
 	  	</ul>
 	  	<div class="employee-save-cancel-container">
-	  	    <a class="btn-cancel" title = {{ _('Cancel') }} href="{% url 'pdash' pk=project.id %}">{{ _('Cancel') }}<!-- i class="fa fa-window-close" --> </i></i></a>
+	  	    <a class="btn-cancel" title = {{ _('Cancel') }} href="{% url 'pdash' location='desktop' pk=project.id %}">{{ _('Cancel') }}<!-- i class="fa fa-window-close" --> </i></i></a>
 	  		&nbsp&nbsp&nbsp
 	  		<button class="btn-save" title = {{ _('Assign') }} type="submit">
 	  		<!-- i class="fa fa-plus-circle"></i>  -->

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-02 16:52+0100\n"
+"POT-Creation-Date: 2021-02-03 17:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgstr "Adresas"
 
 #: djauth/admin.py:26 djauth/admin.py:27 djauth/admin.py:34
 #: receivables/models.py:270 reports/views.py:320 salary/models.py:41
-#: templates/prjdash/posted_time_review.html:44
+#: templates/prjdash/posted_time_review.html:46
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
 msgstr "Darbuotojas"
@@ -297,7 +297,7 @@ msgid "Price"
 msgstr "Kaina"
 
 #: inventory/models.py:80 receivables/models.py:189 receivables/models.py:275
-#: templates/prjdash/posted_time_review.html:45
+#: templates/prjdash/posted_time_review.html:47
 #: templates/reports/time_summary/posted_time.html:48
 #: templates/salary/v1/registration_journal.html:52
 #: templates/salary/v2/registration_journal.html:53
@@ -308,35 +308,35 @@ msgstr "Darbas"
 msgid "Items"
 msgstr "Darbai"
 
-#: prjdash/forms.py:13 templates/prjdash/project_dash.html:30
+#: prjdash/forms.py:13 templates/prjdash/project_dash.html:31
 msgid "Project name"
 msgstr "Projekto pavadinimas"
 
-#: prjdash/views.py:137 prjdash/views.py:215 prjdash/views.py:301
+#: prjdash/views.py:150 prjdash/views.py:242 prjdash/views.py:331
 #: templates/admin/base.html:20 templates/base.html:37
 msgid "Project management"
 msgstr "Projektų valdymas"
 
-#: prjdash/views.py:176 prjdash/views.py:409
+#: prjdash/views.py:195 prjdash/views.py:440
 msgid "Record ID not provided."
 msgstr "Nenurodytas objekto ID."
 
-#: prjdash/views.py:326
+#: prjdash/views.py:356
 #, python-format
 msgid "%(time)s created by %(user)s"
 msgstr "%(time)s sukūrė %(user)s"
 
-#: prjdash/views.py:328
+#: prjdash/views.py:358
 #, python-format
 msgid "This record was added by %(user)s"
 msgstr "Šį įrašą pridėjo %(user)s"
 
-#: prjdash/views.py:331
+#: prjdash/views.py:361
 #, python-format
 msgid "%(time)s modified by %(user)s"
 msgstr "%(time)s pakeitė %(user)s"
 
-#: prjdash/views.py:333
+#: prjdash/views.py:363
 msgid "This record was modified by administrator"
 msgstr "Šį įrašą koregavo administratorius"
 
@@ -349,7 +349,7 @@ msgid "Other information"
 msgstr "Kita informacija"
 
 #: receivables/admin.py:117 receivables/models.py:94
-#: templates/prjdash/project_dash.html:65
+#: templates/prjdash/project_dash.html:66
 msgid "Category"
 msgstr "Kategorija"
 
@@ -369,7 +369,7 @@ msgid "Employees"
 msgstr "Darbuotojai"
 
 #: receivables/forms.py:66 receivables/models.py:110 receivables/models.py:128
-#: reports/views.py:329 templates/prjdash/project_dash.html:63
+#: reports/views.py:329 templates/prjdash/project_dash.html:64
 #: templates/reports/time_summary/posted_time.html:47
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:52
@@ -377,7 +377,7 @@ msgid "Project"
 msgstr "Projektas"
 
 #: receivables/forms.py:95 receivables/forms.py:162 receivables/models.py:82
-#: templates/prjdash/project_dash.html:64
+#: templates/prjdash/project_dash.html:65
 msgid "Comment"
 msgstr "Komentaras"
 
@@ -393,7 +393,7 @@ msgstr "Tipas"
 msgid "Web site"
 msgstr "Interneto puslapis"
 
-#: receivables/models.py:51 templates/prjdash/project_dash.html:47
+#: receivables/models.py:51 templates/prjdash/project_dash.html:48
 msgid "Customers"
 msgstr "Klientai"
 
@@ -462,7 +462,7 @@ msgstr "Priskirtas darbuotojas"
 msgid "Related employees"
 msgstr "Priskirti darbuotojai"
 
-#: receivables/models.py:282 templates/prjdash/posted_time_review.html:46
+#: receivables/models.py:282 templates/prjdash/posted_time_review.html:48
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:79
 #: templates/reports/time_summary/posted_time.html:45
 #: templates/salary/v1/registration_journal.html:53
@@ -497,21 +497,21 @@ msgstr "Viršval. 100%"
 msgid "Distance"
 msgstr "Atstumas"
 
-#: receivables/models.py:309 templates/prjdash/posted_time_review.html:50
+#: receivables/models.py:309 templates/prjdash/posted_time_review.html:52
 #: templates/reports/time_summary/posted_time.html:52
 #: templates/salary/v1/registration_journal.html:57
 #: templates/salary/v2/registration_journal.html:58
 msgid "Toll ring"
 msgstr "BOM"
 
-#: receivables/models.py:315 templates/prjdash/posted_time_review.html:51
+#: receivables/models.py:315 templates/prjdash/posted_time_review.html:53
 #: templates/reports/time_summary/posted_time.html:53
 #: templates/salary/v1/registration_journal.html:58
 #: templates/salary/v2/registration_journal.html:59
 msgid "Ferry"
 msgstr "Keltas"
 
-#: receivables/models.py:321 templates/prjdash/posted_time_review.html:53
+#: receivables/models.py:321 templates/prjdash/posted_time_review.html:55
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:91
 #: templates/reports/time_summary/posted_time.html:55
 #: templates/salary/v1/registration_journal.html:60
@@ -519,7 +519,7 @@ msgstr "Keltas"
 msgid "Diet"
 msgstr "Maistas"
 
-#: receivables/models.py:327 templates/prjdash/posted_time_review.html:52
+#: receivables/models.py:327 templates/prjdash/posted_time_review.html:54
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:90
 #: templates/reports/time_summary/posted_time.html:54
 #: templates/salary/v1/registration_journal.html:59
@@ -602,7 +602,7 @@ msgstr "Laiko suvestinė"
 msgid "Total hours"
 msgstr "Bendras valandų skaičius"
 
-#: reports/views.py:533 templates/prjdash/posted_time_review.html:72
+#: reports/views.py:533 templates/prjdash/posted_time_review.html:74
 #: templates/reports/time_summary/posted_time.html:71
 #: templates/salary/v1/registration_journal.html:78
 #: templates/salary/v2/registration_journal.html:79
@@ -724,7 +724,7 @@ msgid "Welcome"
 msgstr "Sveiki"
 
 #: templates/admin/base.html:18 templates/base.html:33
-#: templates/prjdash/project_dash.html:46
+#: templates/prjdash/project_dash.html:47
 msgid "Profile"
 msgstr "Profilis"
 
@@ -734,7 +734,7 @@ msgid "Log out"
 msgstr "Atsijungti"
 
 #: templates/admin/base_site.html:15 templates/admin/base_site.html:17
-#: templates/base.html:36 templates/prjdash/project_dash.html:46
+#: templates/base.html:36 templates/prjdash/project_dash.html:47
 msgid "Administration"
 msgstr "Administravimas"
 
@@ -755,22 +755,35 @@ msgstr "Pakeisti"
 msgid "You don't have permission to edit anything."
 msgstr "Neturite teisių nieko keisti."
 
-#: templates/prjdash/assign_employees.html:19
+#: templates/prjdash/assign_employees.html:18
 #: templates/prjdash/posted_time_review.html:25
 #: templates/prjdash/project_dash.html:15
 msgid "Project dashboard"
 msgstr "Projektų valdymas"
 
 #: templates/prjdash/assign_employees.html:19
-#: templates/prjdash/project_line.html:13
+#: templates/prjdash/posted_time_review.html:26
+#: templates/prjdash/project_dash.html:15
+#: templates/prjdash/project_dash.html:26
+msgid "desktop"
+msgstr "darbastalis"
+
+#: templates/prjdash/assign_employees.html:19
+#: templates/prjdash/posted_time_review.html:26
+#: templates/prjdash/project_dash.html:15
+msgid "Archive"
+msgstr "Archyvas"
+
+#: templates/prjdash/assign_employees.html:20
+#: templates/prjdash/project_line.html:7
 msgid "Assign employees"
 msgstr "Priskirti darbuotojus"
 
-#: templates/prjdash/assign_employees.html:26
+#: templates/prjdash/assign_employees.html:27
 msgid "Assign employees for project "
 msgstr "Priskirti darbuotojus projektui "
 
-#: templates/prjdash/assign_employees.html:37
+#: templates/prjdash/assign_employees.html:38
 #: templates/prjdash/posted_time_dialog.html:13
 #: templates/prjdash/posted_time_dialog.html:14
 #: templates/prjdash/posted_time_form.html:76
@@ -789,8 +802,8 @@ msgstr "Priskirti darbuotojus projektui "
 msgid "Cancel"
 msgstr "Atšaukti"
 
-#: templates/prjdash/assign_employees.html:39
-#: templates/prjdash/assign_employees.html:42
+#: templates/prjdash/assign_employees.html:40
+#: templates/prjdash/assign_employees.html:43
 msgid "Assign"
 msgstr "Priskirti"
 
@@ -860,29 +873,28 @@ msgid "Modify"
 msgstr "Keisti"
 
 #: templates/prjdash/posted_time_jrline.html:46
-#: templates/prjdash/posted_time_jrline.html:47
 #: templates/salary/v1/jobreg_jrline.html:16
 #: templates/salary/v2/jobreg_jrline.html:27
 msgid "Delete"
 msgstr "Šalinti"
 
-#: templates/prjdash/posted_time_review.html:25
+#: templates/prjdash/posted_time_review.html:27
 #: templates/prjdash/project_line.html:3
 msgid "Time review and approval"
 msgstr "Laiko peržiūra ir patvirtinimas"
 
-#: templates/prjdash/posted_time_review.html:31
+#: templates/prjdash/posted_time_review.html:33
 msgid "Review and approve time for project "
 msgstr "Peržiūrėti ir patvirtinti laiką projektui "
 
-#: templates/prjdash/posted_time_review.html:47
+#: templates/prjdash/posted_time_review.html:49
 #: templates/reports/time_summary/posted_time.html:49
 #: templates/salary/v1/registration_journal.html:54
 #: templates/salary/v2/registration_journal.html:55
 msgid "Time"
 msgstr "Laikas"
 
-#: templates/prjdash/posted_time_review.html:48
+#: templates/prjdash/posted_time_review.html:50
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:83
 #: templates/reports/time_summary/posted_time.html:50
 #: templates/salary/v1/registration_journal.html:55
@@ -890,7 +902,7 @@ msgstr "Laikas"
 msgid "Hours"
 msgstr "Valandos"
 
-#: templates/prjdash/posted_time_review.html:49
+#: templates/prjdash/posted_time_review.html:51
 #: templates/reports/time_summary/posted_time.html:51
 #: templates/salary/v1/registration_journal.html:56
 #: templates/salary/v2/registration_journal.html:57
@@ -922,52 +934,52 @@ msgstr "Pasirinkite darbus..."
 msgid "Print"
 msgstr "Spausdinti"
 
-#: templates/prjdash/project_dash.html:26
-msgid "Archive"
-msgstr "Archyvas"
+#: templates/prjdash/project_dash.html:27
+msgid "archive"
+msgstr "archyvas"
 
-#: templates/prjdash/project_dash.html:31
+#: templates/prjdash/project_dash.html:32
 msgid "Search"
 msgstr "Ieškoti"
 
-#: templates/prjdash/project_dash.html:44
+#: templates/prjdash/project_dash.html:45
 msgid ""
 "To be able to use <b> Project Dashboard </b> you must add customers first."
 msgstr ""
 "Kad galėtumėte naudotis <b> Projektų valdymo langu </b> pirmiausia įveskite "
 "klientus."
 
-#: templates/prjdash/project_dash.html:46
+#: templates/prjdash/project_dash.html:47
 msgid "To add new customers go to top right menu"
 msgstr ""
 "Jei norite pridėti naujų klientų, eikite į viršuje dešinėje pusėje esantį "
 "meniu"
 
-#: templates/prjdash/project_dash.html:47
+#: templates/prjdash/project_dash.html:48
 msgid "and then"
 msgstr "ir tada"
 
-#: templates/prjdash/project_dash.html:47
+#: templates/prjdash/project_dash.html:48
 msgid "new customer"
 msgstr "naujas klientas"
 
-#: templates/prjdash/project_dash.html:47
+#: templates/prjdash/project_dash.html:48
 msgid "on top right of your screen"
 msgstr "ekrano viršuje dešinėje pusėje"
 
-#: templates/prjdash/project_dash.html:62
+#: templates/prjdash/project_dash.html:63
 msgid "Lists"
 msgstr "Sąrašai"
 
-#: templates/prjdash/project_dash.html:66
+#: templates/prjdash/project_dash.html:67
 msgid "Date created"
 msgstr "Sukūrimo data"
 
-#: templates/prjdash/project_dash.html:67
+#: templates/prjdash/project_dash.html:68
 msgid "Actions"
 msgstr "Veiksmai"
 
-#: templates/prjdash/project_dash.html:234
+#: templates/prjdash/project_dash.html:238
 msgid "project not found"
 msgstr "projektas nerastas"
 
@@ -975,17 +987,25 @@ msgstr "projektas nerastas"
 msgid "Save"
 msgstr "Išsaugoti"
 
-#: templates/prjdash/project_line.html:30
+#: templates/prjdash/project_line.html:19
 msgid "Edit"
 msgstr "Keisti"
 
-#: templates/prjdash/project_line.html:32
+#: templates/prjdash/project_line.html:22
 msgid "Close"
 msgstr "Uždaryti"
 
-#: templates/prjdash/project_line.html:34
+#: templates/prjdash/project_line.html:24
 msgid "Open"
 msgstr "Atidaryti"
+
+#: templates/prjdash/project_line.html:27
+msgid "Move to archive"
+msgstr "Perkelti į archyvą"
+
+#: templates/prjdash/project_line.html:29
+msgid "Return to desktop"
+msgstr "Grąžinti į darbastalį"
 
 #: templates/registration/login.html:21
 msgid "Please correct the error below."

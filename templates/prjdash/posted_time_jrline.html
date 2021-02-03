@@ -41,9 +41,8 @@
 							<td id="button-edit-col">
 							{% if mode != 'edit' %}
 								<div>
-									<a class="btn-edit" title = {{ _('Modify') }} href={% url 'pdash-time-review' project_id=project.id pk=journal_line.id mode='edit' %}><i class="fa fa-edit"></i></a>
+									<a class="btn-edit" title = {{ _('Modify') }} href={% url 'pdash-time-review' location=location project_id=project.id pk=journal_line.id mode='edit' %}><i class="fa fa-edit"></i></a>
 									&nbsp&nbsp
-									<!--  a class="btn-edit" title = {{ _('Delete') }} href={% url 'pdash-time-review' project_id=project.id pk=journal_line.id mode='delete' %}><i class="fas fa-minus"></i></a>  -->
 									<button class="btn-edit btn-delete-dialog" style="width:55px;" onClick="showDialog({{journal_line.id}})"; title = {{ _('Delete') }}><i class="fas fa-times"></i></button>
 								</div>
                             {% endif %} 								
