@@ -220,7 +220,7 @@ class ProjectDashboardView(View):
         form = self.form_class(request.POST, instance=self.project, request=request)
         if form.is_valid():
             project = form.save(commit=True)
-            return redirect('pdash', location, project.pk)
+            return redirect('pdash', location.lower(), project.pk)
         else:
             return render(request,
                           self.template,
