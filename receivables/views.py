@@ -166,7 +166,7 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                 'jr_totals': jr_totals,
                 'modify_id': int(jrline_id) if action == 'edit' else 0, #!! messy, rebuild template to fully use 'action' variable.
                 'action': action,
-                'open': self.get_open(date),
+                'open': self.get_open(date) or request.user.is_superuser,
                 'form': form,
                 'prj_dropdown': Project.objects.filter(company = company,
                                                        employees__in = [request.user.employee],
