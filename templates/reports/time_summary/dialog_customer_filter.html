@@ -1,0 +1,86 @@
+  <div id="cust-dialog" class="modal-dialog">
+	 <div class="dialog-content"  style="width: 540px;">
+	   <div class="dialog-title center"> {{_('Set customer filter')}} <span class="close" id="clcust">&times;</span></div>
+	   <div class="dialog-body">
+	     <p><h2>{{_('Select customers to calculate working time for')}}</h2></p>
+	     <h3>{{_('Start typing customer name')}}:</h3>
+		    <select data-placeholder="{{_('Select customers...')}}" id="select-customers" class="chosen-select" multiple tabindex="4">
+				<option value=""></option>
+				{% for cust_id, cust_name in customers.items %}
+					<option value="{{cust_id}}">{{cust_name}}</option>
+				{% endfor %}
+			</select>
+	   </div>
+	   <div class="dialog-footer">
+	     <button id="btn-conf-cust" class="btn-save" onclick="confirmCustFilter()">
+		   {{_('Set')}}
+         </button>
+         <span class="btn-spacing"/>
+	     <button id="btn-cnc-cust" class="btn-cancel">
+		   {{_('Cancel')}}
+         </button>
+	   </div>
+	 </div>
+  </div>
+  <script>
+    var cust_dialog = document.getElementById("cust-dialog");
+
+    showCustFilterDialog = function() {
+      cust_dialog.style.display = "block";
+    }
+
+    closeCustDialog = function() {
+      cust_dialog.style.display = "none";
+    };
+
+    var cancelCustDialog = function() {
+      closeCustDialog();
+      drawFilterCustomers();
+    };
+
+    var spanCust = document.getElementById("clcust");
+    spanCust.onclick = cancelCustDialog;
+
+    var btnCancelCust = document.getElementById("btn-cnc-cust");
+    btnCancelCust.onclick = cancelCustDialog;
+
+    //----------------------------------------------------------
+    //-------------- Customer filter functions -----------------
+    //----------------------------------------------------------
+
+    var confirmCustFilter = function() {
+      setInternalData($("#select-customers :selected"), filters['customers'], filters['cust_names']);
+      drawFilterCustomers(false);
+      closeCustDialog();
+      onFiltersChanged();
+    }
+
+    // Clears customer filter. Executes when user clicks "clear customer filter".
+    var clearCustomerFilter = function() {
+      clearFilter(document.getElementById('filter-customers'),
+                  document.getElementById('select-customers'),
+                  document.getElementById('cust-box-all'),
+                  filters['customers']
+      );
+      onFiltersChanged();
+    }
+
+    // Sets visual representation of the selected filter
+    var drawFilterCustomers = function(reloadNames = true) {
+      drawFilter(
+          document.getElementById('filter-customers'),
+          document.getElementById('select-customers'),
+          document.getElementById('cust-box-all'),
+          filters['customers'],
+          filters['cust_names'],
+          reloadNames
+      );
+    };
+
+    var initFilterCustomers = function(cust_ids) {
+      filters['customers'] = cust_ids.split(',');
+      drawFilterCustomers();
+    }
+
+    initFilterCustomers('{{filters.customer_ids}}')
+  </script>

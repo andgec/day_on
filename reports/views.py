@@ -21,7 +21,7 @@ from django.forms.models import model_to_dict
 from babel.dates import format_date
 
 from shared.utils import uniq4list, start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str, write_log_message
-from receivables.models import Project, WorkTimeJournal
+from receivables.models import Project, WorkTimeJournal, Customer
 from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
 from dateutil.relativedelta import relativedelta
@@ -398,6 +398,11 @@ class TimeSummaryBaseView(View):
             loopdate = loopdate + datetime.timedelta(days=1)
         self.table_col_count += day_col_count
 
+    def __get_customer_data(self, **kwargs):
+        customers = Customer.objects.only('name').filter(active=True)
+        customer_data = {customer.id: customer.name for customer in customers}
+        return customer_data
+
 
     def get_employee_data(self, empl_ids, **kwargs):
         def filter_employees(empl_dict, empl_ids):
@@ -464,13 +469,17 @@ class TimeSummaryBaseView(View):
             q_list.append(Q(content_type=self.contenttype_project))
             q_list.append(Q(object_id__in=project_ids_list))
 
+        customer_ids = kwargs.get('customer_ids')
+        if customer_ids:
+            customer_ids_list = customer_ids.split(',')
+            q_list.append(Q(project__customer__in = customer_ids_list))
+
         timelist_data = WorkTimeJournal.objects.filter(
             reduce(operator.and_, q_list)).values(
                 'employee_id', 'object_id', 'work_date').order_by(
                     'employee_id', 'object_id', 'work_date').annotate(
                         work_time = Sum('work_time'))
         return timelist_data
-
 
     def get_distinct_empl_ids(self, timelist_data):
         # get distinct employee ids from timelist data
@@ -489,7 +498,6 @@ class TimeSummaryBaseView(View):
         (f.eks. CSS class for HTML page)
         """
         raise NotImplementedError("Method not implemented")
-
 
     def build_employee_time_matrix(self, header_data, employee_data, project_data, **kwargs):
         # makes an empty matrix with rows for employees (and projects if requested) and columns for dates (if requested)
@@ -609,6 +617,7 @@ class TimeSummaryBaseView(View):
                 "%Y-%m-%d").date(),
             'project_ids': request.GET.get('projects'),
             'employee_ids': request.GET.get('employees'),
+            'customer_ids': request.GET.get('customers'),
             'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
             'split_by_dates': str2bool(request.GET.get('split-by-dates')) if request.GET.get('split-by-dates') else True,
             'show_proj_cat': str2bool(request.GET.get('show-proj-cat')) if request.GET.get('show-proj-cat') else True,
@@ -622,6 +631,7 @@ class TimeSummaryBaseView(View):
         distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
         employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
         project_data, select_proj_list = self.get_project_data(timelist_data, **filters)
+        select_cust_list = self.__get_customer_data(**filters)
 
         if len(timelist_data) > 0:
             # distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
@@ -642,7 +652,6 @@ class TimeSummaryBaseView(View):
                 **filters)
 
         meta = self._get_report_meta(**filters)
-
         context = {
             'title': _('Time summary'),
             'filters': filters,
@@ -651,6 +660,7 @@ class TimeSummaryBaseView(View):
             'timelist': time_matrix,
             'employees': select_empl_list,
             'projects': select_proj_list,
+            'customers': select_cust_list,
             'message': _('No timelist entries for given period.') if time_matrix is None else ''
         }
 
