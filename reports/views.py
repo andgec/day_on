@@ -206,12 +206,12 @@ class TimeSummaryPostedLineDetailView(View):
 
     contenttype_project = property(get_contenttype_project)
 
-    def write_log(self, user, employee, date_from, date_to, project_ids):
+    def write_log(self, user, employee, date_from, date_to, project_ids, customer_ids):
         write_log_message(user,
-                          str({'employee': employee, 'from': date_from, 'to': date_to, 'projects': project_ids}),
+                          str({'employee': employee, 'from': date_from, 'to': date_to, 'projects': project_ids, 'customers': customer_ids}),
                           self.__class__.__name__)
 
-    def get_context(self, request, employee, date_from, date_to, project_ids):
+    def get_context(self, request, employee, date_from, date_to, project_ids, customer_ids):
         t_lines = WorkTimeJournal.objects.filter(
             company = request.user.company,
             employee=employee,
@@ -226,6 +226,8 @@ class TimeSummaryPostedLineDetailView(View):
                                                                      ).order_by('work_date', 'work_time_from')
         if project_ids:
             t_lines = t_lines.filter(content_type=self.contenttype_project, object_id__in=project_ids.split(','))
+        if customer_ids:
+            t_lines = t_lines.filter(project__customer__in = customer_ids.split(','))
 
         total_time  = 0;
         total_dist  = 0;
@@ -265,11 +267,11 @@ class TimeSummaryPostedLineDetailView(View):
 
         return context
 
-    def get(self, request, employee, date_from, date_to, project_ids=None):
-        self.write_log(request.user, employee, date_from, date_to, project_ids)
+    def get(self, request, employee, date_from, date_to, project_ids=None, customer_ids=None):
+        self.write_log(request.user, employee, date_from, date_to, project_ids, customer_ids)
         return render(request,
                       self.template,
-                      self.get_context(request, employee, date_from, date_to, request.GET.get('projects')),
+                      self.get_context(request, employee, date_from, date_to, request.GET.get('projects'), request.GET.get('customers')),
                       )
 
 
@@ -717,7 +719,7 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'js_on_cell_click_func' : '''<script>
                                             function showTLines(emplId, projId, dFrom, dTo){
                                                 if (projId == 0) {
-                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo%(projects)s
+                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo%(projects)s%(customers)s
                                                 }
                                                 else {
                                                     window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo + "?projects=" + projId
@@ -746,6 +748,7 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             return self.meta['js_on_cell_click_func'] % {
                 'urlbase': reverse('report-time-summary-details'),
                 'projects': ' + "?projects=' + kwargs.get('project_ids', '') + '"' if kwargs.get('project_ids') else '',
+                'customers': ' + "?customers=' + kwargs.get('customer_ids', '') + '"' if kwargs.get('customer_ids') else '',
             }
 
         meta = {
