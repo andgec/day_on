@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'wkhtmltopdf', # HowTo: https://www.jeremydaly.com/how-to-install-wkhtmltopdf-on-amazon-linux/
                    # https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos6.x86_64.rpm
                    # sudo yum install wkhtmltox-0.12.5-1.centos6.x86_64.rpm
+                   # Local system: if installing from regular packages then header and footer is not rendered. Check the link below:
+                   # https://stackoverflow.com/questions/35617491/how-to-install-wkhtmltopdf-patched-qt-without-compiling
     'djauth',
     'inventory',
     'general',

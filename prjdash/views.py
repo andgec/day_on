@@ -269,7 +269,7 @@ class ProjectDashboardAssignEmployeesView(View):
 
 @method_decorator(staff_member_required, name='dispatch')
 class ProjectDashboardPostedTimeReview(View):
-    template = 'prjdash/posted_time_review.html'
+    template = 'prjdash/posted_time/posted_time_review.html'
     content_type_id_by_name = None
     form_class = ProjectDashTimeReviewForm
     model = WorkTimeJournal

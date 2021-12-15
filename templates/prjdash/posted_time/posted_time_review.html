@@ -26,6 +26,34 @@
 			{% if location == 'desktop' %}{{_('desktop')|title}}{% else %}{{_('Archive')|title}}{% endif %} › 
 			{{customer.name}} › {{project.name}} › {{ _('Time review and approval') }}
 		</div>
+		<div class="tool-container">
+		  <div class="toolbar">
+		  	<!--div class="tool-dvd"></div-->
+			<div class='tool-tab' title="*new line*" onClick="toggleDlg(this, 'tdlg-add')">
+				<span class="fas fa-plus fa-3x" style="margin-top: 0.22em"></span>
+			</div>
+			<div class='tool-tab' title="*print*">
+				<span class="fas fa-print fa-3x" style="margin-top: 0.22em"></span>
+			</div>
+			<div class='tool-tab' title="*filter*" onClick="toggleDlg(this, 'tdlg-filters')">
+				<span class="fas fa-filter fa-3x" style="margin-top: 0.22em"></span>
+			</div>
+			<div class='tool-tab' title="*move to another project*" onClick="toggleDlg(this, 'tdlg-moveln')">
+				<span class="fas fa-building fa-3x" style="margin-top: 0.22em"></span>
+				<span class="fas fa-arrow-right fa-3x" style="margin-top: 0.22em"></span>
+			</div>
+		  </div>
+		  <div class="tool-dialog hidden" id="tdlg-add">
+		  	{% include 'prjdash/posted_time/posted_time_tool_add_form.html' %}
+		  </div>
+		  <div class="tool-dialog hidden" id="tdlg-filters">
+		  	{% include 'prjdash/posted_time/posted_time_tool_filter.html' %}
+		  </div>
+		  <div class="tool-dialog hidden" id="tdlg-moveln">
+		  	{% include 'prjdash/posted_time/posted_time_tool_moveln.html' %}
+		  </div>
+		  <!--Filtrai: drag and drop iš sąrašo; select from box; button: pritaikyti. Aukštis 0, išsiplečia paspaudus filtrai toolbar.-->
+		</div>
 {% endblock %}
 
 {% block content %}
@@ -42,28 +70,28 @@
 				<table class="time-register">
 					<thead>
 						<tr>
+							<th>
+								<input type="checkbox" id="cx_all" title="* select/deselect all (change to dynamic js) *">
+							</th>
 							<th/>
 							<th scope="col">{{ _('Employee') }}</th>
 							<th scope="col">{{ _('Item') }}</th>
-							<th scope="col">{{ _('Date') }}</th>
-							<th scope="col">{{ _('Time') }}</th>
+							<th scope="col">{{ _('Date') }} / {{ _('Time') }}</th>
 							<th id="num-col" scope="col">{{ _('Hours') }}</th>
+							
+							<!-- Make this on if. Send meta if each field has data/is visible. if not, hide it.
 							<th id="num-col">{{ _('Distance (km)') }}</th>
 							<th id="num-col">{{ _('Toll ring') }}</th>
 							<th id="num-col">{{ _('Ferry') }}</th>
 							<th id="num-col" scope="col">{{ _('Parking') }}</th>
-							<th id="num-col" scope="col">{{ _('Diet') }}</th>
-							<th scope="col">
+							<th id="num-col" scope="col">{{ _('Diet') }}</th-->
 						</tr>
 					</thead>
-					{% if mode != 'edit' %}
-						{% include 'prjdash/posted_time_form.html' %}
-					{% endif %}
 					{% for journal_line in journal_lines %}
 					    {% if mode == 'edit' and pk == journal_line.id %}
-							{% include 'prjdash/posted_time_form.html' %}
+							{% include 'prjdash/posted_time/posted_time_form.html' %}
 						{% else %}
-						    {% include 'prjdash/posted_time_jrline.html' %}
+						    {% include 'prjdash/posted_time/posted_time_jrline.html' %}
 						{% endif %}
 					{% endfor %}
 					<tr style="font-weight:bold">
@@ -73,16 +101,16 @@
 						<td></td>
 						<td style="text-align:right">{{ _('Total') }}:</td>
 						<td id="num-col">{{ journal_totals.work_time__sum|default_if_none:"" }}</td>
-						<td id="num-col">{{ journal_totals.distance__sum|default_if_none:"" }}</td>
+
+						<!--td id="num-col">{{ journal_totals.distance__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.toll_ring__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.ferry__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.parking__sum|default_if_none:"" }}</td>
-						<td id="num-col">{{ journal_totals.diet__sum|default_if_none:"" }}</td>
-						<td id="num-col"></td>
+						<td id="num-col">{{ journal_totals.diet__sum|default_if_none:"" }}</td-->
 					</tr>
 					<!-- Workaround to display edit history popups correctly -->
 					<tr style="background-color: #FFF">
-					  <td style="height:120px;">&nbsp</td>
+						<td style="height:120px;">&nbsp</td>
 					</tr>
 				</table>
 		</div>
@@ -90,6 +118,7 @@
 	</div>
   </div>
   <script src="{% static 'js/timeon-main.js' %}"></script>
-  {% include 'prjdash/posted_time_dialog.html' %}
+  {% include 'prjdash/posted_time/posted_time_dialog.html' %}
+  {% include 'prjdash/posted_time/posted_time_js.html' %}
 {% endblock %}
  

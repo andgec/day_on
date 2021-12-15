@@ -17,3 +17,188 @@ td.active:hover {
 	padding: 12px 1px 1px 8px;
 	color: #11648D;
 }
+
+/* Top toolbar */
+/* *** change units to em - look example at project management accordeon page *** */
+/* Main container that sticks to the top of the screen */
+div.tool-container {
+	width:100%;
+	position:sticky;
+	top:0px;
+}
+
+/* The toolbar */
+div.toolbar {
+	color: #417690;
+	min-width: 30em;
+	/*width:100%-0.3em;*/
+	height:36px;
+	top:0px;
+	user-select: none;
+	background-color:#c4dce8;
+	border-color: #c4dce8;
+	border-width: 0.0em 0.0em 0em 0.3em;
+	border-style: solid;
+}
+
+div.tool-dvd {
+	display: inline-block;
+	width: 0em;
+	height: 100%;
+}
+
+/* Tool button */
+div.tool-tab {
+	display: inline-block;
+	width: 8em;
+	height: 100%;
+	text-align: center;
+	font-size: 0.6em;
+	overflow: hidden;
+}
+
+div.tool-tab:hover {
+	background-color:#e5f4fc;
+	color: #073a53;
+}
+
+div.tool-tab.active {
+	background-color:#e5f4fc;
+	color: #073a53;
+}
+
+/* toolbar dialog */
+@keyframes td-open {
+	from {height: 0em;}
+	to {height: auto;}
+}
+
+div.tool-dialog {
+	overflow: hidden;
+	width: 95%;
+	top: 0px;
+	background-color: #e5f4fc;
+	border-style: solid;
+	border-width: 0em 0.3em 0.3em 0.3em;
+	border-color: #c4dce8;
+	max-height: 20em;
+	transition: max-height 0.2s ease-out, border-width 0.3s ease-out, opacity 0.3s ease-in-out;
+}
+
+div.tool-dialog.hidden {
+	border-width: 0em 0.3em 0em 0.3em;
+	max-height: 0em;
+	/*filter: alpha(opacity=50);*/
+	opacity: 0.1;
+}
+
+div.tool-add-line {
+	/*margin: 1em;*/
+}
+
+div.tool-col {
+	float: left;
+	width: 39em;
+	margin: 1em 1em 0.5em 1em; /*top right bottom left */
+}
+
+div.tool-field {
+	margin-bottom: 0.5em;
+	width: 100%;
+	min-height: 2.5em;
+	overflow: auto;
+	height: auto;
+	text-align: left;
+	background-color: #f1faff;
+	border: 1px solid #c4dce8;
+}
+
+div.tool-field  .label {
+	margin-top: 0.8em;
+	margin-left: 1em;
+	width: 20%;
+	float: left;
+	color: #30788e;
+}
+
+div.tool-field .input {
+	width: 70%;
+	padding-right: 1em;
+	padding-left: 1em;
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+	float: left;
+	/*background-color: black;*/
+}
+
+div.tool-field .drop-input {
+	width: 70%;
+	padding-right: 1em;
+	padding-left: 1em;
+	padding-top: 0.3em;
+	padding-bottom: 0.22em;
+	float: left;
+	/*background-color: black;*/
+}
+
+div.tool-btn {
+	width: 100%;
+	float:left;
+	text-align: center;
+	height: 2em;
+	padding-top: 0.75em;
+	margin-top: 0.1em;
+}
+
+#container {
+	min-width: 0;
+}
+
+@media only screen and (max-width: 1230px) and (min-width: 621px) {
+	div.tool-dialog {
+		width: 41.2em;
+		max-height: 30em;
+	}
+}
+
+@media only screen and (max-width: 620px) {
+	div.tool-dialog {
+		width: calc(100% - 0.6em);
+		min-width: 22em;
+		max-width: 32em;
+		max-height: 40em;
+		overflow: auto;
+	}
+
+	div.tool-field {
+		max-width: 30em;
+	}
+
+	div.tool-field .input {
+		width: calc(100% - 1.4em);
+		float: none;
+		max-width: 32em;
+		padding-left: 0.4em;
+		/*background-color: black;*/
+	}
+
+	div.tool-field  .label {
+		width: calc(100% - 1.4em);
+		margin-top: 0.4em;
+		margin-left: 0.4em;
+		float: none;
+	}
+
+	div.tool-field .drop-input {
+		width: calc(100% - 1.4em);
+		padding-left: 0.4em;
+	}
+
+	div.tool-col {
+		width: calc(100% - 2em);
+		min-width: 25em;
+	}
+
+	/*width:100%-0.3em;*/
+	
+}
