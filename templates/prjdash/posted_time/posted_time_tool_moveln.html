@@ -1,86 +1,29 @@
-<div class="tool-add-line"> 
-    <form action = "" method = "post">
-        {% csrf_token %}
+<div class="tool-move-lines"> 
+	<div class="tool-col">
+		<div class="tool-field">
+			<div class="label">* pažymėtos eilutės*</div>
+			<div class="drop-input" id="date_input">
+				{{ form.work_date.errors }}
+				{{ form.work_date }}
+			</div>
+		</div>
+	</div>
+	<div class="tool-col">
+		<div class="tool-field">
+			<div class="label">* perkelti į projektą *</div>
+			<div class="input" id="employee_input">
+				{{ form.company.errors }}
+				{{ form.company }}
+				{{ form.employee.errors }}
+				{{ form.employee }}
+			</div>
+		</div>
+	</div>
+	<div class="tool-btn">
+		<button class="btool-save" title = {{ _('Apply') }} type="submit">{{ _('Apply') }}</button>
+		<!--button class="btn-create" title = {{ _('Register') }} type="submit">
+			<i class="fa fa-save"></i>
+		</button-->
+	</div>
 
-    </form>
-
-</div>				
-					<!--tr class="edit-row">
-						<td></td>
-						<td class = "active"
-						  {% if mode == 'edit' %}
-						    title="{{_('This line is being edited. Change values on the right and click Save or Cancel.')}}">
-						    <i class="fas fa-pen-alt fa-lg"></i>
-						  {% else %}
-						    title="{{_('To create a new line fill in values on the right and click Save.')}}">
-						    <i class="fas fa-plus fa-lg"></i>
-						  {% endif %}
-						</td>
-						<td id = employee_cell>
-						  <div id="employee_input">
-						  {{ form.company.errors }}
-						  {{ form.company }}
-						  {{ form.employee.errors }}
-						  {{ form.employee }}
-						  </div>
-						  {% if mode == 'edit' and journal_line.log.action != 1 %}
-						    {{journal_line.employee}}
-						    <script>
-						      // Hide input and style the cell for text output
-						      document.getElementById('employee_input').style.display = 'none';
-						      ec = document.getElementById('employee_cell');
-						      ec.style.verticalAlign = 'middle';
-						      ec.style.paddingLeft = '8px';
-					        </script>
-					      {% endif %}
-						</td>
-						<td>
-							{{ form.item.errors }}
-							{{ form.item }}
-							{{ form.description.errors }}
-							<div class="treg_form_descr">{{ form.description }}</div>
-						</td>
-						<td>
-							{{ form.work_date.errors }}
-							{{ form.work_date }}
-						</td>
-						<td>
-							{{ form.work_time_from.errors }}
-							{{ form.work_time_from }} {{ _('to') }}
-							{{ form.work_time_to.errors }}
-							{{ form.work_time_to }}
-						</td>
-						<td></td>
-						
-						<td id="num-col">
-							{{ form.distance.errors }}
-							{{ form.distance }}
-						</td>
-						<td id="num-col">
-							{{ form.toll_ring.errors }}
-							{{ form.toll_ring }}
-						</td>
-						<td id="num-col">
-							{{ form.ferry.errors }}
-							{{ form.ferry }}
-						</td>
-						<td id="num-col">
-							{{ form.parking.errors }}
-							{{ form.parking }}
-						</td>
-						<td id="num-col">
-							{{ form.diet.errors }}
-							{{ form.diet }}
-						</td>
-						
-						<td id="button-save-col">
-							<button class="btn-create" title = {{ _('Register') }} type="submit">
-							<i class="fa fa-save"></i>
-							</button>
-							&nbsp&nbsp
-							{% if mode == 'edit' %}
-							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' location=location project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
-							{% endif %}
-						</td>
-
-					</tr-->
+</div>

@@ -25,6 +25,7 @@ div.tool-container {
 	width:100%;
 	position:sticky;
 	top:0px;
+	z-index: 1;
 }
 
 /* The toolbar */
@@ -82,6 +83,7 @@ div.tool-dialog {
 	border-width: 0em 0.3em 0.3em 0.3em;
 	border-color: #c4dce8;
 	max-height: 20em;
+	max-width: 83em;
 	transition: max-height 0.2s ease-out, border-width 0.3s ease-out, opacity 0.3s ease-in-out;
 }
 
@@ -92,9 +94,11 @@ div.tool-dialog.hidden {
 	opacity: 0.1;
 }
 
+/*
 div.tool-add-line {
-	/*margin: 1em;*/
+	margin: 1em;
 }
+*/
 
 div.tool-col {
 	float: left;
@@ -146,8 +150,12 @@ div.tool-btn {
 	float:left;
 	text-align: center;
 	height: 2em;
-	padding-top: 0.75em;
+	padding-top: 0.5em;
 	margin-top: 0.1em;
+	border-width: 0.1em;
+	border-style: solid none none none;
+	border-color: #c4dce8;
+	background-color: #f1faff;
 }
 
 #container {
@@ -198,7 +206,4 @@ div.tool-btn {
 		width: calc(100% - 2em);
 		min-width: 25em;
 	}
-
-	/*width:100%-0.3em;*/
-	
 }
