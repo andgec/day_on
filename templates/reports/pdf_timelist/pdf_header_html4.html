@@ -9,7 +9,6 @@
 	            margin: 0;
 	            padding: 0;
 	            height: 17mm;
-	            /*background-color: lightgray;*/
 	        }
 			hr { 
 			  	display: block;
@@ -23,18 +22,16 @@
 			}
 			div.header {
 				width: 100%;
-				/*background-color: lightgreen;*/
 			}
 			
 			div.logo {
 				padding: 0;
-				/*float: left;*/
 			}
 			div.dsection {
 				font-family: "Arial";
 				font-size: 14px;
 				font-style: italic;
-				top: 8px;
+				top: 4px;
 				position: absolute;
 				right: 0px;				
 			}
@@ -42,12 +39,14 @@
 				display: table-row;
 			}			
 			div.titles {
-				width: 75px;
+				font-family: "Arial";
+				font-size: 15px;
 				display: table-cell;
 				font-weight: bold;
 			}
 			div.data {
-				/*width: 160px;*/
+				font-family: "Arial";
+				font-size: 15px;
 				display: table-cell;
 				background-color: white;
 			}
@@ -65,7 +64,7 @@
 				left: 0;
 			}
 
-	    </style>		
+	    </style>
 		</head>
 	<body>
     	<!-- --- HEADER --- -->
@@ -85,9 +84,9 @@
 					<div class="companyinforow">
 						<div class="titles">
 							Org nr:
-							<br>Tel.:	
+							<br>Tel.:
 							<br>E-post:
-							<br>Adresse:
+							<br>Adresse:&nbsp&nbsp
 						</div>
 						<div class="data">
 							NO{{company.number}}MVA
