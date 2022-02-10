@@ -5,34 +5,101 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 babel==2.6.0
-boto3==1.9.61
+    # via -r requirements.in
 boto==2.49.0
-botocore==1.12.62         # via boto3, s3transfer
-django-appconf==1.0.2     # via django-maintenancemode, django-select2
+    # via -r requirements.in
+boto3==1.9.61
+    # via
+    #   -r requirements.in
+    #   django-s3-folder-storage
+botocore==1.12.62
+    # via
+    #   boto3
+    #   s3transfer
+django==2.2.27
+    # via
+    #   -r requirements.in
+    #   django-db-logger
+    #   django-debug-toolbar
+    #   django-storages
+django-appconf==1.0.2
+    # via
+    #   django-maintenancemode
+    #   django-select2
 django-countries==5.3.2
+    # via -r requirements.in
 django-db-logger==0.1.7
+    # via -r requirements.in
 django-debug-toolbar==1.10.1
+    # via -r requirements.in
 django-maintenancemode==0.11.3
+    # via -r requirements.in
 django-parler==1.9.2
+    # via -r requirements.in
 django-s3-folder-storage==0.5
+    # via -r requirements.in
 django-select2==6.3.1
+    # via -r requirements.in
 django-storages==1.7.1
+    # via
+    #   -r requirements.in
+    #   django-s3-folder-storage
 django-wkhtmltopdf==3.2.0
-django==2.2.10
-docutils==0.14            # via botocore
+    # via -r requirements.in
+docutils==0.14
+    # via botocore
 html5lib==1.0.1
-ipy==1.0                  # via django-maintenancemode
-jmespath==0.9.3           # via boto3, botocore
-pillow                    # ==6.2.0        8.3.2
-psycopg2-binary == 2.8.6  # ==2.7.6.1      2.9.1
+    # via
+    #   -r requirements.in
+    #   xhtml2pdf
+ipy==1.0
+    # via django-maintenancemode
+jmespath==0.9.3
+    # via
+    #   boto3
+    #   botocore
+pillow==7.0.0
+    # via
+    #   -r requirements.in
+    #   reportlab
+    #   xhtml2pdf
+psycopg2-binary==2.8.6
+    # via -r requirements.in
 pypdf2==1.26.0
-python-dateutil==2.7.5    # via botocore
+    # via
+    #   -r requirements.in
+    #   xhtml2pdf
+python-dateutil==2.7.5
+    # via botocore
 pytz==2018.5
+    # via
+    #   -r requirements.in
+    #   babel
+    #   django
 reportlab==3.5.13
-s3transfer==0.1.13        # via boto3
-six==1.11.0               # via html5lib, python-dateutil, xhtml2pdf
-sqlparse==0.2.4           # via django, django-debug-toolbar
+    # via
+    #   -r requirements.in
+    #   xhtml2pdf
+s3transfer==0.1.13
+    # via boto3
+six==1.11.0
+    # via
+    #   html5lib
+    #   python-dateutil
+    #   xhtml2pdf
+sqlparse==0.2.4
+    # via
+    #   django
+    #   django-debug-toolbar
 urllib3==1.24.2
+    # via
+    #   -r requirements.in
+    #   botocore
 webencodings==0.5.1
+    # via
+    #   -r requirements.in
+    #   html5lib
 xhtml2pdf==0.2.3
+    # via -r requirements.in
 xlsxwriter==1.2.2
+    # via -r requirements.in
