@@ -1,44 +1,96 @@
 <div class="tool-filter"> 
 	<div class="tool-col">
 		<div class="tool-field">
-			<div class="label">* data nuo*</div>
-			<div class="drop-input" id="date_input">
-				{{ form.work_date.errors }}
-				{{ form.work_date }}
+			<div class="label">{{ _('Date from') }}</div>
+			<div class="drop-input">
+				<input type="text" id="datepicker-from">
 			</div>
 		</div>
 		<div class="tool-field">
-			<div class="label">* data iki*</div>
-			<div class="drop-input" id="date_input">
-				{{ form.work_date.errors }}
-				{{ form.work_date }}
+			<div class="label">**{{ _('date to')|capfirst }}**</div>
+			<div class="drop-input">
+				<input type="text" id="datepicker-to">
 			</div>
 		</div>
 	</div>
+
 	<div class="tool-col">
 		<div class="tool-field">
-			<div class="label">* darbuotojas *</div>
+			<div class="label">{{_('Employees')|capfirst}}</div>
 			<div class="input" id="employee_input">
-				{{ form.company.errors }}
-				{{ form.company }}
-				{{ form.employee.errors }}
-				{{ form.employee }}
+				<select data-placeholder="{{_('Select employees...')}}" id="select-employees" class="js-s2" multiple tabindex="3">
+					<option value=""></option>
+					<optgroup>
+					{% for employee in employees %}
+						<option value="{{employee.1}}">{{employee.0}}</option>
+					{% endfor %}
+					</optgroup>
+				</select>
 			</div>
 		</div>
 
 		<div class="tool-field">
-			<div class="label"> * darbas * </div>
-			<div class="input" id="item_input">
-				{{ form.item.errors }}
-				{{ form.item }}
+			<div class="label"> {{ _('Items')|capfirst }} </div>
+			<div class="input" id="item_input"-->
+				{% if fvisible.item or fvisible.item_and_description %}
+				<select data-placeholder="{{_('Select tasks...')}}" id="select-tasks" class="js-s2" multiple tabindex="4">
+					<option value=""></option>
+					<optgroup>
+					{% for item in items %}
+					{% ifchanged item.0 %}
+						</optgroup>
+						<optgroup label="{{item.0}}">
+					{% endifchanged %}
+						<option value="{{item.2}}">{{item.1}}</option>
+					{% endfor %}
+					</optgroup>
+				</select>
+				{% endif %}
 			</div>
 		</div>
 	</div>
 	<div class="tool-btn">
-		<button class="btool-save" title = {{ _('Apply') }} type="submit">{{ _('Apply') }}</button>
+		<script>
+			function btnFilterClick(){
+				document.props = {};
+	  	  		document.props.date_from = $("#datepicker-from")[0].value;
+	  	  		document.props.date_to = $("#datepicker-to")[0].value;
+	  	  		document.props.item_ids = $("#select-tasks").val();
+	  	  		document.props.employee_ids = $("#select-employees").val();
+	  	  		fUrl = get_filter_url();
+				window.location.replace(fUrl);
+	  		};
+
+			function get_filter_url(){
+				resUrl = '';
+				qm = '';
+				if (document.props.date_from && document.props.date_to) {
+					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-from=" + document.props.date_from + "&date-to=" + document.props.date_to;
+				}
+				else if (document.props.date_from) {
+					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-from=" + document.props.date_from;
+				}
+				else if (document.props.date_to) {
+					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-to=" + document.props.date_to;
+				}
+				else {
+					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}";
+					qm = '?';
+				};
+				if (document.props.employee_ids != null && document.props.employee_ids.length > 0) {
+					resUrl = resUrl + qm + "&employees=" + document.props.employee_ids;
+					qm = '';
+				};
+				if (document.props.item_ids != null && document.props.item_ids.length > 0) {
+					resUrl = resUrl + qm + "&items=" + document.props.item_ids;
+				};
+				return resUrl;
+			};
+		</script>
+
+		<button class="btool-save" title = {{ _('Apply') }} onClick="btnFilterClick()">{{ _('Apply') }}</button>
 		<!--button class="btn-create" title = {{ _('Register') }} type="submit">
 			<i class="fa fa-save"></i>
 		</button-->
 	</div>
-
 </div>

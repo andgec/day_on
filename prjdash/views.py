@@ -1,6 +1,9 @@
+import datetime
+import operator
+from functools import reduce
 from django.shortcuts import render, redirect
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 #from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.decorators import method_decorator
 from django.views import View
 from receivables.models import Project
-from shared.utils import get_contenttypes
+from shared.utils import get_contenttypes, str2bool
 from django.db import connection
 from .forms import PDashProjectForm, PDashAssignEmployees, ProjectDashTimeReviewForm
 #from botocore.vendored.requests.api import request
@@ -286,6 +289,9 @@ class ProjectDashboardPostedTimeReview(View):
             form = self.form_class(instance = self.jr_line if self.state == RecState.EDIT else None, request = request)
         project = Project.objects.select_related('customer').get(id=project_id)
 
+        filters = self.get_filters(request, project)
+        jr_q_list = self.get_journal_qlist(filters)
+
         items = Item.objects.filter(company = request.user.company
                                             ).select_related('item_group'
                                             ).prefetch_related('translations'
@@ -301,13 +307,12 @@ class ProjectDashboardPostedTimeReview(View):
                                         ).order_by('first_name', 'last_name', 'username')
         employees = [(employee.name_or_username(), employee.id) for employee in employees]
 
-        journal_raw = self.model.objects.filter(company = request.user.company,
-                                                content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                object_id = project_id
+        journal_raw = self.model.objects.filter(reduce(operator.and_, jr_q_list)
                                                 ).select_related('item'
                                                 ).select_related('employee'
                                                 ).select_related('employee__user'
                                                 ).order_by('-work_date', 'employee_id', 'work_time_from')
+        print(journal_raw.query)
 
         log_raw = LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(WorkTimeJournal).pk,
                                           object_id__in=[jr_raw_line.id for jr_raw_line in journal_raw]
@@ -337,10 +342,74 @@ class ProjectDashboardPostedTimeReview(View):
                 'journal_lines': journal_lines,
                 'journal_totals': journal_totals,
                 'fvisible': get_fields_visible(request.user.company),
+                'applied_filters': filters,
                 }
         return context
 
+    def get_filters(self, request, project):
+        dtfr = request.GET.get('date-from', None)
+        if dtfr is not None:
+            dtfr = datetime.datetime.strptime(dtfr, "%Y-%m-%d").date()
+        dtto = request.GET.get('date-to', None)
+        if dtto is not None:
+            dtto = datetime.datetime.strptime(dtto, "%Y-%m-%d").date()
+        filters = {
+            #Adding default values and converting string dates to date data type.
+            'project': project.id,
+            'date_from': dtfr,
+            'date_to': dtto,
+            'employees': request.GET.get('employees'),
+            'items': request.GET.get('items'),
+            'company': request.user.company,
+        }
+        print(filters)
+        return filters
+
+    def get_journal_qlist(self, filters):
+        q_list = [Q(company=filters.get('company'))]
+
+        q_list.append(Q(content_type=self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)]))
+        q_list.append(Q(object_id=filters.get('project')))
+
+        if filters.get('date_from'):
+            q_list.append(Q(work_date__gte=filters.get('date_from')))
+
+        if filters.get('date_to'):
+            q_list.append(Q(work_date__lte=filters.get('date_to')))
+
+        employee_ids = filters.get('employees')
+        if employee_ids:
+            q_list.append(Q(employee_id__in=employee_ids.split(',')))
+
+        item_ids = filters.get('items')
+        if item_ids:
+            q_list.append(Q(item_id__in = item_ids.split(',')))
+
+        print(q_list)
+        return q_list
+
+    def get_filter_data(self, filters):
+        empl_f_dict = {}
+        item_f_dict = {}
+
+        jr = self.model.objects.filter(reduce(operator.and_, jr_q_list)
+                                        ).select_related('item'
+                                        ).select_related('employee'
+                                        ).select_related('employee__user'
+                                        ).order_by('-work_date', 'employee_id', 'work_time_from')
+        for jr_line in jr:
+            empl_f_dict[jr_line.employee_id] = jr.employee.full_name
+            item_f_dict[jr_line.item_id] = jr.item.name
+
+            #sorting example below:
+            #items = [(item.item_group.name, item.name, item.id) for item in items]
+            #items.sort(key = lambda val: (val[0].lower(), val[1].lower(), val[2]))
+
+        return empl_f_dict, item_f_dict
+
+
     def get_journal_lines(self, jr_raw, log_raw):
+
         LOG_LINE = 0
         LOG_TITLE = 1
 
@@ -368,7 +437,7 @@ class ProjectDashboardPostedTimeReview(View):
                               'action': log_line.action_flag,
                               'user': log_line.user.first_name + ' ' + log_line.user.last_name,
                               'time': log_line.action_time.strftime("%Y-%m-%d %H:%M:%S"),
-                              'title': get_log_text(log_line, LOG_TITLE) ,
+                              'title': get_log_text(log_line, LOG_TITLE),
                               'lines': []
                             }
 

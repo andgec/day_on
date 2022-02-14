@@ -3,20 +3,23 @@
 {% load static %}
 
 {% block linked_files %}
+	<link rel="shortcut icon" href="#" /> <!-- Remove this line later on, it fixes favicon.ico error -->
+
 	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/jquery/select2/select2.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/jquery/chosen/chosen.css' %}">
 	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
 	<link rel="stylesheet" href="{% static 'css/prjdash/posted-time.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/controls.css' %}">
 	<link rel="stylesheet" href="{% static 'css/timereg.css' %}">
-
 	{{ form.media.css }}
 
-	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
-    <script src="{% static 'js/jquery/external/jquery/chosen.jquery.min.js' %}"></script>
+	<script src="{% static 'js/jquery/jquery.js' %}"></script>
+	<script src="{% static 'js/jquery/select2/select2.js' %}"></script>
+    <script src="{% static 'js/jquery/chosen/chosen.jquery.min.js' %}"></script>
     <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
-	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
-	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker/datepicker-lt.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker/datepicker-no.js' %}"></script>
 	{{ form.media.js }}
 {% endblock %}
 
@@ -62,7 +65,7 @@
 		<h1>{{ _('Review and approve time for project ') }}&nbsp<b>{{project.name}}</b></h1>
 		<br>
     	<div id="content_main">
-    		{% include 'prjdash/print_timelist.html' %}
+    		{#% include 'prjdash/print_timelist.html' %#}
 		<div class="project">
 			<!-- h3>{{employee.full_name}}</h3>  -->
 			<!--  h3>{{project.name}}</h3>  -->

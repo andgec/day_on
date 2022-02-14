@@ -1,4 +1,21 @@
 <script>
+    /*----------------------------------------------------
+    ---------------- INITIALIZING SELECT2 ----------------
+    ----------------------------------------------------*/
+
+    $(document).ready(function() {
+        /*$('.django-select2').select2({
+	    	width: "300px",
+        });*/
+        $('.js-s2').select2({
+            closeOnSelect: false,
+	    	width: "300px",
+        });
+    });
+
+    /* ---------------------------------------------------
+    --------------  TOOLBAR  -----------------------------
+    ------------------------------------------------------*/
     var toolbar = {};
     function toggleDlg(toolBtn, elmnt_id){
         //var toolBtn = event.target || event.srcElement;
@@ -46,5 +63,32 @@
         slct2[i].setAttribute('style', 'width: 100%;');
     }
     */
+
+    /*----------------------------------------------------
+    --------------  TOOL WINDOW - FILTERS  ---------------
+    ----------------------------------------------------*/
+    
+    /*$(".chosen-select").chosen({width: "95%"});
+    $(".chosen-select").chosen().change(function() {
+        /*$(this).parentElement.style.height = $(this).style.height;
+        alert($(this).parentElement);
+        //$(this).style.position = "relative";
+        //$('#' + $(this).val()).show();
+    });
+    */
+
+    $( function() {
+        $.datepicker.setDefaults($.datepicker.regional["lt"]);
+        //$( "#datepicker-from" ).datepicker({maxDate: "+1D", onSelect: set_date_from});
+        $( "#datepicker-from" ).datepicker({maxDate: "+1D"});
+    } );
+
+    $( function() {
+        $.datepicker.setDefaults($.datepicker.regional["lt"]);	  	  
+        //$( "#datepicker-to" ).datepicker({maxDate: "+1D", onSelect: set_date_to});
+        $( "#datepicker-to" ).datepicker({maxDate: "+1D"});
+    } );
+
+
 
 </script>
