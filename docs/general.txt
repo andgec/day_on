@@ -1,3 +1,14 @@
+-----------------------------------------------------------------------------------
+Jei neveikia python manage.py makemessages
+-----------------------------------------------------------------------------------
+Step 1
+sudo apt-get update -y
+Step 2
+sudo apt-get install -y gettext
+Step 3
+Check the system logs to confirm that there are no related errors. You can use ZoomAdmin to check the logs, manager servers, host multiple websites and apps on your servers and more. The apps run in docker containers, to learn more
+see ZoomAdmin Features for list of features and demo videos. And you can start with the Free Plan.
+-----------------------------------------------------------------------------------
 - Daugybė nemokamų JQuery komponentų:
 	https://www.jqueryscript.net/
 	
