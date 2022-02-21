@@ -15,7 +15,7 @@
 			div.project {
 				width: 100%;
 				text-align: center;
-				padding-top: 55px;
+				padding-top: 7px;
 				padding-bottom: 12px;
 				/*background-color: lightgreen;*/
 			}
@@ -66,7 +66,7 @@
 		</style>
 	</head>
 	<body>
-	    {% for page in pages %}
+		{#% -- removed manual paging -- for page in pages %#}
 		<!-- -- Project name section --- -->
 		<div class="project">
 			<h2>{{project.name}}</h2>
@@ -92,6 +92,7 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% for page in pages %} {#% -- removed manual paging %#}
 					{% for line in page.lines %}
 					<!--  https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2997 -->
 						<tr>
@@ -123,6 +124,7 @@
 							<td class="num">{{ line.diet|default:"" }}</td>
 						</tr>
 					{%endfor%}
+					{%endfor%} {#% -- removed manual paging %#}
 					<tfoot>
 						<tr>
 							<td colspan="4">{{ _('Totals') }}</td>
@@ -135,13 +137,16 @@
 							{#<td class="num">{{ totals.total_toll_ring|default:"" }}</td>#}
 							<td class="num">{{ totals.total_parking|default:"" }}</td>
 							<td class="num">{{ totals.total_diet|default:"" }}</td>
-						</tr>					
+						</tr>
 					</tfoot>
 				</tbody>
 			</table>
 		</div>
-    	<div class="page-break"/>
-		{%endfor%}
-		
+		<!-- removed manual paging -- div class="page-break"/-->
+		{#% -- removed manual paging -- endfor%#}
+		<div>
+			<div>&nbsp;</div><div>&nbsp;</div><div>&nbsp;</div><div>&nbsp;</div>
+			<div class="sgn">{{ _('signature')|capfirst }}:&nbsp____________________________________________________________________ </div>
+		</div>
 	</body>
 </html>

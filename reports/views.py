@@ -188,7 +188,7 @@ class TimelistPDFView(View):
                                        context = context,
                                        show_content_in_browser=True,
                                        cmd_options={'javascript-delay': 500,
-                                                    'margin-top' : 20,
+                                                    'margin-top' : 35,
                                                     'orientation': 'Landscape',},
                                        )
         return response

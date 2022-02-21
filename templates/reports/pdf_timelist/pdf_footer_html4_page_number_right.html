@@ -10,7 +10,7 @@
 	            border:0; 
 	            margin: 0;
 	            padding: 0;
-	            height: 10mm;
+				height:14mm;
 	            /*background-color: green;*/
 	        }
 			div.pagenum{
@@ -24,6 +24,12 @@
 				display: table;
 				font-weight: bold;
 			}
+			div.sgn {
+				font-size: 20px;
+			}
+			div.sgn-inf {
+				font-size: 12px;
+			}
 			hr { 
 			  	display: block;
 			  	margin-top: 0px;
@@ -33,27 +39,55 @@
 			  	border-style: solid;
 			  	border-width: 1px;
 			  	border-color: black;
-			
+			}
+			/* last page footer */
+			.fHide {
+				display: none;
+			}
+			.fShow {
+				display: block;
+			}
 	    </style>
 	</head>
 	<body>
+		<div id = 'showOther'>
+			<div>&nbsp;&nbsp;</div>
+		</div>
+		<!-- START Last page footer -->
+		<div id="showLast">
+			{{ _('By signing this time list I acknowledge that the time list is correct and I accept it.') }}
+		</div>
+		<!-- END Last page footer -->
 		<hr>
 		<div class = "companyname">
 			{{company.name}}
 		</div> 
 		<div class = "pagenum">
 			Side <span id='page'></span> av
-    		<span id='topage'></span>
-		</div>    		
-	    <script>
-      		var vars={};
-      		var x=window.location.search.substring(1).split('&');
-      		for (var i in x) {
-        		var z=x[i].split('=',2);
-        		vars[z[0]] = unescape(z[1]);
-      		}
-      		document.getElementById('page').innerHTML = vars.page; 
-      		document.getElementById('topage').innerHTML = vars.topage; 
-    	</script>	
+			<span id='topage'></span>
+		</div>
+		<script>
+			var vars={};
+			var x=window.location.search.substring(1).split('&');
+			for (var i in x) {
+				var z=x[i].split('=',2);
+				vars[z[0]] = unescape(z[1]);
+			}
+			document.getElementById('page').innerHTML = vars.page;
+			document.getElementById('topage').innerHTML = vars.topage;
+
+			/* Different last page footer */
+			var lastFoot = document.getElementById('showLast');
+			var otherFoot = document.getElementById('showOther');
+
+			if (vars.page == vars.topage) {
+				lastFoot.setAttribute('class', 'fShow')
+				otherFoot.setAttribute('class', 'fHide')
+			}
+			else {
+				otherFoot.setAttribute('class', 'fShow')
+				lastFoot.setAttribute('class', 'fHide')
+			}
+		</script>
 	</body>
 </html>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-10 12:27+0100\n"
+"POT-Creation-Date: 2022-02-15 19:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,43 +17,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: djauth/admin.py:22 receivables/admin.py:68 receivables/admin.py:88
-#: salary/admin.py:54
+#: co_manager/admin.py:8 templates/admin/base_site.html:22
+msgid "Company administration"
+msgstr "Selskapsadministrasjon"
+
+#: djauth/admin.py:22 receivables/admin.py:69 receivables/admin.py:89
+#: salary/admin.py:58
 msgid "Address information"
 msgstr "Adresseinformasjon"
 
-#: djauth/admin.py:31 receivables/models.py:270 reports/views.bak.py:91
-#: reports/views.py:323 salary/models.py:41
-#: templates/prjdash/posted_time_review.html:43
+#: djauth/admin.py:26 djauth/admin.py:27 djauth/admin.py:34
+#: receivables/models.py:40 reports/views.py:322 salary/models.py:41
+#: templates/prjdash/posted_time_review.html:46
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
 msgstr "Ansatt"
 
-#: djauth/admin.py:36 salary/admin.py:17
+#: djauth/admin.py:39 salary/admin.py:17
 msgid "Yes"
 msgstr "Ja"
 
-#: djauth/admin.py:37 salary/admin.py:18
+#: djauth/admin.py:40 salary/admin.py:18
 msgid "No"
 msgstr "Nei"
 
-#: djauth/admin.py:50
+#: djauth/admin.py:53
 msgid "Activate selected users"
 msgstr "Aktivere utvalgte brukere"
 
-#: djauth/admin.py:55
+#: djauth/admin.py:58
 msgid "Deactivate selected users"
 msgstr "Deaktivere utvalgte brukere"
 
-#: djauth/admin.py:72 djauth/admin.py:79
+#: djauth/admin.py:75 djauth/admin.py:82
 msgid "Personal info"
 msgstr "Personlig informasjon"
 
-#: djauth/admin.py:73 djauth/admin.py:80
+#: djauth/admin.py:76 djauth/admin.py:83
 msgid "Permissions"
 msgstr "Tillattelser"
 
-#: djauth/admin.py:74 djauth/admin.py:81
+#: djauth/admin.py:77 djauth/admin.py:84
 msgid "Important dates"
 msgstr "Viktige datoer"
 
@@ -65,7 +69,7 @@ msgstr "Autentikasjon og administrasjon"
 msgid "email [accusative]"
 msgstr "epost"
 
-#: djauth/forms.py:75 djauth/forms.py:88 general/forms.py:129
+#: djauth/forms.py:75 djauth/forms.py:88 general/forms.py:130
 #, python-format
 msgid "%s with this name already exists"
 msgstr "%s med dette navnet finnes allerede"
@@ -86,7 +90,7 @@ msgstr "Bruker med dette brukernavn finnes allerede."
 msgid "email address"
 msgstr "epostadresse"
 
-#: djauth/models.py:23 general/models.py:40 receivables/models.py:26
+#: djauth/models.py:23 general/models.py:55 receivables/models.py:26
 msgid "Company"
 msgstr "Selskap"
 
@@ -107,15 +111,15 @@ msgstr "Medarbeiderstatus"
 msgid "Log in"
 msgstr "Logg inn"
 
-#: general/admin.py:28 general/models.py:84
+#: general/admin.py:29 general/models.py:99
 msgid "Address"
 msgstr "Adresse"
 
-#: general/admin.py:31 receivables/admin.py:71 salary/admin.py:51
+#: general/admin.py:32 receivables/admin.py:72 salary/admin.py:55
 msgid "Contact information"
 msgstr "Kontaktinformasjon"
 
-#: general/admin.py:34
+#: general/admin.py:35
 msgid "Other"
 msgstr "Annet"
 
@@ -123,93 +127,154 @@ msgstr "Annet"
 msgid "General"
 msgstr "Generelt"
 
-#: general/forms.py:20
+#: general/forms.py:21
 #, python-format
 msgid "%s with this value already exists"
 msgstr "%s med denne verdien finnes allerede"
 
-#: general/forms.py:21
+#: general/forms.py:22
 #, python-format
 msgid "%s with these values already exists"
 msgstr "%s med disse verdiene finnes allerede"
 
-#: general/forms.py:115
+#: general/forms.py:116
 msgid "You have entered a duplicate name"
 msgstr "Du har tastet inn et duplikatnavn"
 
-#: general/models.py:17 general/models.py:93 inventory/models.py:13
-#: inventory/models.py:44 receivables/models.py:35 receivables/models.py:61
-#: receivables/models.py:74
+#: general/models.py:21 general/models.py:108 inventory/models.py:13
+#: inventory/models.py:44 receivables/models.py:178 receivables/models.py:204
+#: receivables/models.py:217
 msgid "Name"
 msgstr "Navn"
 
-#: general/models.py:18 receivables/models.py:32
+#: general/models.py:22 receivables/models.py:175
 msgid "Number"
 msgstr "Nummer"
 
-#: general/models.py:19
+#: general/models.py:23
 msgid "Website"
 msgstr "Nettsted"
 
-#: general/models.py:24
+#: general/models.py:28
 msgid "change logo"
 msgstr "bytt logo"
 
-#: general/models.py:25
+#: general/models.py:29
 msgid "domain"
 msgstr "domene"
 
-#: general/models.py:31
+#: general/models.py:35
 msgid "not selected"
 msgstr "ikke valgt"
 
-#: general/models.py:33
+#: general/models.py:37
 msgid "logo"
 msgstr "logo"
 
-#: general/models.py:41
+#: general/models.py:56
 msgid "Companies"
 msgstr "Selskapsopplysninger"
 
-#: general/models.py:63
+#: general/models.py:78
 msgid "First name"
 msgstr "Fornavn"
 
-#: general/models.py:64
+#: general/models.py:79
 msgid "Last name"
 msgstr "Etternavn"
 
-#: general/models.py:70
+#: general/models.py:85
 msgid "Contact"
 msgstr "Kontakt"
 
-#: general/models.py:71
+#: general/models.py:86
 msgid "Contacts"
 msgstr "Kontaktene"
 
-#: general/models.py:85
+#: general/models.py:100
 msgid "Addresses"
 msgstr "Adresser"
 
-#: general/models.py:94 inventory/models.py:19 inventory/models.py:50
-#: receivables/models.py:62 receivables/models.py:78 receivables/models.py:133
+#: general/models.py:109 inventory/models.py:19 inventory/models.py:50
+#: receivables/models.py:205 receivables/models.py:221
+#: receivables/models.py:277
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:82
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: general/models.py:95 inventory/models.py:70 receivables/models.py:47
-#: receivables/models.py:98 salary/admin.py:12 salary/admin.py:64
+#: general/models.py:110 inventory/models.py:70 receivables/models.py:190
+#: receivables/models.py:241 salary/admin.py:12 salary/admin.py:68
 #: salary/models.py:38
 msgid "Active"
 msgstr "Aktiv"
 
-#: general/models.py:97 inventory/models.py:66 receivables/models.py:198
+#: general/models.py:112 inventory/models.py:66 receivables/models.py:342
 msgid "Unit of measure"
 msgstr "Måleenhet"
 
-#: general/models.py:98
+#: general/models.py:113
 msgid "Units of measure"
 msgstr "Måleenheter"
+
+#: general/models.py:125 general/models.py:159 general/models.py:222
+msgid "key"
+msgstr "nøkkel"
+
+#: general/models.py:132
+msgid "parent"
+msgstr "forelder"
+
+#: general/models.py:138 general/models.py:178 general/models.py:242
+msgid "object name"
+msgstr "objektnavn"
+
+#: general/models.py:143
+msgid "configuration tree node"
+msgstr "konfigurasjonstre node"
+
+#: general/models.py:144
+msgid "configuration tree nodes"
+msgstr "konfigurasjonstre noder"
+
+#: general/models.py:165
+msgid "key node"
+msgstr "nøkkel node"
+
+#: general/models.py:169
+msgid "type"
+msgstr "type"
+
+#: general/models.py:183
+msgid "description"
+msgstr "beskrivelse"
+
+#: general/models.py:188
+msgid "metadata"
+msgstr "metadata"
+
+#: general/models.py:205
+msgid "configuration key"
+msgstr "konfigurasjonsnøkkel"
+
+#: general/models.py:206
+msgid "configuration keys"
+msgstr "konfigurasjonsnøkler"
+
+#: general/models.py:227 general/models.py:257
+msgid "value"
+msgstr "verdi"
+
+#: general/models.py:230
+msgid "configuration value"
+msgstr "konfigurasjonsverdi"
+
+#: general/models.py:231
+msgid "configuration values"
+msgstr "konfigurasjonsverdier"
+
+#: general/models.py:238
+msgid "module"
+msgstr "modul"
 
 #: inventory/admin.py:24 inventory/models.py:32 inventory/models.py:60
 msgid "Item group"
@@ -223,15 +288,15 @@ msgstr "Tjenester"
 msgid "Item groups"
 msgstr "Jobbgrupper"
 
-#: inventory/models.py:76 receivables/models.py:204
+#: inventory/models.py:76 receivables/models.py:348
 msgid "Price"
 msgstr "Pris"
 
-#: inventory/models.py:80 receivables/models.py:189 receivables/models.py:274
-#: templates/prjdash/posted_time_review.html:44
+#: inventory/models.py:80 receivables/models.py:45 receivables/models.py:333
+#: templates/prjdash/posted_time_review.html:47
 #: templates/reports/time_summary/posted_time.html:48
 #: templates/salary/v1/registration_journal.html:52
-#: templates/salary/v2/registration_journal.html:52
+#: templates/salary/v2/registration_journal.html:53
 msgid "Item"
 msgstr "Jobb"
 
@@ -239,247 +304,270 @@ msgstr "Jobb"
 msgid "Items"
 msgstr "Jobber"
 
-#: prjdash/forms.py:13
+#: prjdash/forms.py:13 templates/prjdash/project_dash.html:31
 msgid "Project name"
 msgstr "Prosjektnavn"
 
-#: prjdash/views.py:134 prjdash/views.py:212 prjdash/views.py:298
+#: prjdash/views.py:150 prjdash/views.py:241 prjdash/views.py:329
 #: templates/admin/base.html:20 templates/base.html:37
 msgid "Project management"
 msgstr "Prosjektstyring"
 
-#: prjdash/views.py:173 prjdash/views.py:405
+#: prjdash/views.py:195 prjdash/views.py:438
 msgid "Record ID not provided."
 msgstr "Linje-ID ikke oppgitt."
 
-#: prjdash/views.py:322
+#: prjdash/views.py:354
 #, python-format
 msgid "%(time)s created by %(user)s"
 msgstr "%(time)s laget av %(user)s"
 
-#: prjdash/views.py:324
+#: prjdash/views.py:356
 #, python-format
 msgid "This record was added by %(user)s"
 msgstr "Denne linjen ble lagt til av %(user)s"
 
-#: prjdash/views.py:327
+#: prjdash/views.py:359
 #, python-format
 msgid "%(time)s modified by %(user)s"
 msgstr "%(time)s endret av %(user)s"
 
-#: prjdash/views.py:329
+#: prjdash/views.py:361
 msgid "This record was modified by administrator"
 msgstr "Denne posten ble endret av administrator"
 
-#: receivables/admin.py:32
+#: receivables/admin.py:33
 msgid "Amounts"
 msgstr "Beløp"
 
-#: receivables/admin.py:91
+#: receivables/admin.py:92
 msgid "Other information"
 msgstr "Annet informasjon"
+
+#: receivables/admin.py:117 receivables/models.py:237
+#: templates/prjdash/project_dash.html:66
+msgid "Category"
+msgstr "Kategori"
+
+#: receivables/admin.py:144 receivables/models.py:193 receivables/models.py:230
+#: receivables/models.py:265 templates/reports/time_summary/posted_time.html:46
+msgid "Customer"
+msgstr "Kunde"
 
 #: receivables/apps.py:7
 msgid "Receivables"
 msgstr "Inntekt"
 
-#: receivables/forms.py:29 receivables/models.py:106 receivables/models.py:138
+#: receivables/forms.py:29 receivables/models.py:249 receivables/models.py:282
 #: salary/models.py:42
 #: templates/reports/time_summary/time_table_filters.html:63
 msgid "Employees"
 msgstr "Ansatte"
 
-#: receivables/forms.py:66 receivables/models.py:110 receivables/models.py:128
-#: reports/views.py:332 templates/prjdash/project_dash.html:46
+#: receivables/forms.py:66 receivables/models.py:254 receivables/models.py:272
+#: reports/views.py:331 templates/prjdash/project_dash.html:64
 #: templates/reports/time_summary/posted_time.html:47
 #: templates/salary/v1/registration_journal.html:51
-#: templates/salary/v2/registration_journal.html:51
+#: templates/salary/v2/registration_journal.html:52
 msgid "Project"
 msgstr "Prosjekt"
+
+#: receivables/forms.py:95 receivables/forms.py:162 receivables/models.py:225
+#: templates/prjdash/project_dash.html:65
+msgid "Comment"
+msgstr "Kommentar"
 
 #: receivables/models.py:27
 msgid "Person"
 msgstr "Persjon"
 
-#: receivables/models.py:39
-msgid "Type"
-msgstr "Type"
-
-#: receivables/models.py:44
-msgid "Web site"
-msgstr "Nettsted"
-
-#: receivables/models.py:50 receivables/models.py:87 receivables/models.py:121
-#: templates/reports/time_summary/posted_time.html:46
-msgid "Customer"
-msgstr "Kunde"
-
-#: receivables/models.py:51 templates/prjdash/project_dash.html:29
-msgid "Customers"
-msgstr "Kunder"
-
-#: receivables/models.py:65 reports/views.py:341
-msgid "Project category"
-msgstr "Prosjektkategori"
-
-#: receivables/models.py:66
-msgid "Project categories"
-msgstr "Prosjektkategorier"
-
-#: receivables/models.py:82 templates/prjdash/project_dash.html:47
-msgid "Comment"
-msgstr "Kommentar"
-
-#: receivables/models.py:94 templates/prjdash/project_dash.html:48
-msgid "Category"
-msgstr "Kategori"
-
-#: receivables/models.py:101
-msgid "Visible"
-msgstr "Synlig"
-
-#: receivables/models.py:111
-#: templates/reports/time_summary/time_table_filters.html:79
-msgid "Projects"
-msgstr "Prosjekter"
-
-#: receivables/models.py:144
-msgid "Estimated amount"
-msgstr "Estimert beløp"
-
-#: receivables/models.py:150
-msgid "Discount amount"
-msgstr "Rabattbeløp"
-
-#: receivables/models.py:156
-msgid "Discount percent"
-msgstr "Rabattprosent"
-
-#: receivables/models.py:164 receivables/models.py:169
-msgid "Created"
-msgstr "Opprettet"
-
-#: receivables/models.py:175
-msgid "Sales order"
-msgstr "Salgsordre"
-
-#: receivables/models.py:176
-msgid "Sales orders"
-msgstr "Salgsordrer"
-
-#: receivables/models.py:184
-msgid "Order"
-msgstr "Ordre"
-
-#: receivables/models.py:193
-msgid "Quantity"
-msgstr "Antall"
-
-#: receivables/models.py:232
-msgid "Sales order line"
-msgstr "Salgsordrelinje"
-
-#: receivables/models.py:233
-msgid "Sales order lines"
-msgstr "Salgsordrelinjer"
-
-#: receivables/models.py:255
-msgid "Related employee"
-msgstr "Tilknyttet ansatt"
-
-#: receivables/models.py:256
-msgid "Related employees"
-msgstr "Tilknyttede ansatte"
-
-#: receivables/models.py:276 templates/prjdash/posted_time_review.html:45
+#: receivables/models.py:52 templates/prjdash/posted_time_review.html:48
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:79
 #: templates/reports/time_summary/posted_time.html:45
 #: templates/salary/v1/registration_journal.html:53
-#: templates/salary/v2/registration_journal.html:53
+#: templates/salary/v2/registration_journal.html:54
 msgid "Date"
 msgstr "Dato"
 
-#: receivables/models.py:277
+#: receivables/models.py:53
 #: templates/reports/time_summary/dialog_date_filter.html:7
 #: templates/reports/time_summary/time_table_filters.html:48
 msgid "From"
 msgstr "Fra"
 
-#: receivables/models.py:278
+#: receivables/models.py:54
 #: templates/reports/time_summary/time_table_filters.html:52
 msgid "To"
 msgstr "Til"
 
-#: receivables/models.py:281
+#: receivables/models.py:57
 msgid "Work time"
 msgstr "Arbeidstid"
 
-#: receivables/models.py:287
+#: receivables/models.py:63
 msgid "Overtime 50%"
 msgstr "Overtid 50%"
 
-#: receivables/models.py:293
+#: receivables/models.py:69
 msgid "Overtime 100%"
 msgstr "Overtid 100%"
 
-#: receivables/models.py:297
+#: receivables/models.py:73
 msgid "Distance"
 msgstr "Avstand"
 
-#: receivables/models.py:303 templates/prjdash/posted_time_review.html:49
+#: receivables/models.py:79 templates/prjdash/posted_time_review.html:52
 #: templates/reports/time_summary/posted_time.html:52
 #: templates/salary/v1/registration_journal.html:57
-#: templates/salary/v2/registration_journal.html:57
+#: templates/salary/v2/registration_journal.html:58
 msgid "Toll ring"
 msgstr "Bomring"
 
-#: receivables/models.py:309 templates/prjdash/posted_time_review.html:50
+#: receivables/models.py:85 templates/prjdash/posted_time_review.html:53
 #: templates/reports/time_summary/posted_time.html:53
 #: templates/salary/v1/registration_journal.html:58
-#: templates/salary/v2/registration_journal.html:58
+#: templates/salary/v2/registration_journal.html:59
 msgid "Ferry"
 msgstr "Ferge"
 
-#: receivables/models.py:315 templates/prjdash/posted_time_review.html:52
+#: receivables/models.py:91 templates/prjdash/posted_time_review.html:55
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:91
 #: templates/reports/time_summary/posted_time.html:55
 #: templates/salary/v1/registration_journal.html:60
-#: templates/salary/v2/registration_journal.html:60
+#: templates/salary/v2/registration_journal.html:61
 msgid "Diet"
 msgstr "Kost"
 
-#: receivables/models.py:321 templates/prjdash/posted_time_review.html:51
+#: receivables/models.py:97 templates/prjdash/posted_time_review.html:54
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:90
 #: templates/reports/time_summary/posted_time.html:54
 #: templates/salary/v1/registration_journal.html:59
-#: templates/salary/v2/registration_journal.html:59
+#: templates/salary/v2/registration_journal.html:60
 msgid "Parking"
 msgstr "Parkering"
 
-#: receivables/models.py:325
+#: receivables/models.py:101
 msgid "Created date/time"
 msgstr "Oprettet dato/tid"
 
-#: receivables/models.py:329
+#: receivables/models.py:106
 msgid "Working time cannot be zero."
 msgstr "Oppgi arbeidstid."
 
-#: receivables/models.py:331
+#: receivables/models.py:108
 msgid "Start time cannot be later than the end time."
 msgstr "Du valgte start som er senere enn slutt."
 
-#: receivables/models.py:334
+#: receivables/models.py:111
 #, python-format
 msgid ""
 "Selected time is already used for the task [%(time_from)s-%(time_to)s "
 "%(job)s]."
 msgstr "Tid er allerede brukt for oppgave [%(time_from)s-%(time_to)s %(job)s]."
 
-#: receivables/models.py:374
+#: receivables/models.py:119
+msgid "Please select a project"
+msgstr "Velg prosjekt"
+
+#: receivables/models.py:124
+msgid "System error: company field is empty"
+msgstr "Systemfeil: selskapsfelt er ikke spesifisert"
+
+#: receivables/models.py:127
+msgid "Please select an item"
+msgstr "Vennligst velg en oppgave"
+
+#: receivables/models.py:130
+msgid "Please specify the job"
+msgstr "Vennligst spesifiser oppgaven."
+
+#: receivables/models.py:166 receivables/models.py:167
 msgid "Work time journal"
 msgstr "Arbeidstidsskrift"
 
-#: receivables/views.py:17 receivables/views.py:43 receivables/views.py:161
+#: receivables/models.py:170
+msgid "Work time journal line"
+msgstr "Arbeidstidsjournallinje"
+
+#: receivables/models.py:182
+msgid "Type"
+msgstr "Type"
+
+#: receivables/models.py:187
+msgid "Web site"
+msgstr "Nettsted"
+
+#: receivables/models.py:194 templates/prjdash/project_dash.html:48
+#: templates/reports/time_summary/time_table_filters.html:79
+msgid "Customers"
+msgstr "Kunder"
+
+#: receivables/models.py:208 reports/views.py:340
+msgid "Project category"
+msgstr "Prosjektkategori"
+
+#: receivables/models.py:209
+msgid "Project categories"
+msgstr "Prosjektkategorier"
+
+#: receivables/models.py:244
+msgid "Visible"
+msgstr "Synlig"
+
+#: receivables/models.py:255
+#: templates/reports/time_summary/time_table_filters.html:94
+msgid "Projects"
+msgstr "Prosjekter"
+
+#: receivables/models.py:288
+msgid "Estimated amount"
+msgstr "Estimert beløp"
+
+#: receivables/models.py:294
+msgid "Discount amount"
+msgstr "Rabattbeløp"
+
+#: receivables/models.py:300
+msgid "Discount percent"
+msgstr "Rabattprosent"
+
+#: receivables/models.py:308 receivables/models.py:313
+msgid "Created"
+msgstr "Opprettet"
+
+#: receivables/models.py:319
+msgid "Sales order"
+msgstr "Salgsordre"
+
+#: receivables/models.py:320
+msgid "Sales orders"
+msgstr "Salgsordrer"
+
+#: receivables/models.py:328
+msgid "Order"
+msgstr "Ordre"
+
+#: receivables/models.py:337
+msgid "Quantity"
+msgstr "Antall"
+
+#: receivables/models.py:376
+msgid "Sales order line"
+msgstr "Salgsordrelinje"
+
+#: receivables/models.py:377
+msgid "Sales order lines"
+msgstr "Salgsordrelinjer"
+
+#: receivables/models.py:399
+msgid "Related employee"
+msgstr "Tilknyttet ansatt"
+
+#: receivables/models.py:400
+msgid "Related employees"
+msgstr "Tilknyttede ansatte"
+
+#: receivables/views.py:18 receivables/views.py:44 receivables/views.py:162
 #: templates/admin/base.html:21 templates/base.html:40
 msgid "Time registration"
 msgstr "Timeregistrering"
@@ -489,27 +577,11 @@ msgid "Reports"
 msgstr "Rapporter"
 
 #: reports/admin.py:13 reports/admin.py:14
-#: templates/prjdash/print_timelist.html:104
+#: templates/prjdash/print_timelist.html:128
 msgid "Print timelist"
 msgstr "Skriv ut timelist"
 
-#: reports/views.bak.py:98 reports/views.py:348
-msgid "Total hours"
-msgstr "Totalt antall timer"
-
-#: reports/views.bak.py:162 reports/views.py:536
-#: templates/prjdash/posted_time_review.html:71
-#: templates/reports/time_summary/posted_time.html:71
-#: templates/salary/v1/registration_journal.html:78
-#: templates/salary/v2/registration_journal.html:78
-msgid "Total"
-msgstr "Totalt"
-
-#: reports/views.bak.py:378 reports/views.py:657
-msgid "No timelist entries for given period."
-msgstr "Ingen tidslisteoppføringer for en gitt periode."
-
-#: reports/views.py:250 reports/views.py:650 reports/views.py:1017
+#: reports/views.py:248 reports/views.py:658 reports/views.py:1027
 #: templates/admin/base.html:22 templates/base.html:38
 #: templates/reports/time_summary/base_ts.html:5
 #: templates/reports/time_summary/posted_time.html:11
@@ -519,11 +591,26 @@ msgstr "Ingen tidslisteoppføringer for en gitt periode."
 msgid "Time summary"
 msgstr "Tidsoppsumering"
 
-#: salary/admin.py:71 salary/models.py:29
+#: reports/views.py:347
+msgid "Total hours"
+msgstr "Totalt antall timer"
+
+#: reports/views.py:543 templates/prjdash/posted_time_review.html:74
+#: templates/reports/time_summary/posted_time.html:71
+#: templates/salary/v1/registration_journal.html:78
+#: templates/salary/v2/registration_journal.html:79
+msgid "Total"
+msgstr "Totalt"
+
+#: reports/views.py:666
+msgid "No timelist entries for given period."
+msgstr "Ingen tidslisteoppføringer for en gitt periode."
+
+#: salary/admin.py:75 salary/models.py:29
 msgid "Full name"
 msgstr "Full navn"
 
-#: salary/admin.py:77 salary/models.py:33 shared/models.py:53
+#: salary/admin.py:81 salary/models.py:33 shared/models.py:53
 msgid "Email"
 msgstr "Epost"
 
@@ -630,7 +717,7 @@ msgid "Welcome"
 msgstr "Velkommen"
 
 #: templates/admin/base.html:18 templates/base.html:33
-#: templates/prjdash/project_dash.html:28
+#: templates/prjdash/project_dash.html:47
 msgid "Profile"
 msgstr "Profil"
 
@@ -640,13 +727,9 @@ msgid "Log out"
 msgstr "Logg ut"
 
 #: templates/admin/base_site.html:15 templates/admin/base_site.html:17
-#: templates/base.html:36 templates/prjdash/project_dash.html:28
+#: templates/base.html:36 templates/prjdash/project_dash.html:47
 msgid "Administration"
 msgstr "Administrasjon"
-
-#: templates/admin/base_site.html:22
-msgid "Company administration"
-msgstr "Selskapsadministrasjon"
 
 #: templates/admin/index.html:11
 #, python-format
@@ -665,26 +748,40 @@ msgstr "Endre"
 msgid "You don't have permission to edit anything."
 msgstr "Du har ikke tillatelse å endre noe."
 
-#: templates/prjdash/assign_employees.html:19
-#: templates/prjdash/posted_time_review.html:24
-#: templates/prjdash/project_dash.html:14
+#: templates/prjdash/assign_employees.html:18
+#: templates/prjdash/posted_time_review.html:25
+#: templates/prjdash/project_dash.html:15
 msgid "Project dashboard"
 msgstr "Prosjekstyring"
 
 #: templates/prjdash/assign_employees.html:19
-#: templates/prjdash/project_line.html:13
+#: templates/prjdash/posted_time_review.html:26
+#: templates/prjdash/project_dash.html:15
+#: templates/prjdash/project_dash.html:26
+msgid "desktop"
+msgstr "skrivebord"
+
+#: templates/prjdash/assign_employees.html:19
+#: templates/prjdash/posted_time_review.html:26
+#: templates/prjdash/project_dash.html:15
+msgid "Archive"
+msgstr "arkiv"
+
+#: templates/prjdash/assign_employees.html:20
+#: templates/prjdash/project_line.html:7
 msgid "Assign employees"
 msgstr "Tildele ansatte"
 
-#: templates/prjdash/assign_employees.html:26
+#: templates/prjdash/assign_employees.html:27
 msgid "Assign employees for project "
 msgstr "Tildele ansatte til prosjekt "
 
-#: templates/prjdash/assign_employees.html:37
+#: templates/prjdash/assign_employees.html:38
 #: templates/prjdash/posted_time_dialog.html:13
 #: templates/prjdash/posted_time_dialog.html:14
-#: templates/prjdash/posted_time_form.html:72
+#: templates/prjdash/posted_time_form.html:76
 #: templates/prjdash/project_form.html:32
+#: templates/reports/time_summary/dialog_customer_filter.html:20
 #: templates/reports/time_summary/dialog_date_filter.html:15
 #: templates/reports/time_summary/dialog_date_filter.html:16
 #: templates/reports/time_summary/dialog_employee_filter.html:20
@@ -695,12 +792,12 @@ msgstr "Tildele ansatte til prosjekt "
 #: templates/salary/v1/jobreg_form.html:49
 #: templates/salary/v2/jobreg_delete_dialog.html:13
 #: templates/salary/v2/jobreg_delete_dialog.html:14
-#: templates/salary/v2/jobreg_form.html:85
+#: templates/salary/v2/jobreg_form.html:101
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: templates/prjdash/assign_employees.html:39
-#: templates/prjdash/assign_employees.html:42
+#: templates/prjdash/assign_employees.html:40
+#: templates/prjdash/assign_employees.html:43
 msgid "Assign"
 msgstr "Tildele"
 
@@ -743,17 +840,17 @@ msgstr ""
 msgid "To create a new line fill in values on the right and click Save."
 msgstr "For å oprette ny linje tast inn verdiene til høyre og klikk på Lagre."
 
-#: templates/prjdash/posted_time_form.html:39
-#: templates/prjdash/print_timelist.html:73
+#: templates/prjdash/posted_time_form.html:43
+#: templates/prjdash/print_timelist.html:96
 #: templates/reports/time_summary/dialog_date_filter.html:7
 #: templates/salary/v1/jobreg_form.html:14
-#: templates/salary/v2/jobreg_form.html:39
+#: templates/salary/v2/jobreg_form.html:56
 msgid "to"
 msgstr "til"
 
-#: templates/prjdash/posted_time_form.html:66
+#: templates/prjdash/posted_time_form.html:70
 #: templates/salary/v1/jobreg_form.html:44
-#: templates/salary/v2/jobreg_form.html:80
+#: templates/salary/v2/jobreg_form.html:96
 msgid "Register"
 msgstr "Registrer"
 
@@ -761,124 +858,143 @@ msgstr "Registrer"
 msgid "Change history"
 msgstr "Endre historikk"
 
-#: templates/prjdash/posted_time_jrline.html:32
+#: templates/prjdash/posted_time_jrline.html:44
 #: templates/salary/v1/jobreg_jrline.html:14
-#: templates/salary/v2/jobreg_jrline.html:14
+#: templates/salary/v2/jobreg_jrline.html:25
 msgid "Modify"
 msgstr "Endre"
 
-#: templates/prjdash/posted_time_jrline.html:34
-#: templates/prjdash/posted_time_jrline.html:35
+#: templates/prjdash/posted_time_jrline.html:46
 #: templates/salary/v1/jobreg_jrline.html:16
-#: templates/salary/v2/jobreg_jrline.html:16
+#: templates/salary/v2/jobreg_jrline.html:27
 msgid "Delete"
 msgstr "Slette"
 
-#: templates/prjdash/posted_time_review.html:24
+#: templates/prjdash/posted_time_review.html:27
 #: templates/prjdash/project_line.html:3
 msgid "Time review and approval"
 msgstr "Timegjennomgang og godkjenning"
 
-#: templates/prjdash/posted_time_review.html:30
+#: templates/prjdash/posted_time_review.html:33
 msgid "Review and approve time for project "
 msgstr "Gjennomgå og godkjen tid for prosjekt "
 
-#: templates/prjdash/posted_time_review.html:46
+#: templates/prjdash/posted_time_review.html:49
 #: templates/reports/time_summary/posted_time.html:49
 #: templates/salary/v1/registration_journal.html:54
-#: templates/salary/v2/registration_journal.html:54
+#: templates/salary/v2/registration_journal.html:55
 msgid "Time"
 msgstr "Tid"
 
-#: templates/prjdash/posted_time_review.html:47
+#: templates/prjdash/posted_time_review.html:50
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:83
 #: templates/reports/time_summary/posted_time.html:50
 #: templates/salary/v1/registration_journal.html:55
-#: templates/salary/v2/registration_journal.html:55
+#: templates/salary/v2/registration_journal.html:56
 msgid "Hours"
 msgstr "Timer"
 
-#: templates/prjdash/posted_time_review.html:48
+#: templates/prjdash/posted_time_review.html:51
 #: templates/reports/time_summary/posted_time.html:51
 #: templates/salary/v1/registration_journal.html:56
-#: templates/salary/v2/registration_journal.html:56
+#: templates/salary/v2/registration_journal.html:57
 msgid "Distance (km)"
 msgstr "Avstand (km)"
 
-#: templates/prjdash/print_timelist.html:73
+#: templates/prjdash/print_timelist.html:96
 msgid "Date from"
 msgstr "Dato fra"
 
-#: templates/prjdash/print_timelist.html:75
+#: templates/prjdash/print_timelist.html:98
 msgid "employee filter"
 msgstr "ansattfilter"
 
-#: templates/prjdash/print_timelist.html:76
+#: templates/prjdash/print_timelist.html:99
 #: templates/reports/time_summary/dialog_employee_filter.html:7
 msgid "Select employees..."
 msgstr "Velg ansatte..."
 
-#: templates/prjdash/print_timelist.html:85
+#: templates/prjdash/print_timelist.html:109
 msgid "Task filter"
 msgstr "Oppgavefilter"
 
-#: templates/prjdash/print_timelist.html:86
+#: templates/prjdash/print_timelist.html:110
 msgid "Select tasks..."
 msgstr "Velg oppgaver..."
 
-#: templates/prjdash/print_timelist.html:106
+#: templates/prjdash/print_timelist.html:130
 msgid "Print"
 msgstr "Skriv ut"
 
-#: templates/prjdash/project_dash.html:26
+#: templates/prjdash/project_dash.html:27
+msgid "archive"
+msgstr "arkiv"
+
+#: templates/prjdash/project_dash.html:32
+msgid "Search"
+msgstr "Søk"
+
+#: templates/prjdash/project_dash.html:45
 msgid ""
 "To be able to use <b> Project Dashboard </b> you must add customers first."
 msgstr ""
 "For å kunne bruke <b> Prosjektstyring </b> du må legge til kunder først."
 
-#: templates/prjdash/project_dash.html:28
+#: templates/prjdash/project_dash.html:47
 msgid "To add new customers go to top right menu"
 msgstr "For å legge til nye kunder gå til menu til topp høyre side"
 
-#: templates/prjdash/project_dash.html:29
+#: templates/prjdash/project_dash.html:48
 msgid "and then"
 msgstr "og så"
 
-#: templates/prjdash/project_dash.html:29
+#: templates/prjdash/project_dash.html:48
 msgid "new customer"
 msgstr "ny kunde"
 
-#: templates/prjdash/project_dash.html:29
+#: templates/prjdash/project_dash.html:48
 msgid "on top right of your screen"
 msgstr "til topp høyre på skjermen din"
 
-#: templates/prjdash/project_dash.html:45
+#: templates/prjdash/project_dash.html:63
 msgid "Lists"
 msgstr "Lister"
 
-#: templates/prjdash/project_dash.html:49
+#: templates/prjdash/project_dash.html:67
 msgid "Date created"
 msgstr "Dato opprettet"
 
-#: templates/prjdash/project_dash.html:50
+#: templates/prjdash/project_dash.html:68
 msgid "Actions"
 msgstr "Handlinger"
+
+#: templates/prjdash/project_dash.html:238
+msgid "project not found"
+msgstr "prosjekt ikke funnet"
 
 #: templates/prjdash/project_form.html:30
 msgid "Save"
 msgstr "Lagre"
 
-#: templates/prjdash/project_line.html:30
+#: templates/prjdash/project_line.html:19
 msgid "Edit"
 msgstr "Endre"
 
-#: templates/prjdash/project_line.html:32
+#: templates/prjdash/project_line.html:22
 msgid "Close"
 msgstr "Lukke"
 
-#: templates/prjdash/project_line.html:34
+#: templates/prjdash/project_line.html:24
 msgid "Open"
 msgstr "Åpne"
+
+#: templates/prjdash/project_line.html:27
+msgid "Move to archive"
+msgstr "Flytt til arkiv"
+
+#: templates/prjdash/project_line.html:29
+msgid "Return to desktop"
+msgstr "Flytt tilbake til skrivebord"
 
 #: templates/registration/login.html:21
 msgid "Please correct the error below."
@@ -911,6 +1027,12 @@ msgstr "Hjem"
 msgid "Password change"
 msgstr "Endring av passord"
 
+#: templates/reports/pdf_timelist/pdf_footer_html4_page_number_right.html:62
+msgid ""
+"By signing this time list I acknowledge that the time list is correct and I "
+"accept it."
+msgstr "Ved signering bekrefter jeg at timelisten er godtatt og akseptert."
+
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:80
 msgid "Day"
 msgstr "Dag"
@@ -923,9 +1045,36 @@ msgstr "Fra kl. - Til kl."
 msgid "Transport"
 msgstr "Transport"
 
-#: templates/reports/pdf_timelist/pdf_timelist_html4.html:115
+#: templates/reports/pdf_timelist/pdf_timelist_html4.html:130
 msgid "Totals"
 msgstr "Totalt"
+
+#: templates/reports/pdf_timelist/pdf_timelist_html4.html:149
+msgid "signature"
+msgstr "signatur"
+
+#: templates/reports/time_summary/dialog_customer_filter.html:3
+msgid "Set customer filter"
+msgstr "Sett kundefilter"
+
+#: templates/reports/time_summary/dialog_customer_filter.html:5
+msgid "Select customers to calculate working time for"
+msgstr "Velg kunder du vil beregne arbeidstid for"
+
+#: templates/reports/time_summary/dialog_customer_filter.html:6
+msgid "Start typing customer name"
+msgstr "Begynn å taste kundenavn"
+
+#: templates/reports/time_summary/dialog_customer_filter.html:7
+msgid "Select customers..."
+msgstr "Velg kunder..."
+
+#: templates/reports/time_summary/dialog_customer_filter.html:16
+#: templates/reports/time_summary/dialog_employee_filter.html:16
+#: templates/reports/time_summary/dialog_project_filter.html:22
+#: templates/reports/time_summary/dialog_report_parameters.html:20
+msgid "Set"
+msgstr "Sett"
 
 #: templates/reports/time_summary/dialog_date_filter.html:4
 msgid "Select date period"
@@ -942,12 +1091,6 @@ msgstr "Velg de ansatte som du må se i rapporten"
 #: templates/reports/time_summary/dialog_employee_filter.html:6
 msgid "Start typing employee name"
 msgstr "Begynn å taste ansattes navn"
-
-#: templates/reports/time_summary/dialog_employee_filter.html:16
-#: templates/reports/time_summary/dialog_project_filter.html:22
-#: templates/reports/time_summary/dialog_report_parameters.html:20
-msgid "Set"
-msgstr "Sett"
 
 #: templates/reports/time_summary/dialog_project_filter.html:3
 msgid "Set project filter"
@@ -1012,22 +1155,31 @@ msgstr "Endre ansattfilter"
 
 #: templates/reports/time_summary/time_table_filters.html:71
 #: templates/reports/time_summary/time_table_filters.html:87
+#: templates/reports/time_summary/time_table_filters.html:102
 msgid "all"
 msgstr "alle"
 
 #: templates/reports/time_summary/time_table_filters.html:81
+msgid "Clear customer filter"
+msgstr "Fjern kundefilter"
+
+#: templates/reports/time_summary/time_table_filters.html:82
+msgid "Edit customer filter"
+msgstr "Endre kundefilter"
+
+#: templates/reports/time_summary/time_table_filters.html:96
 msgid "Clear project filter"
 msgstr "Fjern prosjektfilter"
 
-#: templates/reports/time_summary/time_table_filters.html:82
+#: templates/reports/time_summary/time_table_filters.html:97
 msgid "Edit project filter"
 msgstr "Endre prosjektfilter"
 
-#: templates/reports/time_summary/time_table_filters.html:94
+#: templates/reports/time_summary/time_table_filters.html:110
 msgid "Calculate"
 msgstr "Beregn"
 
-#: templates/reports/time_summary/time_table_filters.html:96
+#: templates/reports/time_summary/time_table_filters.html:112
 msgid "Export to"
 msgstr "Eksportere til"
 
@@ -1036,7 +1188,7 @@ msgid "Working time registration in project "
 msgstr "Arbeidstidsregistrering for prosjekt"
 
 #: templates/salary/base_wtr.html:8
-#: templates/salary/v2/registration_journal.html:37
+#: templates/salary/v2/registration_journal.html:38
 msgid "Working time registration"
 msgstr "Arbeidstidsregistrering"
 
@@ -1047,7 +1199,7 @@ msgid "Project list"
 msgstr "Prosjektliste"
 
 #: templates/salary/v1/registration_journal.html:42
-#: templates/salary/v2/registration_journal.html:42
+#: templates/salary/v2/registration_journal.html:43
 msgid "Date:"
 msgstr "Dato:"
 

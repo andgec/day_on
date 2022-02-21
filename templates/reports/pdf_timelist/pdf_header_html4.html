@@ -7,8 +7,8 @@
 	        {
 	            border:0; 
 	            margin: 0;
-	            padding: 0;
-	            height: 17mm;
+				padding: 0;
+				height: 35mm;
 	        }
 			hr { 
 			  	display: block;
@@ -63,7 +63,18 @@
 				bottom: 4px;
 				left: 0;
 			}
-
+			.project {
+				position: absolute;
+				width: 100%;
+				text-align: center;
+				left:0;
+				top: 48px;
+				height: 10mm;
+			}
+			/* first page header */
+			.fHide {
+				display: none;
+			}
 	    </style>
 		</head>
 	<body>
@@ -78,6 +89,11 @@
 				</div>
 			{% endif %}
 			</div>
+			<!-- -- Project name section --- -->
+			<div class="project" id="notFirstPageHeader">
+				<h2>{{project.name}}</h2>
+			</div>
+			<!-- -- Timelist data section --- -->
 			<div class="dsection">
 				<div class="companyinfo">
 					<div><b>{{company.name}}</b></div>
@@ -89,15 +105,34 @@
 							<br>Adresse:&nbsp&nbsp
 						</div>
 						<div class="data">
-							NO{{company.number}}MVA
-							<br>{{company.phone_no|default:company.mobile_no}}
-							<br>{{company.email}}
-							<br>{{company.full_address}}
+							NO{{company.number}}MVA&nbsp;
+							<br>{{company.phone_no|default:company.mobile_no}}&nbsp;
+							<br>{{company.email}}&nbsp;
+							<br>{{company.full_address}}&nbsp;
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<hr>
+		<script>
+			var vars={};
+			var x=window.location.search.substring(1).split('&');
+			for (var i in x) {
+				var z=x[i].split('=',2);
+				vars[z[0]] = unescape(z[1]);
+			}
+
+			/*Different first page header */
+			var nFirstHead = document.getElementById('notFirstPageHeader');
+			if (vars.page == 1) {
+				nFirstHead.removeAttribute('class', 'project');
+				nFirstHead.setAttribute('class', 'fHide');
+			}
+			else {
+				nFirstHead.removeAttribute('class', 'fHide');
+				nFirstHead.setAttribute('class', 'project');
+			};
+		</script>
 	</body>
 </html>
