@@ -1,12 +1,12 @@
 <div class="tool-filter"> 
 	<div class="tool-col">
-		<div class="tool-field">
+		<div class="tool-field ok">
 			<div class="label">{{ _('Date from') }}</div>
 			<div class="drop-input">
 				<input type="text" id="datepicker-from">
 			</div>
 		</div>
-		<div class="tool-field">
+		<div class="tool-field ok">
 			<div class="label">**{{ _('date to')|capfirst }}**</div>
 			<div class="drop-input">
 				<input type="text" id="datepicker-to">
@@ -15,7 +15,7 @@
 	</div>
 
 	<div class="tool-col">
-		<div class="tool-field">
+		<div class="tool-field ok">
 			<div class="label">{{_('Employees')|capfirst}}</div>
 			<div class="input" id="employee_input">
 				<select data-placeholder="{{_('Select employees...')}}" id="select-employees" class="js-s2" multiple tabindex="3">
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 
-		<div class="tool-field">
+		<div class="tool-field ok">
 			<div class="label"> {{ _('Items')|capfirst }} </div>
 			<div class="input" id="item_input"-->
 				{% if fvisible.item or fvisible.item_and_description %}
@@ -51,44 +51,23 @@
 	</div>
 	<div class="tool-btn">
 		<script>
-			function btnFilterClick(){
-				document.props = {};
-	  	  		document.props.date_from = $("#datepicker-from")[0].value;
-	  	  		document.props.date_to = $("#datepicker-to")[0].value;
-	  	  		document.props.item_ids = $("#select-tasks").val();
-	  	  		document.props.employee_ids = $("#select-employees").val();
-	  	  		fUrl = get_filter_url();
-				window.location.replace(fUrl);
-	  		};
+            /* Change URL on before refresh is clicked */
+            window.onbeforeunload = function(e) {
+            location.href = get_page_url();
+            };
+            /* --------------------------------------- */
 
-			function get_filter_url(){
-				resUrl = '';
-				qm = '';
-				if (document.props.date_from && document.props.date_to) {
-					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-from=" + document.props.date_from + "&date-to=" + document.props.date_to;
-				}
-				else if (document.props.date_from) {
-					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-from=" + document.props.date_from;
-				}
-				else if (document.props.date_to) {
-					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-to=" + document.props.date_to;
-				}
-				else {
-					resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}";
-					qm = '?';
-				};
-				if (document.props.employee_ids != null && document.props.employee_ids.length > 0) {
-					resUrl = resUrl + qm + "&employees=" + document.props.employee_ids;
-					qm = '';
-				};
-				if (document.props.item_ids != null && document.props.item_ids.length > 0) {
-					resUrl = resUrl + qm + "&items=" + document.props.item_ids;
-				};
-				return resUrl;
-			};
+            function btnFilterClick(){
+                document.props.date_from = $("#datepicker-from")[0].value;
+                document.props.date_to = $("#datepicker-to")[0].value;
+                document.props.item_ids = $("#select-tasks").val();
+                document.props.employee_ids = $("#select-employees").val();
+                document.props.active_tab = 'FILTERS';
+                fUrl = get_page_url();
+                window.location.replace(fUrl);
+            };
 		</script>
-
-		<button class="btool-save" title = {{ _('Apply') }} onClick="btnFilterClick()">{{ _('Apply') }}</button>
+		<button class="btool-save" title = {{ _('apply') | capfirst }} onclick="btnFilterClick()">{{ _('apply') | capfirst }}</button>
 		<!--button class="btn-create" title = {{ _('Register') }} type="submit">
 			<i class="fa fa-save"></i>
 		</button-->
