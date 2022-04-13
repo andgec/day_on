@@ -52,24 +52,34 @@
 	<div class="tool-btn">
 		<script>
             /* Change URL on before refresh is clicked */
+            /* kam šitas? */
+            /*
             window.onbeforeunload = function(e) {
-            location.href = get_page_url();
-            };
+                location.href = getUrl();
+            };*/
             /* --------------------------------------- */
-
             function btnFilterClick(){
-                document.props.date_from = $("#datepicker-from")[0].value;
-                document.props.date_to = $("#datepicker-to")[0].value;
-                document.props.item_ids = $("#select-tasks").val();
-                document.props.employee_ids = $("#select-employees").val();
-                document.props.active_tab = 'FILTERS';
-                fUrl = get_page_url();
-                window.location.replace(fUrl);
+                f = document.state.toolbar.filters;
+                f.props = {};
+                fp = f.props;
+                fp.date_from = $("#datepicker-from")[0].value;
+                fp.date_to = $("#datepicker-to")[0].value;
+                fp.item_ids = $("#select-tasks").val();
+                fp.employee_ids = $("#select-employees").val();
+                window.location.replace(getUrl());
             };
+            function btnShowAllClick(){
+                f = document.state.toolbar.filters;
+                f.props = {};
+                fp = f.props;
+                fp.date_from = '';
+                fp.date_to = '';
+                fp.item_ids = '';
+                fp.employee_ids = '';
+                window.location.replace(getUrl());
+            }
 		</script>
 		<button class="btool-save" title = {{ _('apply') | capfirst }} onclick="btnFilterClick()">{{ _('apply') | capfirst }}</button>
-		<!--button class="btn-create" title = {{ _('Register') }} type="submit">
-			<i class="fa fa-save"></i>
-		</button-->
+        <button class="btool-clear-filters" title = "{{ _('Show all') | capfirst }}" onclick="btnShowAllClick()">{{ _('Show all') | capfirst }}</button>
 	</div>
 </div>

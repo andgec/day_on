@@ -20,6 +20,7 @@ from receivables.models import WorkTimeJournal
 from inventory.models import Item
 from djauth.models import User
 from general.utils import get_fields_visible
+from shared.utils import dict2str
 
 
 class RecState:
@@ -312,7 +313,6 @@ class ProjectDashboardPostedTimeReview(View):
                                                 ).select_related('employee'
                                                 ).select_related('employee__user'
                                                 ).order_by('-work_date', 'employee_id', 'work_time_from')
-        print(journal_raw.query)
 
         log_raw = LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(WorkTimeJournal).pk,
                                           object_id__in=[jr_raw_line.id for jr_raw_line in journal_raw]
@@ -320,6 +320,7 @@ class ProjectDashboardPostedTimeReview(View):
 
         journal_lines = self.get_journal_lines(journal_raw, log_raw) #Adding log information
 
+        '''
         journal_totals = self.model.objects.filter(company = request.user.company,
                                                    content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                                    object_id = project_id).aggregate(Sum('work_time'),
@@ -328,7 +329,16 @@ class ProjectDashboardPostedTimeReview(View):
                                                                                  Sum('ferry'),
                                                                                  Sum('diet'),
                                                                                  Sum('parking'),
-                                                                                 )
+                                                                                 )'''
+        ''' !!! This is not optimal due to extra call to database. Calculate totals from existing resultset '''
+        journal_totals = self.model.objects.filter(reduce(operator.and_, jr_q_list)
+                                                    ).aggregate(Sum('work_time'),
+                                                    Sum('distance'),
+                                                    Sum('toll_ring'),
+                                                    Sum('ferry'),
+                                                    Sum('diet'),
+                                                    Sum('parking'),
+                                                    )
         context = {
                 'location': location,
                 'title': _('Project management'),
@@ -342,15 +352,16 @@ class ProjectDashboardPostedTimeReview(View):
                 'journal_lines': journal_lines,
                 'journal_totals': journal_totals,
                 'fvisible': get_fields_visible(request.user.company),
-                'applied_filters': filters,
+                'applied_filters': dict2str(filters),
                 }
         return context
 
     def get_filters(self, request, project):
-        dtfr = request.GET.get('date-from', None)
+        req_vars = request.GET if request.method == 'GET' else request.POST #Read variables either from GET or POST request
+        dtfr = req_vars.get('date-from', None)
         if dtfr is not None:
             dtfr = datetime.datetime.strptime(dtfr, "%Y-%m-%d").date()
-        dtto = request.GET.get('date-to', None)
+        dtto = req_vars.get('date-to', None)
         if dtto is not None:
             dtto = datetime.datetime.strptime(dtto, "%Y-%m-%d").date()
         filters = {
@@ -358,11 +369,10 @@ class ProjectDashboardPostedTimeReview(View):
             'project': project.id,
             'date_from': dtfr,
             'date_to': dtto,
-            'employees': request.GET.get('employees'),
-            'items': request.GET.get('items'),
+            'employees': req_vars.get('employees'),
+            'items': req_vars.get('items'),
             'company': request.user.company,
         }
-        print(filters)
         return filters
 
     def get_journal_qlist(self, filters):
@@ -385,7 +395,6 @@ class ProjectDashboardPostedTimeReview(View):
         if item_ids:
             q_list.append(Q(item_id__in = item_ids.split(',')))
 
-        print(q_list)
         return q_list
 
     def get_filter_data(self, filters):
@@ -475,8 +484,11 @@ class ProjectDashboardPostedTimeReview(View):
                 jr_line.save()
             finally:
                 form.save(commit=True) #this only writes a log action, not the record itself
-            # Redirect to GET.
-            return redirect('pdash-time-review', location=location, project_id=project_id)
+            #reload page
+            return render(request,
+                          self.template,
+                          self.get_context(request, location, project_id, pk, mode)
+                          )
         else:
             return render(request,
                           self.template,

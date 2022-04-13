@@ -22,6 +22,22 @@
 	<script src="{% static 'js/jquery/datepicker/datepicker-no.js' %}"></script>
     <script src="{% static 'js/dayon/prjdash/posted_time.js' %}"></script>
 	{{ form.media.js }}
+
+    <script>
+        // Loading filter values comming from the server into the state variable
+        initState();
+        function loadParams(){
+            // Setting the URLBase variable
+            document.state.params.urlBase = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}";
+            // Setting filter values comming from server
+            dpf = document.state.params.filters;
+            dpf.dateFrom = '{{ applied_filters.date_from }}';
+            dpf.dateTo = '{{ applied_filters.date_to }}';
+            dpf.employees = '{{ applied_filters.employees }}';
+            dpf.items = '{{ applied_filters.items }}';
+        };
+        loadParams();
+    </script>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -39,7 +55,8 @@
 			</div>
 			<!--div class='tool-tab' title="*filter*" onClick="toggleDlg(this, 'tdlg-filters')"-->
             <div class='tool-tab' id='tbFilters' title="{{ _('filter')|capfirst }}">
-				<span class="fas fa-filter fa-3x" style="margin-top: 0.22em"></span>
+				<span id="filter_on" class="fas fa-check fa-3x" style="margin-top: 0.22em; display: none;"></span>
+                <span class="fas fa-filter fa-3x" style="margin-top: 0.22em"></span>
 			</div>
 			<!--div class='tool-tab' title="*move to another project*" onClick="toggleDlg(this, 'tdlg-moveln')"-->
             <div class='tool-tab' id='tbMoveLn' title="{{ _('move to another project')|capfirst }}">
@@ -129,6 +146,5 @@
 	</div>
   </div>
   <script src="{% static 'js/timeon-main.js' %}"></script>
-  {#% include 'prjdash/posted_time/posted_time_dialog.html' %#}
 {% endblock %}
  

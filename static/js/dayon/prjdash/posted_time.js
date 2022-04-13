@@ -14,16 +14,17 @@ $( function() {
 } );
 
 $( function() {
-    $.datepicker.setDefaults($.datepicker.regional["lt"]);	  	  
+    $.datepicker.setDefaults($.datepicker.regional["lt"]);
     //$( "#datepicker-to" ).datepicker({maxDate: "+1D", onSelect: set_date_to});
     $( "#datepicker-to" ).datepicker({maxDate: "+1D"});
 } );
 
 // ------ initialize page ------ */
 $(function() {
-    initState();
+    initState(); // Initializes state variable (does not reinitialize on multiple calls)
+    initDom(); // Loads relevant DOM elements into state variable for quick manipulation
     loadState();
-    initControls();
+    initControls(); // Connects all related elements to their functions
     processState();
 });
 
@@ -31,38 +32,91 @@ var tb = {};
 
 // Initializing page state variable
 function initState() {
-    document.state = {};
+    if (document.state === undefined){
+        document.state = {};
+    };
     // Toolbar state
-
-    document.state.toolbar = {};
+    if (document.state.toolbar === undefined){
+        document.state.toolbar = {};
+    };
     tb = document.state.toolbar;
 
     // add line
-    tb.add = {};
-    tb.add.modified = false;
-    tb.add.dom = {};
-    tb.add.dom.tab = document.getElementById('tbAddLine');
-    tb.add.dom.page = document.getElementById('tdlg-add');
+    if (tb.add === undefined){
+        tb.add = {};
+    };
+    if (tb.add.modified === undefined){
+        tb.add.modified = false;
+    };
+    if (tb.add.dom === undefined){
+        tb.add.dom = {};
+    };
 
     // filters
-    tb.filters = {};
-    tb.filters.dom = {};
+    if (tb.filters === undefined){
+        tb.filters = {};
+    };
+
+    if (tb.filters.dom === undefined){
+        tb.filters.dom = {};
+    };
+
+    // move line to another project
+    if (tb.move === undefined){
+        tb.move = {};
+    };
+    if (tb.move.dom === undefined){
+        tb.move.dom = {};
+    };
+
+    // print current view
+    if (tb.print === undefined){
+        tb.print = {};
+    };
+    if (tb.print.dom === undefined){
+        tb.print.dom = {};
+    };
+
+    // params
+    if (document.state.params === undefined){
+        document.state.params = {};
+    };
+    if (document.state.params.filters === undefined) {
+        document.state.params.filters = {};
+    };
+    dpf = document.state.params.filters;
+    if (dpf.dateFrom === undefined) {
+        dpf.dateFrom = null;
+    };
+    if (dpf.dateTo === undefined) {
+        dpf.dateTo = null;
+    };
+    if (dpf.employees === undefined) {
+        dpf.employees = null;
+    };
+    if (dpf.items === undefined) {
+        dpf.items = null;
+    };
+
+    return true;
+};
+
+function initDom() {
+    //add line
+    tb.add.dom.tab = document.getElementById('tbAddLine');
+    tb.add.dom.page = document.getElementById('tdlg-add');
+    tb.add.dom.form = document.getElementById('toolAddLine');
+    // filters
     tb.filters.dom.tab = document.getElementById('tbFilters');
+    tb.filters.dom.tab.filterOn = false;
     tb.filters.dom.page = document.getElementById('tdlg-filters');
 
     // move line to another project
-    tb.move = {};
-    tb.move.dom = {};
     tb.move.dom.tab = document.getElementById('tbMoveLn');
     tb.move.dom.page = document.getElementById('tdlg-moveln');
-
     // print current view
-    tb.print = {};
-    tb.print.dom = {};
     tb.print.dom.tab = document.getElementById('tbPrint');
     tb.print.dom.page = document.getElementById('tdlg-print');
-
-    return true;
 };
 
 function loadState(){
@@ -72,7 +126,18 @@ function loadState(){
     tb.filters.active = false;
     tb.move.active = false;
     tb.print.active = false;
+
     processFieldErrors();
+
+    // transfer filter values from page parameters to state.toolbar variable
+    dpf = document.state.params.filters;
+    f = document.state.toolbar.filters;
+    f.props = {};
+    fp = f.props;
+    fp.date_from = dpf.dateFrom;
+    fp.date_to = dpf.dateTo;
+    fp.employee_ids = dpf.employees;
+    fp.item_ids = dpf.items;
 };
 
 // Processing page state.
@@ -117,10 +182,37 @@ function processState(){
 
 // Connects all related elements to their functions
 function initControls(){
+    //Events
     tb.add.dom.tab.onclick = tbAddClick;
     tb.filters.dom.tab.onclick = tbFiltersClick;
     tb.move.dom.tab.onclick = tbMoveClick;
     tb.print.dom.tab.onclick = tbPrintClick;
+
+    //Put filter values into filter fields
+    paramfl = document.state.params.filters;
+    $("#datepicker-from").datepicker("setDate", paramfl.dateFrom);
+    $("#datepicker-to").datepicker("setDate", paramfl.dateTo);
+    if (paramfl.employees != '') {
+        $("#select-employees").val(paramfl.employees.split(',')).trigger("change");
+    };
+    if (paramfl.items != '') {
+        $("#select-tasks").val(paramfl.items.split(',')).trigger("change");
+    };
+    //Check if any filter is on
+    tb.filters.dom.tab.filterOn = (paramfl.dateFrom != '' || paramfl.dateTo != '' || paramfl.employees != '' || paramfl.items != '');
+    //If any of the filters are on then show checkbox beside the filter icon
+    if (tb.filters.dom.tab.filterOn){
+        $("#filter_on").show();
+    };
+    //Add form action (to preserve active filters on save and refresh)
+    //document.toolAddLine.action = getUrl(); //window.location.href; -- not effective
+
+    // transfer filter values from page parameters to the hidden fields of add new record form (to pass filter parameters on POST request)
+    dpf = document.state.params.filters;
+    document.getElementById('filter_dateFrom').value = dpf.dateFrom;
+    document.getElementById('filter_dateTo').value = dpf.dateTo;
+    document.getElementById('filter_emplIds').value = dpf.employees;
+    document.getElementById('filter_itemIds').value = dpf.items;
 };
 
 //Event functions
@@ -201,34 +293,39 @@ function processFieldErrors(){
                 tbField.parentNode.insertBefore(errorBox, tbField);
                 processState();
             };
-
         };
     };
-/*
-function get_filter_url(){
+};
+
+function getFilterUrl(urlBase){
+    /* Building URL with filters */
     resUrl = '';
     qm = '';
-        if (document.props.date_from && document.props.date_to) {
-            resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-from=" + document.props.date_from + "&date-to=" + document.props.date_to;
--       }
-        else if (document.props.date_from) {
-            resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-from=" + document.props.date_from;
-        }
-        else if (document.props.date_to) {
-            resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}?date-to=" + document.props.date_to;
-        }
-        else {
-            resUrl = "{% url 'pdash-time-review' location='desktop' project_id=project.id %}";
-            qm = '?';
-        };
-        if (document.props.employee_ids != null && document.props.employee_ids.length > 0) {
-            resUrl = resUrl + qm + "&employees=" + document.props.employee_ids;
-            qm = '';
-        };
-        if (document.props.item_ids != null && document.props.item_ids.length > 0) {
-            resUrl = resUrl + qm + "&items=" + document.props.item_ids;
-        };
-        return resUrl;
+    fp = document.state.toolbar.filters.props;
+
+    if (fp.date_from && fp.date_to) {
+        resUrl = urlBase + "?date-from=" + fp.date_from + "&date-to=" + fp.date_to;
+    }
+    else if (fp.date_from) {
+        resUrl = urlBase + "?date-from=" + fp.date_from;
+    }
+    else if (fp.date_to) {
+        resUrl = urlBase + "?date-to=" + fp.date_to;
+    }
+    else {
+        resUrl = urlBase;
+        qm = '?';
     };
-*/
+    if (fp.employee_ids != null && fp.employee_ids.length > 0) {
+        resUrl = resUrl + qm + "&employees=" + fp.employee_ids;
+        qm = '';
+    };
+    if (fp.item_ids != null && fp.item_ids.length > 0) {
+        resUrl = resUrl + qm + "&items=" + fp.item_ids;
+    };
+    return resUrl;
+};
+
+function getUrl(){
+    return getFilterUrl(document.state.params.urlBase);
 };

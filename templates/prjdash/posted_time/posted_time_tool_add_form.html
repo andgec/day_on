@@ -1,6 +1,11 @@
 <div class="tool-add-line">
-    <form action = "" method = "post">
+    <form name="toolAddLine" method = "POST">
         {% csrf_token %}
+        <!-- Hidden fields below are for passing eventual filter parameters to the POST request -->
+        <input type="hidden" id="filter_dateFrom" name="date-from">
+        <input type="hidden" id="filter_dateTo" name="date-to">
+        <input type="hidden" id="filter_emplIds" name="employees">
+        <input type="hidden" id="filter_itemIds" name="items">
 		<div class="tool-col">
 			<div class="tool-field ok" data-tab="add">
 				<div class="label">* darbuotojas *</div>
@@ -48,14 +53,11 @@
             <script>
                 //Methond for the Cancel button
                 function btnAddCancelClick() {
-                    location.href = "{{ request.build_absolute_uri }}";
+                    location.href = getUrl();
                 };
             </script>
 			<button class="btool-save" title = {{ _('Register') }} type="submit">{{ _('Register') }}</button>
             <button class="btool-save" title = {{ _('Cancel') }} type="button" onclick="btnAddCancelClick()">{{ _('Cancel') }}</button>
-			<!--button class="btn-create" title = {{ _('Register') }} type="submit">
-				<i class="fa fa-save"></i>
-			</button-->
 		</div>
     </form>
 </div>
