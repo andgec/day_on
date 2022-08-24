@@ -359,10 +359,10 @@ class ProjectDashboardPostedTimeReview(View):
     def get_filters(self, request, project):
         req_vars = request.GET if request.method == 'GET' else request.POST #Read variables either from GET or POST request
         dtfr = req_vars.get('date-from', None)
-        if dtfr is not None:
+        if dtfr:
             dtfr = datetime.datetime.strptime(dtfr, "%Y-%m-%d").date()
         dtto = req_vars.get('date-to', None)
-        if dtto is not None:
+        if dtto:
             dtto = datetime.datetime.strptime(dtto, "%Y-%m-%d").date()
         filters = {
             #Adding default values and converting string dates to date data type.
