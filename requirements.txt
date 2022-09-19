@@ -65,7 +65,7 @@ pillow==9.2.0
     #   xhtml2pdf
 psycopg2-binary==2.9.3
     # via -r requirements.in
-pypdf2==1.26.0
+pypdf2==1.27.5
     # via
     #   -r requirements.in
     #   xhtml2pdf
