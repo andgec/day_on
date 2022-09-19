@@ -12,7 +12,7 @@ django-storages==1.7.1
 Pillow==9.2.0
 html5lib==1.0.1
 pyPdf2==1.26.0
-reportlab==3.5.13
+reportlab==3.5.55
 webencodings==0.5.1
 xhtml2pdf==0.2.3
 babel==2.10.3

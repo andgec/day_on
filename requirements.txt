@@ -76,7 +76,7 @@ pytz==2018.5
     #   -r requirements.in
     #   babel
     #   django
-reportlab==3.5.13
+reportlab==3.5.55
     # via
     #   -r requirements.in
     #   xhtml2pdf
