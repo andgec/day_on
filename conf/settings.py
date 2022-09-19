@@ -129,7 +129,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+#USE_TZ = True
 
 LANGUAGES=(
     ('nb', 'Norwegian Bokmål'),
@@ -187,6 +187,7 @@ DECIMAL_PLACES_QTY      = 3
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+MEDIA_ROOT = ''
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
