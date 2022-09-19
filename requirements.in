@@ -6,7 +6,7 @@ django-debug-toolbar==1.11.1
 django-select2==6.3.1
 django-parler==1.9.2
 boto==2.49.0
-boto3==1.9.61
+boto3==1.24.76
 django-s3-folder-storage==0.5
 django-storages==1.7.1
 Pillow==9.2.0
@@ -17,7 +17,7 @@ webencodings==0.5.1
 xhtml2pdf==0.2.3
 babel==2.10.3
 django-wkhtmltopdf==3.2.0
-urllib3==1.24.2
+urllib3==1.26.5
 django-db-logger==0.1.7
 XlsxWriter==1.2.2
 django-maintenancemode==0.11.3

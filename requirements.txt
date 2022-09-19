@@ -8,11 +8,11 @@ babel==2.10.3
     # via -r requirements.in
 boto==2.49.0
     # via -r requirements.in
-boto3==1.9.61
+boto3==1.24.76
     # via
     #   -r requirements.in
     #   django-s3-folder-storage
-botocore==1.12.62
+botocore==1.27.76
     # via
     #   boto3
     #   s3transfer
@@ -46,8 +46,6 @@ django-storages==1.7.1
     #   django-s3-folder-storage
 django-wkhtmltopdf==3.2.0
     # via -r requirements.in
-docutils==0.14
-    # via botocore
 html5lib==1.0.1
     # via
     #   -r requirements.in
@@ -80,7 +78,7 @@ reportlab==3.5.55
     # via
     #   -r requirements.in
     #   xhtml2pdf
-s3transfer==0.1.13
+s3transfer==0.6.0
     # via boto3
 six==1.11.0
     # via
@@ -91,7 +89,7 @@ sqlparse==0.2.4
     # via
     #   django
     #   django-debug-toolbar
-urllib3==1.24.2
+urllib3==1.26.5
     # via
     #   -r requirements.in
     #   botocore
