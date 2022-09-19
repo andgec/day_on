@@ -2,7 +2,7 @@ django==2.2.10
 psycopg2-binary==2.9.3
 pytz==2018.5
 django-countries==5.3.2
-django-debug-toolbar==1.10.1
+django-debug-toolbar==1.11.1
 django-select2==6.3.1
 django-parler==1.9.2
 boto==2.49.0
