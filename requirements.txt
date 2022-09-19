@@ -16,7 +16,7 @@ botocore==1.12.62
     # via
     #   boto3
     #   s3transfer
-django==2.2.10
+django==2.2.28
     # via
     #   -r requirements.in
     #   django-db-logger
@@ -30,7 +30,7 @@ django-countries==5.3.2
     # via -r requirements.in
 django-db-logger==0.1.7
     # via -r requirements.in
-django-debug-toolbar==1.10.1
+django-debug-toolbar==1.11.1
     # via -r requirements.in
 django-maintenancemode==0.11.3
     # via -r requirements.in
@@ -65,7 +65,7 @@ pillow==9.2.0
     #   xhtml2pdf
 psycopg2-binary==2.9.3
     # via -r requirements.in
-pypdf2==1.26.0
+pypdf2==1.27.5
     # via
     #   -r requirements.in
     #   xhtml2pdf
@@ -76,7 +76,7 @@ pytz==2018.5
     #   -r requirements.in
     #   babel
     #   django
-reportlab==3.5.13
+reportlab==3.5.55
     # via
     #   -r requirements.in
     #   xhtml2pdf
