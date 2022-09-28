@@ -66,16 +66,17 @@
     var drawFilterParams = function() {
       var pLine = document.getElementById("by-proj");
       var dLine = document.getElementById("by-dates");
+      var oLine = document.getElementById("by-overtime");
       
       function switchLine(lineElmnt, active){
       	var chkBox = lineElmnt.getElementsByTagName('div')[0];
       	if (active) {
-      	  chkBox.innerHTML = "&#128505";
+          chkBox.innerHTML = "V";
       	  lineElmnt.classList.remove("title");
       	  lineElmnt.classList.add("data");
       	}
       	else {
-      	  chkBox.innerHTML = "&#9744";
+          chkBox.innerHTML = "X";
       	  lineElmnt.classList.remove("data");
       	  lineElmnt.classList.add("title");
       	}
@@ -83,6 +84,7 @@
       
       switchLine(pLine, filters['params']['split-by-project']);
       switchLine(dLine, filters['params']['split-by-dates']);
+      switchLine(oLine, filters['params']['overtime']);
     };
     
     var toggleProj = function() {
@@ -96,14 +98,20 @@
       drawFilterParams();
       onFiltersChanged();
     }
-    
 
-    var initFilterParams = function(splitByProj, splitByDates) {
+    var toggleOvertime = function() {
+      filters['params']['overtime'] = !filters['params']['overtime'];
+      drawFilterParams();
+      onFiltersChanged();
+    }
+
+    var initFilterParams = function(splitByProj, splitByDates, overtime) {
       filters['params'] = {};
       filters['params']['split-by-project'] = splitByProj;
       filters['params']['split-by-dates'] = splitByDates;
+      filters['params']['overtime'] = overtime;
       drawFilterParams();
     };
 
-    initFilterParams({{filters.split_by_project|lower}}, {{filters.split_by_dates|lower}});
+    initFilterParams({{filters.split_by_project|lower}}, {{filters.split_by_dates|lower}}, {{filters.overtime|lower}});
   </script>

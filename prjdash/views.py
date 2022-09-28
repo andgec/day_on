@@ -318,12 +318,14 @@ class ProjectDashboardPostedTimeReview(View):
         journal_totals = self.model.objects.filter(company = request.user.company,
                                                    content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
                                                    object_id = project_id).aggregate(Sum('work_time'),
+                                                                                 Sum('overtime_50'),
                                                                                  Sum('distance'),
                                                                                  Sum('toll_ring'),
                                                                                  Sum('ferry'),
                                                                                  Sum('diet'),
                                                                                  Sum('parking'),
                                                                                  )
+        journal_totals['work_time__sum'] = journal_totals['work_time__sum'] - (0 if journal_totals['overtime_50__sum'] is None else journal_totals['overtime_50__sum']) #temporary overtime solution
         context = {
                 'location': location,
                 'title': _('Project management'),
@@ -397,11 +399,13 @@ class ProjectDashboardPostedTimeReview(View):
         form = self.form_class(request.POST, instance=self.jr_line, request=request)
 
         project = Project.objects.get(id=project_id)
+        is_overtime = request.POST.get('is_overtime', False)
         if form.is_valid():
             jr_line = form.save(commit=False)
             jr_line.company = self.request.user.company
             jr_line.content_type = ContentType.objects.get_for_model(Project)
             jr_line.content_object = project
+            jr_line.is_overtime = is_overtime
             try:
                 jr_line.save()
             finally:

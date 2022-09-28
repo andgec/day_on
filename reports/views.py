@@ -26,6 +26,7 @@ from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
 from dateutil.relativedelta import relativedelta
 from general.utils import get_fields_visible
+from shared.utils import qstring_add_param
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -154,7 +155,7 @@ class TimelistPDFView(View):
             total_parking       += (journal_line.parking or 0)
             total_transport     += (journal_line.ferry or 0) + (journal_line.toll_ring or 0) #+ (journal_line.parking or 0)
 
-        totals = {'total_work_time': total_work_time,
+        totals = {'total_work_time': total_work_time - total_overtime_50,
                   'total_overtime_50': total_overtime_50,
                   'total_overtime_100': total_overtime_100,
                   'total_distance': total_distance,
@@ -211,7 +212,7 @@ class TimeSummaryPostedLineDetailView(View):
                           str({'employee': employee, 'from': date_from, 'to': date_to, 'projects': project_ids, 'customers': customer_ids}),
                           self.__class__.__name__)
 
-    def get_context(self, request, employee, date_from, date_to, project_ids, customer_ids):
+    def get_context(self, request, employee, date_from, date_to, project_ids, customer_ids, overtime):
         t_lines = WorkTimeJournal.objects.filter(
             company = request.user.company,
             employee=employee,
@@ -228,21 +229,27 @@ class TimeSummaryPostedLineDetailView(View):
             t_lines = t_lines.filter(content_type=self.contenttype_project, object_id__in=project_ids.split(','))
         if customer_ids:
             t_lines = t_lines.filter(project__customer__in = customer_ids.split(','))
+        if overtime:
+            t_lines = t_lines.filter(overtime_50__isnull=False)
+        else:
+            t_lines = t_lines.filter(overtime_50__isnull=True)
 
-        total_time  = 0;
-        total_dist  = 0;
-        total_toll  = 0;
-        total_ferry = 0;
-        total_diet  = 0;
-        total_parking = 0;
+        total_time  = 0
+        total_overtime_50 = 0
+        total_dist  = 0
+        total_toll  = 0
+        total_ferry = 0
+        total_diet  = 0
+        total_parking = 0
 
         for line in t_lines:
-            total_time += 0 if line.work_time is None else line.work_time;
-            total_dist += 0 if line.distance is None else line.distance;
-            total_toll += 0 if line.toll_ring is None else line.toll_ring;
-            total_ferry += 0 if line.ferry is None else line.ferry;
-            total_diet += 0 if line.diet is None else line.diet;
-            total_parking += 0 if line.parking is None else line.parking;
+            total_time += 0 if line.work_time is None else line.work_time
+            total_overtime_50 += 0 if line.overtime_50 is None else line.overtime_50
+            total_dist += 0 if line.distance is None else line.distance
+            total_toll += 0 if line.toll_ring is None else line.toll_ring
+            total_ferry += 0 if line.ferry is None else line.ferry
+            total_diet += 0 if line.diet is None else line.diet
+            total_parking += 0 if line.parking is None else line.parking
 
         context = {
             'title': _('Time summary'),
@@ -252,9 +259,11 @@ class TimeSummaryPostedLineDetailView(View):
                     'date_from': datetime.datetime.strptime(date_from, "%Y-%m-%d").date(),
                     'date_to': datetime.datetime.strptime(date_to, "%Y-%m-%d").date(),
                     'one_day': date_from == date_to,
+                    'overtime': True if overtime else False #overtime only become boolean when parameter is absent (see call for [get_context])
                 },
             'totals': {
                     'time': None if total_time == 0 else total_time,
+                    'overtime_50': None if total_overtime_50 == 0 else total_overtime_50,
                     'distance': None if total_dist == 0 else total_dist,
                     'toll': None if total_toll == 0 else total_toll,
                     'ferry': None if total_ferry == 0 else total_ferry,
@@ -271,7 +280,7 @@ class TimeSummaryPostedLineDetailView(View):
         self.write_log(request.user, employee, date_from, date_to, project_ids, customer_ids)
         return render(request,
                       self.template,
-                      self.get_context(request, employee, date_from, date_to, request.GET.get('projects'), request.GET.get('customers')),
+                      self.get_context(request, employee, date_from, date_to, request.GET.get('projects'), request.GET.get('customers'), request.GET.get('overtime', False)),
                       )
 
 
@@ -454,7 +463,6 @@ class TimeSummaryBaseView(View):
 
         return project_data, full_project_data
 
-
     def get_timelist_data(self, **kwargs):
         q_list = [Q(company=kwargs['company'])]
 
@@ -476,11 +484,17 @@ class TimeSummaryBaseView(View):
             customer_ids_list = customer_ids.split(',')
             q_list.append(Q(project__customer__in = customer_ids_list))
 
+        overtime = kwargs.get('overtime', False)
+        if overtime:
+            q_list.append(Q(overtime_50__isnull=False))
+
         timelist_data = WorkTimeJournal.objects.filter(
             reduce(operator.and_, q_list)).values(
                 'employee_id', 'object_id', 'work_date').order_by(
                     'employee_id', 'object_id', 'work_date').annotate(
-                        work_time = Sum('work_time'))
+                        work_time = Sum('work_time'),
+                        overtime_50 = Sum('overtime_50') # Temporary overtime solution
+                    )
         return timelist_data
 
     def get_distinct_empl_ids(self, timelist_data):
@@ -552,6 +566,9 @@ class TimeSummaryBaseView(View):
         return time_matrix
 
     def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, project_data, timelist_data, **kwargs):
+        ''' Filling the working time matrix '''
+        overtime = kwargs.get('overtime', False)
+
         if kwargs.get('split_by_project', False):
             for employee_id in employee_data.keys():
                 for project_id, project_textdata in project_data[employee_id].items():
@@ -565,13 +582,16 @@ class TimeSummaryBaseView(View):
 
         loop_id = (0,0)
         line_total_work_time = 0
-
         for line in timelist_data:
             eid = line['employee_id']
             pid = line['object_id'] if kwargs.get('split_by_project', None) else 0
-
+            line_overtime_50 = line['overtime_50'] if line['overtime_50'] is not None else 0
             if kwargs.get('split_by_dates', True):
-                time_matrix[(eid, pid)][line['work_date']]['data'] += line['work_time']
+                if overtime:
+                    time_matrix[(eid, pid)][line['work_date']]['data'] += line_overtime_50
+                else:
+                    #subtracting overtime as it will not show up in the main hours view
+                    time_matrix[(eid, pid)][line['work_date']]['data'] += line['work_time'] - line_overtime_50
                 time_matrix[(eid, pid)][line['work_date']]['meta'] = self._get_day_cell_meta(line, (eid, pid), time_matrix[(eid, pid)][line['work_date']]['meta'])
 
             if loop_id == (0,0):
@@ -579,17 +599,32 @@ class TimeSummaryBaseView(View):
 
             #calculating and adding total hours worked
             if loop_id == (eid, pid):
-                line_total_work_time += line['work_time']
+                if overtime:
+                    line_total_work_time += line_overtime_50
+                else:
+                    #subtracting overtime as it will not show up in the main hours view
+                    line_total_work_time += line['work_time'] - line_overtime_50
             else:
                 time_matrix[loop_id]['total_hours']['data'] = line_total_work_time
                 time_matrix[loop_id]['total_hours']['meta'] = self._get_total_cell_meta(loop_id, time_matrix[loop_id]['total_hours']['meta'], **kwargs)
-                line_total_work_time = line['work_time']
+                if overtime:
+                    line_total_work_time = line['overtime_50'] if line['overtime_50'] is not None else 0
+                else:
+                    #subtracting overtime as it will not show up in the main hours view
+                    line_total_work_time = line['work_time'] - line_overtime_50
                 loop_id = (eid, pid)
 
             #adding totals
-            time_matrix[(-1,-1)]['total_hours']['data'] += line['work_time'];           #grand total
+            if overtime:
+                time_matrix[(-1,-1)]['total_hours']['data'] += line_overtime_50
+            else:
+                time_matrix[(-1,-1)]['total_hours']['data'] += line['work_time'] - line_overtime_50;           #grand total
+
             if kwargs.get('split_by_dates', True):
-                time_matrix[(-1,-1)][line['work_date']]['data'] += line['work_time'];   #day total
+                if overtime:
+                    time_matrix[(-1,-1)][line['work_date']]['data'] += line_overtime_50   #day total
+                else:
+                    time_matrix[(-1,-1)][line['work_date']]['data'] += line['work_time'] - line_overtime_50  #day total
 
         #adding total hours worked for the last employee
         time_matrix[loop_id]['total_hours']['data'] = line_total_work_time
@@ -622,6 +657,7 @@ class TimeSummaryBaseView(View):
             'customer_ids': request.GET.get('customers'),
             'split_by_project': str2bool(request.GET.get('split-by-project')) if request.GET.get('split-by-project') else False,
             'split_by_dates': str2bool(request.GET.get('split-by-dates')) if request.GET.get('split-by-dates') else True,
+            'overtime': str2bool(request.GET.get('overtime')) if request.GET.get('overtime') else False,
             'show_proj_cat': str2bool(request.GET.get('show-proj-cat')) if request.GET.get('show-proj-cat') else True,
             'company': request.user.company,
         }
@@ -719,10 +755,10 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'js_on_cell_click_func' : '''<script>
                                             function showTLines(emplId, projId, dFrom, dTo){
                                                 if (projId == 0) {
-                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo%(projects)s%(customers)s
+                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo + "%(qstring)s"
                                                 }
                                                 else {
-                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo + "?projects=" + projId
+                                                    window.location.href="%(urlbase)s" + "/" + emplId + "/" + dFrom + "/" + dTo + "?projects=" + projId +"%(overtime)s"
                                                 }
                                             }
                                         </script>''',
@@ -745,10 +781,14 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             }
 
         def get_js():
+            qstring = qstring_add_param(None, 'projects', kwargs.get('project_ids', ''))
+            if not qstring: qstring = qstring_add_param(qstring, 'customers', kwargs.get('customer_ids', '')) # By current design project is always defining the customer
+            qstring = qstring_add_param(qstring, 'overtime', int(kwargs.get('overtime', False)), 0)
+            overtime = qstring_add_param('&', 'overtime', int(kwargs.get('overtime', False)), 0)
             return self.meta['js_on_cell_click_func'] % {
                 'urlbase': reverse('report-time-summary-details'),
-                'projects': ' + "?projects=' + kwargs.get('project_ids', '') + '"' if kwargs.get('project_ids') else '',
-                'customers': ' + "?customers=' + kwargs.get('customer_ids', '') + '"' if kwargs.get('customer_ids') else '',
+                'qstring': qstring,
+                'overtime': overtime,
             }
 
         meta = {

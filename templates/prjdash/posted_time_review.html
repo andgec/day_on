@@ -38,7 +38,7 @@
 			<!-- h3>{{employee.full_name}}</h3>  -->
 			<!--  h3>{{project.name}}</h3>  -->
 			<!-- {{project.description}}   -->
-			<div class="results" style="overflow-x:auto;">
+			<div class="results">
 				<table class="time-register">
 					<thead>
 						<tr>
@@ -48,6 +48,7 @@
 							<th scope="col">{{ _('Date') }}</th>
 							<th scope="col">{{ _('Time') }}</th>
 							<th id="num-col" scope="col">{{ _('Hours') }}</th>
+							<th id="num-col">{{ _('overtime')|add:' 50%' }}</th>
 							<th id="num-col">{{ _('Distance (km)') }}</th>
 							<th id="num-col">{{ _('Toll ring') }}</th>
 							<th id="num-col">{{ _('Ferry') }}</th>
@@ -73,6 +74,7 @@
 						<td></td>
 						<td style="text-align:right">{{ _('Total') }}:</td>
 						<td id="num-col">{{ journal_totals.work_time__sum|default_if_none:"" }}</td>
+						<td id="num-col">{{ journal_totals.overtime_50__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.distance__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.toll_ring__sum|default_if_none:"" }}</td>
 						<td id="num-col">{{ journal_totals.ferry__sum|default_if_none:"" }}</td>

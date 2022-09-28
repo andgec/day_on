@@ -32,7 +32,9 @@
 
 							<td>{{journal_line.work_date|date:'Y-m-d'}}</td>
 							<td>{{journal_line.work_time_from}} - {{journal_line.work_time_to}}</td>
-							<td id="num-col" >{{journal_line.work_time}}</td>
+							<!-- td id="num-col" >{{journal_line.work_time}}</td -->
+							<td id="num-col" >{%if journal_line.is_overtime%} {%else%} {{journal_line.work_time}}{%endif%}</td>
+							<td id="num-col">{{journal_line.overtime_50|default_if_none:""}}</td>
 							<td id="num-col">{{journal_line.distance|default_if_none:""}}</td>
 							<td id="num-col">{{journal_line.toll_ring|default_if_none:""}}</td>
 							<td id="num-col">{{journal_line.ferry|default_if_none:""}}</td>
@@ -40,7 +42,7 @@
 							<td id="num-col">{{journal_line.diet|default_if_none:""}}</td>
 							<td id="button-edit-col">
 							{% if mode != 'edit' %}
-								<div>
+								<div style="min-width: 130">
 									<a class="btn-edit" title = {{ _('Modify') }} href={% url 'pdash-time-review' location=location project_id=project.id pk=journal_line.id mode='edit' %}><i class="fa fa-edit"></i></a>
 									&nbsp&nbsp
 									<button class="btn-edit btn-delete-dialog" style="width:55px;" onClick="showDialog({{journal_line.id}})"; title = {{ _('Delete') }}><i class="fas fa-times"></i></button>

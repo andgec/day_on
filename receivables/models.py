@@ -100,6 +100,21 @@ class WorkTimeJournal(CoModel):
                              auto_now = True,
                              verbose_name = _('Created date/time')
                              )
+
+    #Temporary solution for overtime management
+    def _get_is_overtime(self):
+        return self.overtime_50 is not None and self.overtime_50 > 0
+
+    def _set_is_overtime(self, val = False):
+        if val:
+            self.work_time = self.calc_work_hours()
+            self.overtime_50 = self.work_time
+        else:
+            self.overtime_50 = None
+
+    is_overtime = property(_get_is_overtime, _set_is_overtime)
+    #Temporary solution for overtime management
+
     def clean(self):
         v_errors = {}
         if self.calc_work_hours() == 0:

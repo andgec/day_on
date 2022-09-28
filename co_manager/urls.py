@@ -12,6 +12,7 @@ from djauth      import urls as djauth_urls
 from prjdash     import urls as prjdash_urls
 from reports     import urls as reports_urls
 from receivables import urls as receivb_urls
+from salary      import urls as staff_urls
 
 
 urlpatterns = i18n_patterns(
@@ -23,6 +24,7 @@ urlpatterns = i18n_patterns(
     url(r'^admin/', admin_site.urls, name='admin'),
     url(r'^v1/pdash/', include(prjdash_urls.urlpatterns)),
     url(r'^reports/', include(reports_urls.urlpatterns)),
+    url(r'^staff/', include(staff_urls.urlpatterns)),
     prefix_default_language=False
 )
 

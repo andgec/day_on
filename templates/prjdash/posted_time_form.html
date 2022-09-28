@@ -39,12 +39,20 @@
 							{{ form.work_date }}
 						</td>
 						<td>
-							{{ form.work_time_from.errors }}
-							{{ form.work_time_from }} {{ _('to') }}
-							{{ form.work_time_to.errors }}
-							{{ form.work_time_to }}
+							<div style="min-width:130px; float:left;">
+								{{ form.work_time_from.errors }}
+								{{ form.work_time_from }} {{ _('to') }}
+							</div>
+							<div style="min-width:130px;">
+								{{ form.work_time_to.errors }}
+								{{ form.work_time_to }}
+							</div>
 						</td>
 						<td></td>
+						<td id="num-col" style="text-align:right">
+							{{ form.is_overtime.errors }}
+							{{ form.is_overtime }}
+						</td>
 						<td id="num-col">
 							{{ form.distance.errors }}
 							{{ form.distance }}
@@ -67,14 +75,16 @@
 						</td>
 						<!-- td>  -->
 						<td id="button-save-col">
-							<button class="btn-create" title = {{ _('Register') }} type="submit">
-								<!-- i class="fa fa-plus-circle"></i>  -->
-								<i class="fa fa-save"></i>
-							</button>
-							&nbsp&nbsp
-							{% if mode == 'edit' %}
-							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' location=location project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
-							{% endif %}
+							<div {% if mode == 'edit' %}style="min-width: 125px"{% endif %}>
+								<button class="btn-create" title = {{ _('Register') }} type="submit">
+									<!-- i class="fa fa-plus-circle"></i>  -->
+									<i class="fa fa-save"></i>
+								</button>
+								&nbsp&nbsp
+								{% if mode == 'edit' %}
+								<a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' location=location project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
+								{% endif %}
+							<div>
 						</td>
 
 					</tr>

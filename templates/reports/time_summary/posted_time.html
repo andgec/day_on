@@ -24,11 +24,12 @@
 		<h1>{{ _('Time summary') }}&nbsp
 		</h1>
 		<br>
-		
+
 		<h2 style="text-align:left;">
-		    <b>{{lines.0.employee.user.name_or_username}} &#8226
+		    <b>{% if filters.overtime %} {{ _('overtime')|title }} &#8226 {% endif %}
+				{{lines.0.employee.user.name_or_username}} &#8226
 		       {% if filters.one_day %}
-			     {{filters.date_from}} 
+			     {{filters.date_from}}
 			   {% else %}
 			     {{filters.date_from_str}} - {{filters.date_to_str}}
 			   {% endif %}
@@ -38,7 +39,7 @@
     	<div id="content_main">
 		  <div class="project">
 			<div class="results" style="overflow-x:auto;">
-				<table style="width: 85%" class="time-register">
+				<table style="width: 100%" class="time-register">
 					<thead>
 					    <tr><td class = "separator" colspan="99"></td><tr>
 						<tr>
@@ -47,7 +48,7 @@
 							<th scope="col">{{ _('Project') }}</th>
 							<th scope="col">{{ _('Item') }}</th>
 							<th scope="col">{{ _('Time') }}</th>
-							<th id="num-col" scope="col">{{ _('Hours') }}</th>
+							<th id="num-col" scope="col">{%if filters.overtime%}{{ _('overtime')}}{%else%}{{ _('Hours') }}{%endif%}</th>
 							<th id="num-col">{{ _('Distance (km)') }}</th>
 							<th id="num-col">{{ _('Toll ring') }}</th>
 							<th id="num-col">{{ _('Ferry') }}</th>

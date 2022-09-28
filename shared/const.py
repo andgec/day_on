@@ -50,3 +50,9 @@ VARIABLE_TYPE_CHOICES = (
     (OPTION, 'Option'),
     (MULTIPLE, 'Multiple options'),
 )
+
+# View actions
+
+VIEW = 0
+EDIT = 1
+DELETE = 2

@@ -35,12 +35,14 @@ class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
         jr_totals = WorkTimeJournal.objects.filter(company = company,
                                                    work_date = date,
                                                    employee = employee).aggregate(Sum('work_time'),
+                                                                                  Sum('overtime_50'),
                                                                                   Sum('distance'), 
                                                                                   Sum('toll_ring'), 
                                                                                   Sum('ferry'), 
                                                                                   Sum('diet'),
                                                                                   Sum('parking'),
                                                                                   )
+        jr_totals['work_time__sum'] = jr_totals['work_time__sum'] - (0 if jr_totals['overtime_50__sum'] is None else jr_totals['overtime_50__sum']) #temporary overtime solution
         return {'title': _('Time registration'),
                 'date': date,
                 'project': project,
@@ -97,9 +99,9 @@ class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
         request.POST['work_date_month'] = work_date.month
         request.POST['work_date_year'] = work_date.year
         request.POST['employee'] = request.user.employee
-        
+
         form =  self.form_class(request.POST, instance = journal, company = company)
-        
+
         project = Project.objects.get(id=project_id)
         employee = request.user.employee
         if form.is_valid():
@@ -146,12 +148,14 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
         jr_totals = WorkTimeJournal.objects.filter(company = company,
                                                    work_date = date,
                                                    employee = employee).aggregate(Sum('work_time'),
+                                                                                  Sum('overtime_50'),
                                                                                   Sum('distance'),
                                                                                   Sum('toll_ring'),
                                                                                   Sum('ferry'),
                                                                                   Sum('diet'),
                                                                                   Sum('parking'),
                                                                                   Max('work_time_to'))
+        jr_totals['work_time__sum'] = jr_totals['work_time__sum'] - (0 if jr_totals['overtime_50__sum'] is None else jr_totals['overtime_50__sum']) #temporary overtime solution
         if jr_lines.count() > 0:
             hour = jr_totals['work_time_to__max'].hour
             minute = jr_totals['work_time_to__max'].minute
@@ -226,12 +230,14 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
         form =  self.form_class(request.POST, instance = journal, company=company)
 
         employee = request.user.employee
+        is_overtime = request.POST.get('is_overtime', False)
         if form.is_valid():
             journal = form.save(commit=False)
             journal.company = request.user.company
             journal.employee = employee
             journal.content_type = ContentType.objects.get_for_model(Project)
             journal.work_date = work_date
+            journal.is_overtime = is_overtime
             journal.save()
             # Redirect to GET.
             return redirect(reverse('tjr-v2', args = [work_date_str]))

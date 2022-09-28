@@ -75,6 +75,8 @@ class SalesOrderAdminForm(forms.ModelForm): # Unused
 
 
 class WorkTimeJournalForm(forms.ModelForm):
+    is_overtime = forms.BooleanField(required=False)
+
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop('company', None)
         super(WorkTimeJournalForm, self).__init__(*args, **kwargs)
@@ -93,6 +95,7 @@ class WorkTimeJournalForm(forms.ModelForm):
             self.fields['item'].choices = self.items_as_choices()
             self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
             self.fields['description'].widget = forms.Textarea(attrs={'rows': 1, 'placeholder': _('Comment')})
+        self.fields['is_overtime'].initial = self.instance.is_overtime
 
     def items_as_choices(self):
         item_group_list = []
@@ -118,6 +121,7 @@ class WorkTimeJournalForm(forms.ModelForm):
                   'work_date',
                   'work_time_from',
                   'work_time_to',
+                  'is_overtime',
                   'distance',
                   'toll_ring',
                   'ferry',
@@ -133,6 +137,7 @@ class WorkTimeJournalForm(forms.ModelForm):
             'work_date': SelectDateWidget(years = range(2010, 2030)),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
+            'is_overtime': forms.CheckboxInput(attrs={'class': 'timereg_check_field'}), #class attribute doesn't work - why?
             'distance': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'toll_ring': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'ferry': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
@@ -142,6 +147,8 @@ class WorkTimeJournalForm(forms.ModelForm):
 
 
 class WorkTimeJournalForm_V2(forms.ModelForm):
+    is_overtime = forms.BooleanField(required=False)
+
     def __init__(self, *args, **kwargs):
         self.company = kwargs.pop('company', None)
         super(WorkTimeJournalForm_V2, self).__init__(*args, **kwargs)
@@ -160,6 +167,7 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
             self.fields['item'].choices = self.items_as_choices()
             self.fields['item'].error_messages['invalid_choice'] = '' # Clear built-in field validation error message
             self.fields['description'].widget = forms.Textarea(attrs={'rows': 1, "placeholder": _('Comment')})
+        self.fields['is_overtime'].initial = self.instance.is_overtime
 
     def items_as_choices(self):
         item_group_list = []
@@ -187,6 +195,7 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
                   'work_date',
                   'work_time_from',
                   'work_time_to',
+                  'is_overtime',
                   'distance',
                   'toll_ring',
                   'ferry',
@@ -202,6 +211,7 @@ class WorkTimeJournalForm_V2(forms.ModelForm):
             'work_date': SelectDateWidget(years = range(2010, 2030)),
             'work_time_from': SelectTimeWidget(minute_step = 5, seconds_visible = False),
             'work_time_to': SelectTimeWidget(minute_step = 5, seconds_visible = False),
+            'is_overtime': forms.CheckboxInput(attrs={'class': 'timereg_check_field'}), #class attribute doesn't work - why?
             'distance': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'toll_ring': forms.NumberInput(attrs={'class': 'timereg_num_field'}),
             'ferry': forms.NumberInput(attrs={'class': 'timereg_num_field'}),

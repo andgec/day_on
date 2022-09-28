@@ -18,6 +18,10 @@
 				<div class="f-cell checkbox"></div>
 				<div class="f-cell">&nbsp&nbsp{{_('Itemize by dates')}}</div>
 			</div>
+			<div class="f-row data clickable" id="by-overtime" onClick="toggleOvertime()">
+				<div class="f-cell checkbox"></div>
+				<div class="f-cell">&nbsp&nbsp{{ _('overtime')|title }}</div>
+			</div>
         </div>
       </div>
     </div>
@@ -132,6 +136,7 @@
 	  url_date = urlBase + '?date-from=' + filters['date']['from'] + '&date-to=' + filters['date']['to'];
 	  if (filters['params']['split-by-project']) {url_date += '&split-by-project=1'}; //Don't put URL parameter if it has default value
 	  if (!filters['params']['split-by-dates']) {url_date += '&split-by-dates=0'}; //Don't put URL parameter if it has default value
+	  if (filters['params']['overtime']) {url_date += '&overtime=1'}; //Don't put URL parameter if it has default value
 	  if (filters['employees'].length > 0 && filters['employees'][0] != "None")
 	    {url_empl = '&employees=' + filters['employees'].join();} else {url_empl = ''};
   	  if (filters['projects'].length > 0  && filters['projects'][0] != "None")

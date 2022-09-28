@@ -1,3 +1,4 @@
+from calendar import Calendar
 import os
 from ast import literal_eval
 from django.db import models
@@ -5,7 +6,7 @@ from django import forms
 from parler.models import TranslatableModel, TranslatedField, TranslatedFields
 from shared.models import AddressMixin, ContactMixin
 from django.db.models.fields.related import ForeignKey
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
 from django.db.models.deletion import CASCADE, PROTECT
 from django.db.models.constraints import UniqueConstraint
@@ -309,3 +310,98 @@ def create_company_cfg_values(sender, instance, created=False, **kwargs):
             )
 
 models.signals.post_save.connect(create_company_cfg_values, sender=Company)
+
+
+class CalendarType(models.Model):
+    '''
+    Calendar type. For example "Employee holidays", "Car service", "Tool service", "Personal", etc.
+    Some calendar types have extension tables related to specific functionality.
+    Works with CalendarHeader
+    '''
+    id  = models.IntegerField(null=False,
+                              primary_key = True
+    )
+    name = models.CharField(max_length=250,
+                            default = '',
+                            null = False,
+                            verbose_name=_('name')
+    )
+    owner_type = models.ForeignKey(ContentType,
+                                   on_delete=models.PROTECT,
+                                   verbose_name=_('calendar owner type')
+    )
+    '''
+    Type of owner object in related Calendar: "Person", "Invnetory Item", etc.
+    '''
+
+    class Meta:
+        verbose_name = _('calendar type')
+        verbose_name_plural = _('calendar types')
+
+
+    def __str__(self):
+        return self.name
+
+
+
+class CalendarHeader(CoModel):
+    '''
+    General calendar information: name, owner
+    Together with calendar lines makes a calendar.
+    '''
+    type = models.ForeignKey(CalendarType,
+                             null = False,
+                             on_delete = PROTECT,
+                             related_name = 'calendars',
+                             verbose_name = _('type')
+    )
+    name = models.CharField(max_length=250,
+                            default = '',
+                            null = False,
+                            verbose_name=_('name')
+    )
+    owner_type = models.ForeignKey(ContentType,
+                                   on_delete=models.PROTECT
+    )
+    owner_id = models.PositiveIntegerField()
+    owner = GenericForeignKey('owner_type',
+                              'owner_id'
+    )
+    '''
+    3 owner fields above describe an object related to the calendar.
+    For example a person, a car, a tool or anything else.
+    '''
+    class Meta:
+        verbose_name = _('calendar')
+        verbose_name_plural = _('calendars')
+
+    def __str__(self):
+        return  self.name
+
+
+class CalendarLine(models.Model):
+    '''
+    Calendar lines (or records) for a Calendar (CalendarHeader)
+    '''
+    calendar = models.ForeignKey(CalendarHeader,
+                            null = False,
+                            on_delete = PROTECT,
+                            related_name = 'cal_lines',
+                            verbose_name = _('calendar'),
+    )
+    description = models.TextField(blank = True,
+                        null = False,
+                        default = '',
+                        verbose_name = _('description')
+    )
+    dfr = models.DateField(verbose_name = _('date from'))
+    tfr = models.TimeField(verbose_name = _('time from'))
+    dto = models.DateField(verbose_name = _('date to'))
+    tto = models.TimeField(verbose_name = _('time to'))
+
+    class Meta:
+        verbose_name = _('calendar record')
+        verbose_name_plural = _('calendar records')
+
+    def __str__(self):
+        return  self.description

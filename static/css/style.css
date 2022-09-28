@@ -273,3 +273,7 @@ tr:edit-line {background-color: #e2f2e2;}
 .timereg_num_field {
 	width:70px;
 }
+
+.timereg_check_field {
+	transform: scale(2);
+}

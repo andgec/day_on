@@ -101,3 +101,25 @@ def get_image_path(instance, filename):
 
     ## return a path to the new file
     return os.path.join('pictures', instance.images_subdir, filename)
+
+def qstring_add_param(qstring, param, value, default_value = None):
+    '''
+        Painless building of HTML query string.
+        Adds one parameter with value to the HTML query string [qstring].
+        Parameters with empty values are not added to the string.
+        Skipping parameters with default value.
+        Pass "&" for qstring if you want start with "&" instead of "?"
+        For example, return string could be [?customer=321&status=active].
+    '''
+    if param is not None and str(param) != '' and value is not None and str(value) != '' and str(value) != str(default_value):
+        if qstring is None or str(qstring) == '':
+            qstring = '?'
+        else:
+            if qstring == '&':
+                qstring = ''
+            qstring = qstring + '&'
+        return qstring + param + '=' + str(value)
+    else:
+        if qstring == '&':
+            qstring = ''
+        return qstring if qstring is not None else '' # return original qstring or initialize to empty string if qstring was None.
