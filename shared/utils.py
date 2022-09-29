@@ -23,6 +23,12 @@ def str2bool(value):
 def date2str(value):
     return value.strftime("%Y-%m-%d")
 
+def none2zero(value):
+    return 0 if value is None else value
+
+def zero2none(value):
+    return None if value is 0 else value
+
 def start_of_day(date_time: datetime):
     return datetime.combine(date_time.date(), time.min)
 
