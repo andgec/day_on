@@ -15,7 +15,11 @@
 	{% endif %}
 	</div></td>
 	<td>{{line.work_time_from}} - {{line.work_time_to}}</td>
-	<td id="num-col">{{line.work_time}}</td>
+
+	{%if not filters.overtime %}
+		<td id="num-col">{{ line.work_time }}</td>
+	{%endif%}
+	<td id="num-col">{{line.overtime_50|default_if_none:""}}</td>
 	<td id="num-col">{{line.distance|default_if_none:""}}</td>
 	<td id="num-col">{{line.toll_ring|default_if_none:""}}</td>
 	<td id="num-col">{{line.ferry|default_if_none:""}}</td>

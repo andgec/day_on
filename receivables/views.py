@@ -43,7 +43,7 @@ class WorkTimeJournalView(LoginRequiredMixin, View): #Legacy view
                                                                                   Sum('diet'),
                                                                                   Sum('parking'),
                                                                                   )
-        jr_totals['work_time__sum'] = none2zero(jr_totals['work_time__sum']) - none2zero(jr_totals['overtime_50__sum']) #temporary overtime solution
+        #removed: jr_totals['work_time__sum'] = none2zero(jr_totals['work_time__sum']) - none2zero(jr_totals['overtime_50__sum']) #temporary overtime solution
         jr_totals['work_time__sum'] = zero2none(jr_totals['work_time__sum'])
         return {'title': _('Time registration'),
                 'date': date,
@@ -157,7 +157,7 @@ class WorkTimeJournalView_V2(LoginRequiredMixin, View):
                                                                                   Sum('diet'),
                                                                                   Sum('parking'),
                                                                                   Max('work_time_to'))
-        jr_totals['work_time__sum'] = none2zero(jr_totals['work_time__sum']) - none2zero(jr_totals['overtime_50__sum']) #temporary overtime solution
+        # removed: jr_totals['work_time__sum'] = none2zero(jr_totals['work_time__sum']) - none2zero(jr_totals['overtime_50__sum']) #temporary overtime solution
         jr_totals['work_time__sum'] = zero2none(jr_totals['work_time__sum'])
         if jr_lines.count() > 0:
             hour = jr_totals['work_time_to__max'].hour

@@ -14,7 +14,8 @@
 							</div></td>
 							<!-- td>{{jr_line.work_date}}</td>  -->
 							<td>{{jr_line.work_time_from}} - {{jr_line.work_time_to}}</td>
-							<td id="num-col" >{%if jr_line.is_overtime%} {%else%} {{jr_line.work_time}}{%endif%}</td>
+							<!--td id="num-col" >{%if jr_line.is_overtime%} {%else%} {{jr_line.work_time}}{%endif%}</td-->
+							<td id="num-col">{{jr_line.work_time}}</td>
 							<td id="num-col">{{jr_line.overtime_50|default_if_none:""}}</td>
 							<td id="num-col">{{jr_line.distance|default_if_none:""}}</td>
 							<td id="num-col">{{jr_line.toll_ring|default_if_none:""}}</td>

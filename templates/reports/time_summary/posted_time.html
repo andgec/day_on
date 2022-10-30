@@ -48,7 +48,10 @@
 							<th scope="col">{{ _('Project') }}</th>
 							<th scope="col">{{ _('Item') }}</th>
 							<th scope="col">{{ _('Time') }}</th>
-							<th id="num-col" scope="col">{%if filters.overtime%}{{ _('overtime')}}{%else%}{{ _('Hours') }}{%endif%}</th>
+							{%if not filters.overtime %}
+								<th id="num-col" scope="col">{{ _('Hours') }}</th>
+							{%endif%}
+							<th id="num-col" scope="col">{{ _('overtime')}}</th>
 							<th id="num-col">{{ _('Distance (km)') }}</th>
 							<th id="num-col">{{ _('Toll ring') }}</th>
 							<th id="num-col">{{ _('Ferry') }}</th>
@@ -70,7 +73,10 @@
 						<td></td>
 						<td></td>
 						<td style="text-align:right">{{ _('Total') }}:</td>
-						<td id="num-col">{{ totals.time|default_if_none:"" }}</td>
+						{%if not filters.overtime %}
+							<td id="num-col">{{ totals.time|default_if_none:"" }}</td>
+						{%endif%}
+						<td id="num-col">{{ totals.overtime_50|default_if_none:"" }}</td>
 						<td id="num-col">{{ totals.distance|default_if_none:"" }}</td>
 						<td id="num-col">{{ totals.toll|default_if_none:"" }}</td>
 						<td id="num-col">{{ totals.ferry|default_if_none:"" }}</td>

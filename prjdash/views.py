@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.decorators import method_decorator
 from django.views import View
 from receivables.models import Project
-from shared.utils import get_contenttypes
+from shared.utils import get_contenttypes, none2zero
 from django.db import connection
 from .forms import PDashProjectForm, PDashAssignEmployees, ProjectDashTimeReviewForm
 #from botocore.vendored.requests.api import request
@@ -325,7 +325,7 @@ class ProjectDashboardPostedTimeReview(View):
                                                                                  Sum('diet'),
                                                                                  Sum('parking'),
                                                                                  )
-        journal_totals['work_time__sum'] = journal_totals['work_time__sum'] - (0 if journal_totals['overtime_50__sum'] is None else journal_totals['overtime_50__sum']) #temporary overtime solution
+        #removed journal_totals['work_time__sum'] = none2zero(journal_totals['work_time__sum']) - none2zero(journal_totals['overtime_50__sum']) #temporary overtime solution
         context = {
                 'location': location,
                 'title': _('Project management'),

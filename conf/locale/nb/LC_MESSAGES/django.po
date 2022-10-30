@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-28 20:31+0200\n"
+"POT-Creation-Date: 2022-10-30 20:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgid "Address information"
 msgstr "Adresseinformasjon"
 
 #: djauth/admin.py:26 djauth/admin.py:27 djauth/admin.py:34
-#: receivables/models.py:40 reports/views.py:331 salary/models.py:41
+#: receivables/models.py:40 reports/views.py:333 salary/models.py:41
 #: templates/prjdash/posted_time_review.html:46
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
@@ -413,7 +413,7 @@ msgid "Employees"
 msgstr "Ansatte"
 
 #: receivables/forms.py:66 receivables/models.py:269 receivables/models.py:287
-#: reports/views.py:340 templates/prjdash/project_dash.html:64
+#: reports/views.py:342 templates/prjdash/project_dash.html:64
 #: templates/reports/time_summary/posted_time.html:48
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:52
@@ -465,14 +465,14 @@ msgid "Distance"
 msgstr "Avstand"
 
 #: receivables/models.py:79 templates/prjdash/posted_time_review.html:53
-#: templates/reports/time_summary/posted_time.html:53
+#: templates/reports/time_summary/posted_time.html:56
 #: templates/salary/v1/registration_journal.html:57
 #: templates/salary/v2/registration_journal.html:59
 msgid "Toll ring"
 msgstr "Bomring"
 
 #: receivables/models.py:85 templates/prjdash/posted_time_review.html:54
-#: templates/reports/time_summary/posted_time.html:54
+#: templates/reports/time_summary/posted_time.html:57
 #: templates/salary/v1/registration_journal.html:58
 #: templates/salary/v2/registration_journal.html:60
 msgid "Ferry"
@@ -480,7 +480,7 @@ msgstr "Ferge"
 
 #: receivables/models.py:91 templates/prjdash/posted_time_review.html:56
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:91
-#: templates/reports/time_summary/posted_time.html:56
+#: templates/reports/time_summary/posted_time.html:59
 #: templates/salary/v1/registration_journal.html:60
 #: templates/salary/v2/registration_journal.html:62
 msgid "Diet"
@@ -488,7 +488,7 @@ msgstr "Kost"
 
 #: receivables/models.py:97 templates/prjdash/posted_time_review.html:55
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:90
-#: templates/reports/time_summary/posted_time.html:55
+#: templates/reports/time_summary/posted_time.html:58
 #: templates/salary/v1/registration_journal.html:59
 #: templates/salary/v2/registration_journal.html:61
 msgid "Parking"
@@ -550,7 +550,7 @@ msgstr "Nettsted"
 msgid "Customers"
 msgstr "Kunder"
 
-#: receivables/models.py:223 reports/views.py:349
+#: receivables/models.py:223 reports/views.py:351
 msgid "Project category"
 msgstr "Prosjektkategori"
 
@@ -615,7 +615,7 @@ msgstr "Tilknyttet ansatt"
 msgid "Related employees"
 msgstr "Tilknyttede ansatte"
 
-#: receivables/views.py:18 receivables/views.py:46 receivables/views.py:167
+#: receivables/views.py:19 receivables/views.py:48 receivables/views.py:169
 #: templates/admin/base.html:21 templates/base.html:41
 msgid "Time registration"
 msgstr "Timeregistrering"
@@ -629,7 +629,7 @@ msgstr "Rapporter"
 msgid "Print timelist"
 msgstr "Skriv ut timelist"
 
-#: reports/views.py:255 reports/views.py:694 reports/views.py:1070
+#: reports/views.py:257 reports/views.py:723 reports/views.py:1114
 #: templates/admin/base.html:22 templates/base.html:39
 #: templates/reports/time_summary/base_ts.html:5
 #: templates/reports/time_summary/posted_time.html:11
@@ -639,18 +639,22 @@ msgstr "Skriv ut timelist"
 msgid "Time summary"
 msgstr "Tidsoppsumering"
 
-#: reports/views.py:356
+#: reports/views.py:359
 msgid "Total hours"
 msgstr "Totalt antall timer"
 
-#: reports/views.py:557 templates/prjdash/posted_time_review.html:75
-#: templates/reports/time_summary/posted_time.html:72
+#: reports/views.py:366
+msgid "total overtime"
+msgstr "total overtid"
+
+#: reports/views.py:567 templates/prjdash/posted_time_review.html:75
+#: templates/reports/time_summary/posted_time.html:75
 #: templates/salary/v1/registration_journal.html:78
 #: templates/salary/v2/registration_journal.html:80
 msgid "Total"
 msgstr "Totalt"
 
-#: reports/views.py:702
+#: reports/views.py:731
 msgid "No timelist entries for given period."
 msgstr "Ingen tidslisteoppføringer for en gitt periode."
 
@@ -912,13 +916,13 @@ msgstr "Endre historikk"
 
 #: templates/prjdash/posted_time_jrline.html:46
 #: templates/salary/v1/jobreg_jrline.html:14
-#: templates/salary/v2/jobreg_jrline.html:27
+#: templates/salary/v2/jobreg_jrline.html:28
 msgid "Modify"
 msgstr "Endre"
 
 #: templates/prjdash/posted_time_jrline.html:48
 #: templates/salary/v1/jobreg_jrline.html:16
-#: templates/salary/v2/jobreg_jrline.html:29
+#: templates/salary/v2/jobreg_jrline.html:30
 msgid "Delete"
 msgstr "Slette"
 
@@ -940,7 +944,7 @@ msgstr "Tid"
 
 #: templates/prjdash/posted_time_review.html:50
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:83
-#: templates/reports/time_summary/posted_time.html:51
+#: templates/reports/time_summary/posted_time.html:52
 #: templates/salary/v1/registration_journal.html:55
 #: templates/salary/v2/registration_journal.html:56
 msgid "Hours"
@@ -948,14 +952,14 @@ msgstr "Timer"
 
 #: templates/prjdash/posted_time_review.html:51
 #: templates/reports/time_summary/posted_time.html:29
-#: templates/reports/time_summary/posted_time.html:51
+#: templates/reports/time_summary/posted_time.html:54
 #: templates/reports/time_summary/time_table_filters.html:23
 #: templates/salary/v2/registration_journal.html:57
 msgid "overtime"
 msgstr "overtid"
 
 #: templates/prjdash/posted_time_review.html:52
-#: templates/reports/time_summary/posted_time.html:52
+#: templates/reports/time_summary/posted_time.html:55
 #: templates/salary/v1/registration_journal.html:56
 #: templates/salary/v2/registration_journal.html:58
 msgid "Distance (km)"
@@ -1105,11 +1109,11 @@ msgstr "Fra kl. - Til kl."
 msgid "Transport"
 msgstr "Transport"
 
-#: templates/reports/pdf_timelist/pdf_timelist_html4.html:130
+#: templates/reports/pdf_timelist/pdf_timelist_html4.html:131
 msgid "Totals"
 msgstr "Totalt"
 
-#: templates/reports/pdf_timelist/pdf_timelist_html4.html:149
+#: templates/reports/pdf_timelist/pdf_timelist_html4.html:150
 msgid "signature"
 msgstr "signatur"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-28 20:31+0200\n"
+"POT-Creation-Date: 2022-10-30 20:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgid "Address information"
 msgstr "Adresas"
 
 #: djauth/admin.py:26 djauth/admin.py:27 djauth/admin.py:34
-#: receivables/models.py:40 reports/views.py:331 salary/models.py:41
+#: receivables/models.py:40 reports/views.py:333 salary/models.py:41
 #: templates/prjdash/posted_time_review.html:46
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
@@ -418,7 +418,7 @@ msgid "Employees"
 msgstr "Darbuotojai"
 
 #: receivables/forms.py:66 receivables/models.py:269 receivables/models.py:287
-#: reports/views.py:340 templates/prjdash/project_dash.html:64
+#: reports/views.py:342 templates/prjdash/project_dash.html:64
 #: templates/reports/time_summary/posted_time.html:48
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:52
@@ -470,14 +470,14 @@ msgid "Distance"
 msgstr "Atstumas"
 
 #: receivables/models.py:79 templates/prjdash/posted_time_review.html:53
-#: templates/reports/time_summary/posted_time.html:53
+#: templates/reports/time_summary/posted_time.html:56
 #: templates/salary/v1/registration_journal.html:57
 #: templates/salary/v2/registration_journal.html:59
 msgid "Toll ring"
 msgstr "BOM"
 
 #: receivables/models.py:85 templates/prjdash/posted_time_review.html:54
-#: templates/reports/time_summary/posted_time.html:54
+#: templates/reports/time_summary/posted_time.html:57
 #: templates/salary/v1/registration_journal.html:58
 #: templates/salary/v2/registration_journal.html:60
 msgid "Ferry"
@@ -485,7 +485,7 @@ msgstr "Keltas"
 
 #: receivables/models.py:91 templates/prjdash/posted_time_review.html:56
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:91
-#: templates/reports/time_summary/posted_time.html:56
+#: templates/reports/time_summary/posted_time.html:59
 #: templates/salary/v1/registration_journal.html:60
 #: templates/salary/v2/registration_journal.html:62
 msgid "Diet"
@@ -493,7 +493,7 @@ msgstr "Maistas"
 
 #: receivables/models.py:97 templates/prjdash/posted_time_review.html:55
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:90
-#: templates/reports/time_summary/posted_time.html:55
+#: templates/reports/time_summary/posted_time.html:58
 #: templates/salary/v1/registration_journal.html:59
 #: templates/salary/v2/registration_journal.html:61
 msgid "Parking"
@@ -559,7 +559,7 @@ msgstr "Interneto puslapis"
 msgid "Customers"
 msgstr "Klientai"
 
-#: receivables/models.py:223 reports/views.py:349
+#: receivables/models.py:223 reports/views.py:351
 msgid "Project category"
 msgstr "Projekto kategorija"
 
@@ -624,7 +624,7 @@ msgstr "Priskirtas darbuotojas"
 msgid "Related employees"
 msgstr "Priskirti darbuotojai"
 
-#: receivables/views.py:18 receivables/views.py:46 receivables/views.py:167
+#: receivables/views.py:19 receivables/views.py:48 receivables/views.py:169
 #: templates/admin/base.html:21 templates/base.html:41
 msgid "Time registration"
 msgstr "Laiko registravimas"
@@ -638,7 +638,7 @@ msgstr "Ataskaitos"
 msgid "Print timelist"
 msgstr "Spausdinti laiko tabelį"
 
-#: reports/views.py:255 reports/views.py:694 reports/views.py:1070
+#: reports/views.py:257 reports/views.py:723 reports/views.py:1114
 #: templates/admin/base.html:22 templates/base.html:39
 #: templates/reports/time_summary/base_ts.html:5
 #: templates/reports/time_summary/posted_time.html:11
@@ -648,18 +648,22 @@ msgstr "Spausdinti laiko tabelį"
 msgid "Time summary"
 msgstr "Laiko suvestinė"
 
-#: reports/views.py:356
+#: reports/views.py:359
 msgid "Total hours"
 msgstr "Bendras valandų skaičius"
 
-#: reports/views.py:557 templates/prjdash/posted_time_review.html:75
-#: templates/reports/time_summary/posted_time.html:72
+#: reports/views.py:366
+msgid "total overtime"
+msgstr "bendras viršval. skaičius"
+
+#: reports/views.py:567 templates/prjdash/posted_time_review.html:75
+#: templates/reports/time_summary/posted_time.html:75
 #: templates/salary/v1/registration_journal.html:78
 #: templates/salary/v2/registration_journal.html:80
 msgid "Total"
 msgstr "Viso"
 
-#: reports/views.py:702
+#: reports/views.py:731
 msgid "No timelist entries for given period."
 msgstr "Nurodytu laikotarpiu nerasta jokių laiko žiniaraščio įrašų."
 
@@ -923,13 +927,13 @@ msgstr "Pakeitimų istorija"
 
 #: templates/prjdash/posted_time_jrline.html:46
 #: templates/salary/v1/jobreg_jrline.html:14
-#: templates/salary/v2/jobreg_jrline.html:27
+#: templates/salary/v2/jobreg_jrline.html:28
 msgid "Modify"
 msgstr "Keisti"
 
 #: templates/prjdash/posted_time_jrline.html:48
 #: templates/salary/v1/jobreg_jrline.html:16
-#: templates/salary/v2/jobreg_jrline.html:29
+#: templates/salary/v2/jobreg_jrline.html:30
 msgid "Delete"
 msgstr "Šalinti"
 
@@ -951,7 +955,7 @@ msgstr "Laikas"
 
 #: templates/prjdash/posted_time_review.html:50
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:83
-#: templates/reports/time_summary/posted_time.html:51
+#: templates/reports/time_summary/posted_time.html:52
 #: templates/salary/v1/registration_journal.html:55
 #: templates/salary/v2/registration_journal.html:56
 msgid "Hours"
@@ -959,14 +963,14 @@ msgstr "Valandos"
 
 #: templates/prjdash/posted_time_review.html:51
 #: templates/reports/time_summary/posted_time.html:29
-#: templates/reports/time_summary/posted_time.html:51
+#: templates/reports/time_summary/posted_time.html:54
 #: templates/reports/time_summary/time_table_filters.html:23
 #: templates/salary/v2/registration_journal.html:57
 msgid "overtime"
 msgstr "viršvalandžiai"
 
 #: templates/prjdash/posted_time_review.html:52
-#: templates/reports/time_summary/posted_time.html:52
+#: templates/reports/time_summary/posted_time.html:55
 #: templates/salary/v1/registration_journal.html:56
 #: templates/salary/v2/registration_journal.html:58
 msgid "Distance (km)"
@@ -1120,11 +1124,11 @@ msgstr "Nuo - iki"
 msgid "Transport"
 msgstr "Transportas"
 
-#: templates/reports/pdf_timelist/pdf_timelist_html4.html:130
+#: templates/reports/pdf_timelist/pdf_timelist_html4.html:131
 msgid "Totals"
 msgstr "Viso"
 
-#: templates/reports/pdf_timelist/pdf_timelist_html4.html:149
+#: templates/reports/pdf_timelist/pdf_timelist_html4.html:150
 msgid "signature"
 msgstr "parašas"
 
