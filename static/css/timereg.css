@@ -5,3 +5,11 @@
 .treg_form_descr{
 	padding-top:2px;
 }
+
+input[type="checkbox"] {
+	transform: scale(2);
+	position: relative;
+	top: 0.38em;
+	right: 3em;
+	accent-color: #417690;
+}
