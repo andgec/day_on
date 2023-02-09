@@ -1,0 +1,40 @@
+div.hld-cal-toolbar{
+    margin-bottom: 1em;
+}
+
+#hldCardCtrl{
+    padding-left: 1em;
+    padding-top: 0.5em;
+    background-color: white;
+    border-top: solid 0.1em gray;
+    border-left: solid 0.1em gray;
+    border-right: solid 0.1em gray;
+    box-shadow: 
+        -0.2em -0.2em 0.4em gray,
+        0.2em -0.2em 0.4em gray;
+    width: 8em;
+    height: 2em;
+    z-index: 1;
+}
+
+button {
+    background-color: #979797;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+  
+button:hover {
+    background-color: #747474;
+}
+  
+button:active {
+    background-color: #494949;
+}
+
+button:disabled {
+    background-color: #e0e0e0;
+}

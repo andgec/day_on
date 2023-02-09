@@ -1,11 +1,12 @@
 from django.db import models
 from django.db.models.fields.related import OneToOneField
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models.deletion import CASCADE
 from django.utils.translation import ugettext_lazy as _
 
 from djauth.models import User
 from shared.models import AddressMixin
-from general.models import CoModel
+from general.models import CoModel, CalendarHeader
 
 class Employee(AddressMixin, CoModel):
     user        = OneToOneField(User, primary_key=True, related_name='employee', on_delete=CASCADE)
@@ -36,6 +37,9 @@ class Employee(AddressMixin, CoModel):
         return self.user.is_active
     is_active.boolean = True
     is_active.short_description = _('Active')
+
+    # Generic relation to calendars
+    calendars = GenericRelation(CalendarHeader)
 
     class Meta:
         verbose_name = _('Employee')

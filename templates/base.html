@@ -12,11 +12,13 @@
 			{% if title %} {{ title }} {% endif %}
 		{% endblock %}
 		</title>
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+		<!--link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"-->
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'css/menus.css' %}">
 		<link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
-		<!-- link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">  -->
+		<link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
+
+		<script src="https://kit.fontawesome.com/558768aa0c.js" crossorigin="anonymous"></script>
 		{% block linked_files %}
 		{% endblock %}
 	</head>
@@ -34,7 +36,7 @@
                     <div class="dropdown-content">
 				      {% if user.is_staff or user.is_superuser %}
 				        <a href="{% url 'admin:index' %}" class='top-menu'>{{ _('Administration') }}</a>
-						<!--a href="{% url 'employees' %}  " class='top-menu'>{{ _('staff management') }}</a-->
+						<a href="{% url 'employees' %}  " class='top-menu'>{{ _('staff management') }}</a>
 				        <a href="{% url 'pdash' %}" class='top-menu'>{{ _('Project management') }}</a>
 				        <a href="{% url 'report-time-summary' %}">{{ _('Time summary') }}</a>
 				      {% endif %}

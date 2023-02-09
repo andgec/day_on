@@ -1,0 +1,56 @@
+<div>
+    <form id = "calEdit" action = "" method = "post">
+        {% csrf_token %}
+        <input id="id_id" name = "id" type="hidden" value="{{form.instance.id}}">
+        <br>
+        <div>{{_("description")|capfirst}} ({{ _("not required")}})</div>
+        <div>{{form.description.errors}} {{form.description}}</div><br>
+        <div>
+            {{form.dtfr.errors}}
+            <div>{{_("date from")|capfirst}}</div>
+            <div>{{form.dtfr}}</div><br>
+        </div>
+        <div>{{_("date to")|capfirst}}</div>
+        <div>{{form.dtto.errors}}{{form.dtto}}</div>
+
+        {{ form.item.errors }}
+    </form>
+</div>
+<script>
+    function transferData() {
+        //Transfers data from the dataset in the memory to actual control elements on the form.
+        ds = state.hld.activeHldLine.dataset;
+        document.getElementById("id_id").value = ds.id;
+        document.getElementById("id_description").value = ds.description;
+
+        document.getElementById("id_dtfr_year").value = parseInt(ds.dfry);
+        document.getElementById("id_dtfr_month").value = parseInt(ds.dfrm);
+        document.getElementById("id_dtfr_day").value = parseInt(ds.dfrd);
+
+        document.getElementById("id_dtto_year").value = parseInt(ds.dtoy);
+        document.getElementById("id_dtto_month").value = parseInt(ds.dtom);
+        document.getElementById("id_dtto_day").value = parseInt(ds.dtod);
+    };
+
+    function editHandler() {
+        //prefill data from the appropriate line
+        transferData();
+        openCard();
+    };
+
+    function clearData() {
+        ds = state.hld.activeHldLine.dataset;
+        ds.id = null;
+        ds.description = "";
+
+        ds.dfry = 2020;
+        ds.dfrm = 1;
+        ds.dfrd = 1;
+
+        ds.dtoy = 2020;
+        ds.dtom = 1;
+        ds.dtod = 1;
+        transferData();
+    };
+
+</script>

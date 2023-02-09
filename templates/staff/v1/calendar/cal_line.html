@@ -1,0 +1,60 @@
+<div id="em"></div>
+<script>
+  var em = document.getElementById('em').clientWidth;
+
+  function hldHover(caller) {
+    caller.classList.add("cal-line-hover");
+    hcc = document.getElementById("hldCardCtrl");
+    hcc.style.display = "block";
+    hcc.style.position = "absolute";
+    /*const rect = caller.getBoundingClientRect();*/
+    /*hcc.style.top = rect.top - 2.5*em - window.pageYOffset; shoul also work*/
+    hcc.style.top = caller.offsetTop - 2.48*em;
+    state.hld.activeHldLine = caller;
+    Object.assign(state.hld.activeHldLine.dataset, caller.firstElementChild.dataset); //loading data from an active line
+  };
+  
+  function hldCardCtrlMouseLeave(caller, event) {
+    if (!event.relatedTarget || event.relatedTarget !== state.hld.activeHldLine) {
+      hcc = document.getElementById("hldCardCtrl");
+      hcc.style.display = "none";
+      state.hld.activeHldLine.classList.remove("cal-line-hover");
+    };
+  };
+
+  function hldMouseLeave(caller, event) {
+    var hcc = document.getElementById("hldCardCtrl");
+    if (event.relatedTarget.className.indexOf("ccBtn") !== -1) {
+      return;
+    };
+    if (!event.relatedTarget || 
+        event.relatedTarget !== hcc)
+    {
+      caller.classList.remove("cal-line-hover");
+      hcc.style.display = "none";
+    };
+  };
+
+</script>
+<div class="cal-line" onmouseover="hldHover(this)" onmouseleave="hldMouseLeave(this, event)">
+  <div
+    class="hld-data"
+    data-id = "{{holiday.id}}"
+    data-description="{{holiday.description}}"
+    data-dfry="{{holiday.dtfr|date:"Y"}}"
+    data-dfrm="{{holiday.dtfr|date:"m"}}"
+    data-dfrd="{{holiday.dtfr|date:"d"}}"
+    data-dtoy="{{holiday.dtto|date:"Y"}}"
+    data-dtom="{{holiday.dtto|date:"m"}}"
+    data-dtod="{{holiday.dtto|date:"d"}}">
+  </div>
+  <div class="checkbox-wrapper-24">
+    <input type="checkbox" id={{holiday.id}} name="check" value="" onchange="handleChange(this);"/>
+    <label for={{holiday.id}}>
+      <span><!-- This span is needed to create the "checkbox" element --></span>
+    </label>
+  </div>
+
+  {% if holiday.description == "" %} {{ _("holiday")|capfirst }} {% else %} {{ holiday.description|capfirst}} {% endif %}<br>
+  {{holiday.dtfr|date:"DATE_FORMAT"}} - {{holiday.dtto|date:"DATE_FORMAT"}}
+</div>

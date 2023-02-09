@@ -1,0 +1,55 @@
+<!-- Delete confirmation dialog -->
+<!-- Required stylesheets: 'css/dialogs.css' -->
+
+<div id="card-dialog" class="modal-dialog">
+    <div class="dialog-content">
+      <div class="dialog-title center"> {{_('edit')}} <span id="closeCard" class="close">&times;</span></div>
+      <div id="card-body" class="dialog-body">
+        <!--p><h2>{{_('fill in desired values and strike "Commit"')}}</h2></p-->
+        <!--h3>{{_('If you will confirm, the record will be irrecoverably deleted.')}}</h3-->
+      </div>
+      <div class="dialog-footer">
+        <button id="btn-card-conf" class="btn-save" title = "{{ _('Confirm') }}">
+          {{_('Confirm')}}
+        </button>
+        <span class="btn-spacing"/>
+        <button id="btn-card-canc" class="btn-cancel" title = "{{ _('Cancel') }}">
+          {{_('Cancel')}}
+        </button>
+      </div>
+    </div>
+</div>
+<script>
+  var cardDialog = document.getElementById("card-dialog");
+
+  initCard = function(form) {
+    // Initializes card dialog. Moves record form into the dialog.
+    if (typeof cardDialog.handlerForm == 'undefined') {
+      cardDialog.handlerForm = form;
+      document.getElementById('card-body').appendChild(form);
+    }
+  }
+
+  openCard = function() {
+    cardDialog.style.display = "block";
+  }
+
+  confirmCard = function() {
+    cardDialog.style.display = "none";
+    cardDialog.handlerForm.submit();
+    window.history.replaceState( null, null, window.location.href ); // Preventing form resubmission dialog on refresh
+  }
+
+  cancelCard = function() {
+    cardDialog.style.display = "none";
+  };
+
+  var btnCardConfirm = document.getElementById("btn-card-conf");
+  btnCardConfirm.onclick = confirmCard;
+
+  var spanCard = document.getElementById("closeCard");
+  spanCard.onclick = cancelCard;
+
+  var btnCardCancel = document.getElementById("btn-card-canc");
+  btnCardCancel.onclick = cancelCard;
+</script>

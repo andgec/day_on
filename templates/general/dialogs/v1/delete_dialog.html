@@ -1,0 +1,48 @@
+<!-- Delete confirmation dialog -->
+<!-- Required stylesheets: 'css/dialogs.css' -->
+
+<div id="delete-dialog" class="modal-dialog">
+    <div class="dialog-content">
+      <div class="dialog-title center"> {{_('Warning')}} <span class="close">&times;</span></div>
+      <div class="dialog-body">
+        <p><h2>{{_('Do you really want to delete this record?')}}</h2></p>
+        <h3>{{_('If you will confirm, the record will be irrecoverably deleted.')}}</h3>
+      </div>
+      <div class="dialog-footer">
+        <button id="btn-conf" class="btn-save" title = "{{ _('Confirm') }}">
+          {{_('Confirm')}}
+        </button>
+        <span class="btn-spacing"/>
+        <button id="btn-canc" class="btn-cancel" title = "{{ _('Cancel') }}">
+          {{_('Cancel')}}
+        </button>
+      </div>
+    </div>
+ </div>
+ <script>
+   var deleteDialog = document.getElementById("delete-dialog");
+
+   openDeleteDialog = function(form) {
+     deleteDialog.style.display = "block";
+     deleteDialog.handlerForm = form;
+   }
+
+   confirmDelete = function() {
+     deleteDialog.style.display = "none";
+     deleteDialog.handlerForm.submit();
+     window.history.replaceState( null, null, window.location.href ); // Preventing form resubmission dialog on refresh
+   }
+
+   cancelDelete = function() {
+    deleteDialog.style.display = "none";
+   };
+
+   var btnConfirm = document.getElementById("btn-conf");
+   btnConfirm.onclick = confirmDelete;
+
+   var span = document.getElementsByClassName("close")[0];
+   span.onclick = cancelDelete;
+
+   var btnCancel = document.getElementById("btn-canc");
+   btnCancel.onclick = cancelDelete;
+ </script>

@@ -27,6 +27,7 @@ from conf.settings import TIMELIST_LINES_PER_PAGE
 from dateutil.relativedelta import relativedelta
 from general.utils import get_fields_visible
 from shared.utils import qstring_add_param
+from general.models import CalendarHeader, CalendarLine, HOLIDAY, ILLNESS, ABSENCE
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -506,14 +507,47 @@ class TimeSummaryBaseView(View):
                     )
         return timelist_data
 
-    def get_distinct_empl_ids(self, timelist_data):
-        # get distinct employee ids from timelist data
+    def get_calendar_data(self, **kwargs):
+        q_list = [Q(calendar__company=kwargs['company'])]
+        q_list.append(Q(calendar__type__in=[HOLIDAY, ILLNESS, ABSENCE]))
+        q_list.append(Q(calendar__owner_type=ContentType.objects.get(app_label='salary', model='employee')))
+
+        employee_ids = kwargs.get('employee_ids')
+        if employee_ids:
+            q_list.append(Q(calendar__owner_id__in=employee_ids.split(',')))
+
+        calendar_data = CalendarLine.objects.select_related(
+            "CalendarHeader").filter(
+                reduce(operator.and_, q_list)).filter(
+                Q(dtfr__gte=kwargs.get('date_from')) & Q(dtfr__lte=kwargs.get('date_to')) |
+                Q(dtto__gte=kwargs.get('date_from')) & Q(dtto__lte=kwargs.get('date_to')) |
+                Q(dtfr__lt=kwargs.get('date_from')) & Q(dtto__gt=kwargs.get('date_to'))).values(
+                    'calendar__type',
+                    'calendar__owner_id',
+                    'id',
+                    'description',
+                    'dtfr',
+                    'dtto'
+                    ).order_by('calendar__owner_id', 'dtfr', 'dtto', 'id')
+
+        return calendar_data
+
+    def get_distinct_empl_ids(self, timelist_data, calendar_data, **kwargs):
+        # get distinct employees from timelist data
         empl_ids = []
         prev_empl_id = 0
-        for line in timelist_data:
+        for line in timelist_data:  # Adding all employees from timelist
             if line['employee_id'] != prev_empl_id:
                 empl_ids.append(line['employee_id'])
                 prev_empl_id = line['employee_id']
+
+        # Adding distinct employees from calendar
+        if not kwargs.get('split_by_project', False): #temporary. To be removed when split by dates is implemented with calemdar support.
+            for line in calendar_data:
+                if line['calendar__owner_id'] != prev_empl_id:
+                    if line['calendar__owner_id'] not in empl_ids:
+                        empl_ids.append(line['calendar__owner_id'])
+                    prev_empl_id = line['calendar__owner_id']
 
         return empl_ids        
 
@@ -527,7 +561,7 @@ class TimeSummaryBaseView(View):
     def build_employee_time_matrix(self, header_data, employee_data, project_data, **kwargs):
         # makes an empty matrix with rows for employees (and projects if requested) and columns for dates (if requested)
         time_matrix = {}
-        even = True;
+        even = True
         prev_empl_id = 0
         col_count = self.__get_report_col_count(**kwargs)
         if kwargs.get('split_by_project', False):
@@ -536,7 +570,7 @@ class TimeSummaryBaseView(View):
                     col_num = 0
                     is_next_empl = prev_empl_id != employee_id
                     time_matrix_line = {}
-                    even = not even;
+                    even = not even
                     for col in header_data:
                         col_num += 1
                         is_last_col = col_num == len(header_data)
@@ -548,14 +582,15 @@ class TimeSummaryBaseView(View):
                     if is_next_empl:
                         prev_empl_id = employee_id
         else:
+            # For each employee for each header column add a matrix cell with its metadata
             for employee_id in employee_data.keys():
                 time_matrix_line = {}
                 col_num = 0
-                even = not even;
+                even = not even
                 for col in header_data:
                     col_num += 1
                     is_last_col = col_num == len(header_data)
-                    time_matrix_line[col['name']] = {'data': 0,
+                    time_matrix_line[col['name']] = {'data': employee_data[employee_id] if col['name'] == 'employee' else 0,
                                                      'meta': self._get_cell_meta(col['name'], even, col_count, last_col = is_last_col),
                                                     }
 
@@ -574,8 +609,13 @@ class TimeSummaryBaseView(View):
 
         return time_matrix
 
-    def fill_employee_time_matrix(self, time_matrix, header_data, employee_data, project_data, timelist_data, **kwargs):
+    def fill_employee_time_matrix(self, time_matrix, employee_data, project_data, timelist_data, **kwargs):
         ''' Filling the working time matrix '''
+
+        # if no timelist data then skip
+        if len(timelist_data) == 0:
+            return time_matrix
+
         overtime = kwargs.get('overtime', False)
 
         if kwargs.get('split_by_project', False):
@@ -603,7 +643,7 @@ class TimeSummaryBaseView(View):
                 else:
                     #removed: subtracting overtime as it will not show up in the main hours view
                     time_matrix[(eid, pid)][line['work_date']]['data'] += line['work_time'] # removed: - line_overtime_50
-                time_matrix[(eid, pid)][line['work_date']]['meta'] = self._get_day_cell_meta(line, (eid, pid), overtime, time_matrix[(eid, pid)][line['work_date']]['meta'])
+                time_matrix[(eid, pid)][line['work_date']]['meta'] = self._get_day_cell_meta(line, (eid, pid), time_matrix[(eid, pid)][line['work_date']]['meta'], overtime = overtime)
 
             if loop_id == (0,0):
                 loop_id = (eid, pid)
@@ -656,7 +696,42 @@ class TimeSummaryBaseView(View):
 
         return time_matrix
 
-    def _get_day_cell_meta(self, line, line_id, overtime, meta):
+    def fill_employee_calendar_data(self, time_matrix, calendar_data, **kwargs):
+
+        # skip if split by project as it is not yet implemented
+        if kwargs.get('split_by_project', False):
+            return time_matrix
+        # if no calendar data then skip
+        if len(calendar_data) == 0:
+            return time_matrix
+
+        for line in calendar_data:
+            eid = line['calendar__owner_id']
+            pid = 0
+
+            fdf = kwargs.get('date_from') # filter date from
+            fdt = kwargs.get('date_to')   # filter date to
+
+            ldf = line['dtfr'].date() # line date from
+            ldt = line['dtto'].date() # line date to
+
+            date_from = ldf if ldf > fdf else fdf # set start date: if event starts before date set on filter then starting with filter date
+            date_to = ldt if ldt < fdt else fdt # set end date: if event ends after date set on filter then end date will be the filter date
+
+            loopdate = date_from
+            delta = datetime.timedelta(days=1)
+
+            # Loop through calendar event period day by day and put meta for each day into the time_matrix
+            while loopdate <= date_to:
+                time_matrix[(eid, pid)][loopdate]['meta'] = self._get_day_cell_meta(
+                    line, (eid, pid), time_matrix[(eid, pid)][loopdate]['meta'], calendar_event_type = line['calendar__type']
+                )
+                loopdate += delta
+
+        return time_matrix
+
+
+    def _get_day_cell_meta(self, line, line_id, meta, **kwargs):
         raise NotImplementedError("Method not implemented")
 
     def _get_total_cell_meta(self, employee_id, meta, **kwargs):
@@ -690,16 +765,14 @@ class TimeSummaryBaseView(View):
         time_matrix = None
         header_data = self.make_report_header(**filters)
         timelist_data = self.get_timelist_data(**filters)
+        calendar_data = self.get_calendar_data(**filters)
 
-        distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
+        distinct_empl_ids = self.get_distinct_empl_ids(timelist_data, calendar_data, **filters)
         employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
         project_data, select_proj_list = self.get_project_data(timelist_data, **filters)
         select_cust_list = self.__get_customer_data(**filters)
 
-        if len(timelist_data) > 0:
-            # distinct_empl_ids = self.get_distinct_empl_ids(timelist_data)
-            # employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
-
+        if len(timelist_data) or (len(calendar_data) and not filters.get('split_by_project', False)):
             time_matrix = self.build_employee_time_matrix(
                 header_data,
                 employee_data,
@@ -708,10 +781,14 @@ class TimeSummaryBaseView(View):
 
             time_matrix = self.fill_employee_time_matrix(
                 time_matrix,
-                header_data,
                 employee_data,
                 project_data,
                 timelist_data,
+                **filters)
+
+            time_matrix = self.fill_employee_calendar_data(
+                time_matrix,
+                calendar_data,
                 **filters)
 
         meta = self._get_report_meta(**filters)
@@ -757,6 +834,9 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'css_cell_workday_even' : 'cellWrkDay-even',    #css class for workday cell (even line)
             'css_cell_wknd_odd'     : 'cellWknd-odd',       #css class for weekend cell (odd line)
             'css_cell_wknd_even'    : 'cellWknd-even',      #css class for weekend cell (even line)
+            'css_cell_cal_event_1'  : 'cellHoliday',        #css class for calendar event - holidays
+            'css_cell_cal_event_2'  : 'cellIllness',        #css class for calendar event - illness
+            'css_cell_cal_event_3'  : 'cellAbsence',        #css class for calendar event - absence
             'css_cell_projcat'      : 'cellProjCat',        #css class for project category cell
             'css_cell_projcat_odd'  : 'cellWrkDay-odd',     #css class for project category cell (odd line)
             'css_cell_projcat_even' : 'cellWrkDay-even',    #css class for project category cell (even line)
@@ -894,22 +974,27 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
     def _get_cell_meta(self, col, even, col_count, new_section = False, last_col = False):
         return {'cssClass': self.__get_css_class_for_data_cell(col, even, col_count, new_section)}
 
-    def _get_day_cell_meta(self, line, line_id, overtime, meta):
-        meta['onClick'] = self.meta['js_on_click_data_cell'] % {
-                    'empl': line_id[0],
-                    'proj': line_id[1],
-                    'date_from': line['work_date'].strftime("%Y-%m-%d"),
-                    'date_to': line['work_date'].strftime("%Y-%m-%d"),
-                    'overtime': 1 if overtime else 0,
-                    }
+    def _get_day_cell_meta(self, line, line_id, meta, **kwargs):
+        overtime = kwargs.get('overtime', None)
+        if overtime is not None:
+            meta['onClick'] = self.meta['js_on_click_data_cell'] % {
+                        'empl': line_id[0],
+                        'proj': line_id[1],
+                        'date_from': line['work_date'].strftime("%Y-%m-%d"),
+                        'date_to': line['work_date'].strftime("%Y-%m-%d"),
+                        'overtime': 1 if overtime else 0,
+                        }
 
         if meta.get('cssClass'):
             meta['cssClass'] += ' ' + self.meta['css_cell_click'] if meta['cssClass'] != '' else self.meta['css_cell_click']
         else:
             meta['cssClass'] = self.meta['css_cell_click']
 
-        return meta
+        cal_event_type = kwargs.get('calendar_event_type', None)
+        if cal_event_type is not None:
+            meta['cssClass'] += ' ' + self.meta['css_cell_cal_event_'+ str(cal_event_type)]
 
+        return meta
 
     def _get_total_cell_meta(self, line_id, meta, **kwargs):
         meta['onClick'] = self.meta['js_on_click_data_cell'] % {
@@ -986,6 +1071,7 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
                                'wknd-odd'   : {'bg_color': '#E7EFF2'},
                                'wknd-even'  : {'bg_color': '#CFDFE6'},
                                'white'      : {'bg_color': '#FFFFFF'},
+                               'holiday'    : {'bg_color': '#D6DA00'},
                                },
         'font'              : {'type'       : 'enum',
                                'default'    : {'font_color': '#333333',
@@ -1091,7 +1177,6 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
         # get xlsx format object by dictionary cell metadata
         def get_xlsx_format(workbook, format_dict, dcell):
             xlsx_format_props = self.__get_xlsx_format_props(dcell);
-            #print(xlsx_format_props)
             xlsx_format = format_dict.get(str(xlsx_format_props), None)
             if not xlsx_format:
                 xlsx_format = workbook.add_format(xlsx_format_props)
@@ -1160,7 +1245,6 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
         col = self.meta['start_col']
 
         for cell in context['header']:
-            #print(cell)
             col_width = cell['meta'].get('width', None)
             if col_width:
                 sheet.set_column(col, col, col_width)
@@ -1339,8 +1423,12 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
 
         return meta
 
-    def _get_day_cell_meta(self, line, line_id, overtime, meta):
+    def _get_day_cell_meta(self, line, line_id, meta, **kwargs):
         meta['dtype'] = 'decimal'
+        cal_event_type = kwargs.get('calendar_event_type', None)
+        if cal_event_type is not None:
+            if cal_event_type == HOLIDAY:
+                meta['bgcolor'] = 'holiday'
         return meta
 
     def _get_total_cell_meta(self, line_id, meta, **kwargs):

@@ -1,0 +1,92 @@
+<script>
+	// global state variable for sharing state and data between different functions in the page
+	state = {};
+	state.hld = {};
+	state.hld.activeHldLine = {};
+	state.hld.activeHldLine.dataset = {};
+	
+	// Deletion handling
+	// Each time when holiday line checkbox is changed list of selected line ids is loaded into the <input id="ids"> element
+	del = [];
+
+	function handleChange(checkbox) {
+		if (checkbox.checked == true) {
+			del.push(checkbox.id);
+		}
+		else {
+			let index = del.indexOf(checkbox.id);
+			if (index !== -1) {
+				del.splice(index, 1);
+			}
+		};
+		del_ids = document.getElementById("ids");
+		del_ids.value = del.toString();
+		document.getElementById("btnDelete").disabled = del.length == 0;
+	};
+
+</script>
+
+{% for holiday in holidays %}
+	{% include 'staff/v1/calendar/cal_line.html' %}
+{% endfor %}
+
+{% include 'staff/v1/calendar/cal_form.html' %}
+
+<div id="hldCardCtrl" onmouseleave="hldCardCtrlMouseLeave(this, event)">
+	<button class="hld-edit ccBtn" onclick = "editHandler()">Edit</button>
+	<button class="hld-delete ccBtn" onclick = "deleteSingleHandler()">Delete</button>
+</div>
+
+<!-- 
+	Form for handling deleting of calendar lines. Deletion is handled in POST request
+	Data to the Post request is transferred via <input> elements.
+-->
+<form id="formDelete" action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="_method" value="delete">
+	<input type="hidden" id = "ids" name="_ids" value="">
+</form>
+
+<!-- Delete and New/Edit dialogs -->
+{% include 'general/dialogs/v1/delete_dialog.html' %}
+{% include 'general/dialogs/v1/card_dialog.html' %}
+
+<script>
+	document.getElementById("btnDelete").disabled = del.length == 0;
+
+	function deleteHandler() {
+		var formHandler = document.getElementById("formDelete");
+		openDeleteDialog(formHandler);
+	}
+
+	function deleteSingleHandler() {
+		del_ids = document.getElementById("ids");
+		del_ids.value = state.hld.activeHldLine.dataset.id;
+		deleteHandler();
+	};
+
+	initCard(document.getElementById("calEdit")); // Copy form to a dialog card; transfer form variable to the card which will be used for submit.
+
+	function newHanlder() {
+		clearData();
+		openCard();
+	}
+
+	document.getElementById("toolbtnNew").onclick = newHanlder;
+
+	//Error handling
+	errors = "{{form.description.errors.0}}" + "{{form.dtfr.errors.0}}" + "{{form.dtto.errors.0}}"; //put errors into variable
+    if (errors !="" ){ 	//reopen dialog if any errors
+		cancelCard = function() { //override cancelCard method which now have to reload the page to clear all the edit hooks/state
+		  window.location.replace("{% url 'empl_holidays' employee=employee %}");
+		  console.log('cancel function override');
+		};
+		document.getElementById("closeCard").onclick = cancelCard;
+		document.getElementById("btn-card-canc").onclick = cancelCard;
+
+		openCard(); 	//reopen record card automatically
+    };
+
+</script>
+
+

@@ -16,7 +16,7 @@
 					<td class="actions-right">
 					{% if not edit %}
 					    {% if location == 'desktop' %}
-					      <a href="{% url 'pdash' location=location pk=project.id mode='edit'%}" title="{{_('Edit')}}" class="btn-edit pd"><i class="fa fa-edit"></i></a>&nbsp&nbsp
+					      <a href="{% url 'pdash' location=location pk=project.id mode='edit'%}" title="{{_('Edit')}}" class="btn-edit pd"><i class="fas fa-edit"></i></a>&nbsp&nbsp
 					    {% endif %}
 					  {% if project.active %}
 					  	<a href="{% url 'pdash' location=location pk=project.id %}?action=close" title = "{{_('Close')}}" class="btn-close pd"><i class="fas fa-lock"></i></a>

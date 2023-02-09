@@ -1,0 +1,37 @@
+{% extends 'staff/base_staff.html' %}
+
+{% load static %}
+
+{% block linked_files %}
+	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/staff/empl-card.css' %}">
+	{{ form.media.css }}
+
+	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+	{{ form.media.js }}
+
+	<script>
+		function opnHld(emplId){
+				window.location.href="{% url 'empl_holidays' %}" + "/" + emplId;
+		};
+		
+	</script>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+		<div class="breadcrumbs">
+			{{ _('staff')|capfirst }}<a href={% url 'index' %}></a>
+		</div>
+{% endblock %}
+
+{% block content %}
+	<div class="empl-list">
+	{% for employee in employees %}
+		{% include 'staff/v1/staff_line.html' %}
+	{% endfor %}
+	</div>
+{% endblock %}

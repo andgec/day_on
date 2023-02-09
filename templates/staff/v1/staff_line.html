@@ -1,0 +1,37 @@
+<div class="empl-card">
+    <div class = "col1">
+        <div class="col e-photo">
+            <i class="fas fa-user-circle fa-3x"></i>
+        </div>
+        <div class="col e-basic">
+            <div class="col-title">
+            </div>
+            <div class="empl-name">{{ employee }}</div>
+            <div class="empl-info">{{employee.email}}</div>
+            {% if employee.mobile_no != '' %}
+                <div class="empl-info"><b>{{_('Mobile No.')}}:</b> {{employee.mobile_no}}</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col func empl-holiday" onclick="opnHld({{employee.user.id}})">
+        <div class="col-title">
+            <i class="fa fa-umbrella-beach fa-2xl"></i>
+            <h3>{{_("holidays")|capfirst}}</h3>
+        </div>
+        <div class="col-content" title="{{ _("nearest holidays")|capfirst }}">
+            
+            {% for holiday in employee.holidays %}
+                {% if forloop.first %} {{ _("nearest")|capfirst }}<br><br> {% endif %}
+                {{holiday.dtfr|date:"SHORT_DATE_FORMAT"}} - {{holiday.dtto|date:"SHORT_DATE_FORMAT"}}<br>
+            {% empty %}
+                <p class="no-val">{{_("no entries")|capfirst}}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col func">
+
+    </div>
+</div>
+
+
+

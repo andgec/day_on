@@ -1,6 +1,6 @@
-from calendar import Calendar
 import os
-from ast import literal_eval
+#from ast import literal_eval
+from django.core.exceptions import ValidationError
 from django.db import models
 from django import forms
 from parler.models import TranslatableModel, TranslatedField, TranslatedFields
@@ -16,6 +16,11 @@ from shared.utils import get_image_path
 from shared.utils import imagefield_as_base64
 from conf.settings import MEDIA_URL
 from shared.const import VARIABLE_TYPE_CHOICES, BOOLEAN, INTEGER, DECIMAL, STRING, OPTION, MULTIPLE
+
+''' Calendar type constants: '''
+HOLIDAY=1
+ILLNESS=2
+ABSENCE=3
 
 
 class Company(AddressMixin, ContactMixin, models.Model):
@@ -372,11 +377,16 @@ class CalendarHeader(CoModel):
     For example a person, a car, a tool or anything else.
     '''
     class Meta:
+        indexes = [
+            models.Index(fields=["owner_type", "owner_id"]),
+        ]
         verbose_name = _('calendar')
         verbose_name_plural = _('calendars')
 
     def __str__(self):
         return  self.name
+
+    #TODO: uniqueConstrraint on type+owner_type+owner_id
 
 
 class CalendarLine(models.Model):
@@ -394,14 +404,29 @@ class CalendarLine(models.Model):
                         default = '',
                         verbose_name = _('description')
     )
-    dfr = models.DateField(verbose_name = _('date from'))
-    tfr = models.TimeField(verbose_name = _('time from'))
-    dto = models.DateField(verbose_name = _('date to'))
-    tto = models.TimeField(verbose_name = _('time to'))
+    dtfr = models.DateTimeField(verbose_name = _('from'))
+    dtto = models.DateTimeField(verbose_name = _('to'))
 
     class Meta:
         verbose_name = _('calendar record')
         verbose_name_plural = _('calendar records')
+
+    def clean(self):
+        v_errors = {}
+        if self.dtfr > self.dtto:
+            v_errors['dtfr'] = _('the beginning cannot be later than the end').capitalize() + '.'
+
+        '''
+        overlap = self.time_overlap(self.id, self.employee.user.company_id, self.employee_id, self.work_date, self.work_time_from, self.work_time_to)
+        if overlap is not None:
+            v_errors['work_time_from'] = _('Selected time is already used for the task [%(time_from)s-%(time_to)s %(job)s].') % \
+                                    {'time_from': overlap.work_time_from.strftime('%H:%M'),
+                                     'time_to': overlap.work_time_to.strftime('%H:%M'),
+                                     'job': overlap.item,
+                                    }
+        '''
+        if len(v_errors) > 0:
+            raise ValidationError(v_errors, code='invalid_choice')
 
     def __str__(self):
         return  self.description

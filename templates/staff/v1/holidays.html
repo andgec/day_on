@@ -1,0 +1,42 @@
+{% extends 'staff/base_staff.html' %}
+
+{% load static %}
+
+{% block linked_files %}
+	<link rel="stylesheet" href="{% static 'css/jquery/jquery-ui.css' %}">
+	<link rel="stylesheet" href="{% static 'css/staff/empl-card.css' %}">
+	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
+	<link rel="stylesheet" href="{% static 'css/staff/cal-line.css' %}">
+	<link rel="stylesheet" href="{% static 'css/staff/hld-cal-toolbar.css' %}">
+	<!--link rel="stylesheet" href="{% static 'css/buttons.css' %}"-->
+	{{ form.media.css }}
+
+	<script src="{% static 'js/jquery/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-lt.js' %}"></script>
+	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
+	{{ form.media.js }}
+
+	</script>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+		<div class="breadcrumbs">
+			<a href={% url 'employees' %}>{{ _('staff')|capfirst }}</a> ›
+			{{empl_name}} › 
+			{{ _('holidays')|capfirst }}
+		</div>
+{% endblock %}
+
+{% block content %}
+	<h1>{{ _("holidays and days off")|capfirst }}
+	<h2>{{empl_name}}</h2><br>
+
+	<div class="hld-cal-toolbar">
+		<button id="toolbtnNew" class="toolbtn">New</button>
+		<button id="btnDelete" type="button" onclick="deleteHandler()">{{ _('delete selected')|capfirst }}</button> <!-- Remove this from form, put wherever needed - it does not have to be here -->
+	</div>	
+	
+	{% include 'staff/v1/calendar/calendar.html' %}
+{% endblock %}

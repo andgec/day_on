@@ -22,7 +22,7 @@ def forwards_func(apps, schema_editor):
     CalendarType.objects.create(
         # Creating Staff Absence due to illness calendar
         id = 2,
-        name = 'STAFF ILNESS',
+        name = 'STAFF ILLNESS',
         owner_type = ct
     )
 
@@ -35,8 +35,7 @@ def forwards_func(apps, schema_editor):
 
 def reverse_func(apps, schema_editor):
     CalendarType = apps.get_model("general", "CalendarType")
-    CalendarType.objects.get(id=1).delete()
-
+    CalendarType.objects.filter(id__in=[1,2,3]).delete()
 
 class Migration(migrations.Migration):
 
