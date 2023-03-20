@@ -106,7 +106,7 @@ class HolidayView(LoginRequiredMixin, StaffRequiredMixin, View):
     def post(self, request, employee, id=None, *args, **kwargs):
         rec_id = self.request.POST.get('id', None)
         print(rec_id)
-        if rec_id and rec_id != 'None':
+        if rec_id and rec_id != 'null' and rec_id is not None:
             rec_id = int(rec_id)
             rec = CalendarLine.objects.get(id=rec_id)
             form = self.form_class(
