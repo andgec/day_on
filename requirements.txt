@@ -85,7 +85,7 @@ six==1.11.0
     #   html5lib
     #   python-dateutil
     #   xhtml2pdf
-sqlparse==0.2.4
+sqlparse==0.4.4
     # via
     #   django
     #   django-debug-toolbar
