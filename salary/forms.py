@@ -24,7 +24,7 @@ class CalendarLineForm(forms.ModelForm):
         self.owner_type_id = kwargs.pop('owner_type', None)
         self.owner_id = kwargs.pop('owner', None)
         super(CalendarLineForm, self).__init__(data, instance=instance)
-        self.fields['description'].widget = forms.Textarea(attrs={'rows': 1, 'placeholder': self.descr_placeholder})
+        self.fields['description'].widget = forms.Textarea(attrs={'rows': 1, 'placeholder': _(self.descr_placeholder).capitalize})
 
     def _get_calendar_header(self):
         '''
@@ -82,8 +82,7 @@ class HolidayLineForm(CalendarLineForm):
     '''
     cal_type = HOLIDAY
     cal_type_verbose = 'HOLIDAY'
-    descr_placeholder = _("holiday").capitalize()
-
+    descr_placeholder = "holiday"
 
 class IllnessLineForm(CalendarLineForm):
     '''
@@ -91,7 +90,7 @@ class IllnessLineForm(CalendarLineForm):
     '''
     cal_type = ILLNESS
     cal_type_verbose = 'ILLNESS'
-    descr_placeholder = _("illness").capitalize()
+    descr_placeholder = "illness"
 
 class IllselfLineForm(CalendarLineForm):
     '''
@@ -99,7 +98,7 @@ class IllselfLineForm(CalendarLineForm):
     '''
     cal_type = ILLSELF
     cal_type_verbose = 'ILLSELF'
-    descr_placeholder = _("illness").capitalize()
+    descr_placeholder = "illness"
 
 class AbsenceLineForm(CalendarLineForm):
     '''
@@ -107,4 +106,4 @@ class AbsenceLineForm(CalendarLineForm):
     '''
     cal_type = ABSENCE
     cal_type_verbose = 'ABSENCE'
-    descr_placeholder = _("absence").capitalize()
+    descr_placeholder = "absence"
