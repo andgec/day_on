@@ -1,9 +1,9 @@
 <script>
 	// global state variable for sharing state and data between different functions in the page
 	state = {};
-	state.hld = {};
-	state.hld.activeHldLine = {};
-	state.hld.activeHldLine.dataset = {};
+	state.cal = {};
+	state.cal.activeLine = {};
+	state.cal.activeLine.dataset = {};
 	
 	// Deletion handling
 	// Each time when holiday line checkbox is changed list of selected line ids is loaded into the <input id="ids"> element
@@ -26,15 +26,15 @@
 
 </script>
 
-{% for holiday in holidays %}
+{% for record in records %}
 	{% include 'staff/v1/calendar/cal_line.html' %}
 {% endfor %}
 
 {% include 'staff/v1/calendar/cal_form.html' %}
 
-<div id="hldCardCtrl" onmouseleave="hldCardCtrlMouseLeave(this, event)">
-	<button class="hld-edit ccBtn" onclick = "editHandler()">Edit</button>
-	<button class="hld-delete ccBtn" onclick = "deleteSingleHandler()">Delete</button>
+<div id="calCardCtrl" onmouseleave="calCardCtrlMouseLeave(this, event)">
+	<button class="cal-edit ccBtn" onclick = "editHandler()">{{_('edit')|capfirst}}</button>
+	<button class="cal-delete ccBtn" onclick = "deleteSingleHandler()">{{_('delete')|capfirst}}</button>
 </div>
 
 <!-- 
@@ -61,7 +61,7 @@
 
 	function deleteSingleHandler() {
 		del_ids = document.getElementById("ids");
-		del_ids.value = state.hld.activeHldLine.dataset.id;
+		del_ids.value = state.cal.activeLine.dataset.id;
 		deleteHandler();
 	};
 
@@ -69,22 +69,22 @@
 
 	function newHanlder() {
 		clearData();
-		openCard();
+		openCard("{{ _("new record")|capfirst }}");
 	}
 
 	document.getElementById("toolbtnNew").onclick = newHanlder;
 
 	//Error handling
 	errors = "{{form.description.errors.0}}" + "{{form.dtfr.errors.0}}" + "{{form.dtto.errors.0}}"; //put errors into variable
-    if (errors !="" ){ 	//reopen dialog if any errors
+    if (errors != "" ){ 	//reopen dialog if any errors
 		cancelCard = function() { //override cancelCard method which now have to reload the page to clear all the edit hooks/state
-		  window.location.replace("{% url 'empl_holidays' employee=employee %}");
-		  console.log('cancel function override');
+		  window.location.replace("{% url meta.url_alias employee=employee %}");
+		  console.log("{% url meta.url_alias employee=employee %}");
 		};
 		document.getElementById("closeCard").onclick = cancelCard;
 		document.getElementById("btn-card-canc").onclick = cancelCard;
 
-		openCard(); 	//reopen record card automatically
+		openCard(""); 	//reopen record card automatically
     };
 
 </script>

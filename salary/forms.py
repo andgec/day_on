@@ -1,28 +1,30 @@
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-from general.models import CalendarHeader, CalendarLine, HOLIDAY
+from general.models import CalendarHeader, CalendarLine, HOLIDAY, ILLNESS, ILLSELF, ABSENCE
 from .models import Employee
 
-class CalendarLine(forms.ModelForm):
-    ''' Class for general Calendar Entry '''
+class CalendarLineForm(forms.ModelForm):
+    ''' Form Class for generic Calendar Entry '''
     ''' Meant to be derived by specific calendar entries, like HolidayLine, AbsenceLine, etc. '''
 
     ''' TODO: Patestuoti su kitomis kompanijomis '''
+    ''' TODO: Perkelti į general.forms '''
 
     company = None
     id = None
-    calendar_type = None
+    cal_type = None
     owner_type_id = None
     owner_id = None
+    descr_placeholder = ''
 
     def __init__(self, data, instance=None, *args, **kwargs):
         self.company = kwargs.pop('company', None)
         self.id = kwargs.pop('id', None)
-        self.calendar_type = kwargs.pop('calendar_type', None)
-        self.owner_type_id = kwargs.pop('owner_type_id', None)
-        self.owner_id = kwargs.pop('owner_id', None)
-        super(CalendarLine, self).__init__(data, instance=instance)
+        self.owner_type_id = kwargs.pop('owner_type', None)
+        self.owner_id = kwargs.pop('owner', None)
+        super(CalendarLineForm, self).__init__(data, instance=instance)
+        self.fields['description'].widget = forms.Textarea(attrs={'rows': 1, 'placeholder': self.descr_placeholder})
 
     def _get_calendar_header(self):
         '''
@@ -31,7 +33,7 @@ class CalendarLine(forms.ModelForm):
         # Search for relevant calendar header
         cal_header = CalendarHeader.objects.filter(
             company=self.company,
-            type=self.calendar_type,
+            type=self.cal_type,
             owner_type = self.owner_type_id,
             owner_id = self.owner_id)
 
@@ -41,10 +43,10 @@ class CalendarLine(forms.ModelForm):
         else:
             cal_header = CalendarHeader(
                 company = self.company,
-                type_id = HOLIDAY,
+                type_id = self.cal_type,
                 owner_type = self.owner_type_id,
                 owner_id = self.owner_id,
-                name = 'HOLIDAY_' + str(self.owner_type_id.id) + '_' + str(self.owner_id)
+                name = self.cal_type_verbose + '_' + str(self.owner_type_id.id) + '_' + str(self.owner_id)
             )
             cal_header.save()
         return cal_header
@@ -61,6 +63,7 @@ class CalendarLine(forms.ModelForm):
         return obj
 
     class Meta:
+        abstract = True
         model = CalendarLine
         fields = ['description',
                   'dtfr',
@@ -68,23 +71,40 @@ class CalendarLine(forms.ModelForm):
                   ]
 
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 1, 'placeholder': _("holiday").capitalize()}),
             'dtfr': forms.SelectDateWidget(years = range(2020, 2035)),
             'dtto': forms.SelectDateWidget(years = range(2020, 2035)),
         }
 
-class HolidayLine(CalendarLine):
+
+class HolidayLineForm(CalendarLineForm):
     '''
         Form for Holiday calendar entry
     '''
-    def __init__(self, data, instance=None, *args, **kwargs):
-        ''' Initializing Holiday Calendar - specific data '''
-        kwargs['calendar_type'] = HOLIDAY
-        owner_type = kwargs.pop('owner_type')
-        # Avoid accessing database to get owner type if it is transferred from the caller
-        if owner_type is None:
-            kwargs['owner_type_id'] = ContentType.objects.get_for_model(Employee) # if value is not transferred then fallback to read from a database
-        else:
-            kwargs['owner_type_id'] = owner_type
-        kwargs['owner_id'] = kwargs.pop('employee')
-        super().__init__(data, instance=instance, *args, **kwargs)
+    cal_type = HOLIDAY
+    cal_type_verbose = 'HOLIDAY'
+    descr_placeholder = _("holiday").capitalize()
+
+
+class IllnessLineForm(CalendarLineForm):
+    '''
+        Form for Doctor-declared illness calendar entry
+    '''
+    cal_type = ILLNESS
+    cal_type_verbose = 'ILLNESS'
+    descr_placeholder = _("illness").capitalize()
+
+class IllselfLineForm(CalendarLineForm):
+    '''
+        Form for Self-declared illness calendar entry
+    '''
+    cal_type = ILLSELF
+    cal_type_verbose = 'ILLSELF'
+    descr_placeholder = _("illness").capitalize()
+
+class AbsenceLineForm(CalendarLineForm):
+    '''
+        Form for Absence calendar entry
+    '''
+    cal_type = ABSENCE
+    cal_type_verbose = 'ABSENCE'
+    descr_placeholder = _("absence").capitalize()

@@ -25,6 +25,7 @@ div.col1 {
 }
 
 div.col1:hover{
+    background-color: #EEE;
     color: #417690;
 }
 
@@ -52,7 +53,6 @@ div.func {
     display: flex;
     align-items: center;
     text-align: center;
-    min-width: 12em;
     height: 3.8em;
     border-left: 1px solid lightgray;
 }
@@ -89,7 +89,11 @@ div.col-content {
 
 .col{
     float: left;
-    padding: 0.5em;
+    padding: 0.5em 1em 0.5em 0.5em;
+}
+
+.col:hover{
+    background-color: #EEE;
 }
 
 
@@ -100,4 +104,19 @@ p.no-val {
 
 div.empl-holiday {
     min-width: 17.5em;
+}
+
+div.empl-absence b {
+    color: #666;
+}
+
+div.empl-absence:hover > div > b {
+    color: #417690;
+}
+
+div.abs-icon {
+    margin-top: -0.6em;
+    font-size: 2em;
+    font-weight: bolder;
+    max-height: 2.2em;
 }

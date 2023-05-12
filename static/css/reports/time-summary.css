@@ -15,7 +15,7 @@
 }
 
 .cellEmployee div {
-	width: 170px;
+	width: 205px;
 }
 
 .cellProject div {
@@ -31,7 +31,7 @@
 }
 
 .cellTotalHrs div {
-	width: 60px;
+	/*width: 60px;*/
 }
 
 .cellWknd-odd{
@@ -60,19 +60,24 @@
 	border-right: 1px solid #CCC;
 }
 
-.cellHoliday div{
+.cellHoliday div {
 	background-color: rgba(214, 218, 0, 0.42);
 	border: 1px solid rgba(123, 150, 0, 0.49);
 }
 
-.cellIllness {
+.cellAbsence div {
 	background-color: rgba(218, 0, 0, 0.42);
 	border: 1px solid rgba(150, 0, 0, 0.49);
 }
 
-.cellAbsence {
-	background-color: rgba(84, 0, 218, 0.42);
-	border: 1px solid rgba(52, 0, 136, 0.49);
+.cellIllSelf div {
+	background-color: rgba(120, 0, 218, 0.42);
+	border: 1px solid rgba(75, 0, 136, 0.49);
+}
+
+.cellIllness div {
+	background-color: rgba(0, 87, 218, 0.42);
+	border: 1px solid rgba(0, 63, 136, 0.49);
 }
 
 .cellSectionDivider {
@@ -185,9 +190,33 @@
 	width: 4px;
 }
 
-thead th{
+thead th {
 	background-color: white;
 	border: none;
 	text-transform: none;
 	color: #333;
+}
+
+.legend {
+	float: left;
+}
+
+.tsRect div {
+	width: 2em;
+	height: 1em;
+	margin: 0em 0.7em 0em 0em;
+}
+
+.tsTxt {
+	min-width: 13em;
+}
+
+.legendBox {
+	border-left: 0.1em solid white;
+	max-width: 31.5em;
+}
+
+.legendLine {
+	margin-top: 0.3em;
+	display: flex;
 }

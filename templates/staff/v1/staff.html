@@ -15,7 +15,19 @@
 
 	<script>
 		function opnHld(emplId){
-				window.location.href="{% url 'empl_holidays' %}" + "/" + emplId;
+			window.location.href="{% url 'empl_holidays' %}" + "/" + emplId;
+		};
+
+		function opnIll(emplId){
+			window.location.href="{% url 'empl_illness' %}" + "/" + emplId;
+		};
+
+		function opnIllself(emplId){
+			window.location.href="{% url 'empl_illself' %}" + "/" + emplId;
+		};
+
+		function opnAbs(emplId){
+			window.location.href="{% url 'empl_absence' %}" + "/" + emplId;
 		};
 
 	</script>

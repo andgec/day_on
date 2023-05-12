@@ -28,6 +28,27 @@
             {% endfor %}
         </div>
     </div>
+    <div class="col func empl-illself" onclick="opnIllself({{employee.user.id}})">
+        <div class="col-title">
+            <i class="fa-solid fa-bed fa-2xl"></i>
+            <h3>{{_("self notifications")|capfirst}}</h3>
+        </div>
+    </div>
+
+    <div class="col func empl-ill" onclick="opnIll({{employee.user.id}})">
+        <div class="col-title">
+            <i class="fa fa-user-nurse fa-2xl"></i>
+            <h3>{{_("doctor-declared illnesses")|capfirst}}</h3>
+        </div>
+    </div>
+
+    <div class="col func empl-absence" onclick="opnAbs({{employee.user.id}})">
+        <div class="col-title">
+            <div class="abs-icon">zZz</div>
+            <b>{{_("absences")|capfirst}}</b>
+        </div>
+    </div>
+
     <div class="col func">
 
     </div>

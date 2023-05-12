@@ -1,9 +1,9 @@
-<!-- Delete confirmation dialog -->
+<!-- New record or Edit record  dialog -->
 <!-- Required stylesheets: 'css/dialogs.css' -->
 
 <div id="card-dialog" class="modal-dialog">
     <div class="dialog-content">
-      <div class="dialog-title center"> {{_('edit')}} <span id="closeCard" class="close">&times;</span></div>
+      <div id = "new-edit-card" class="dialog-title center"> dummy <span id="closeCard" class="close">&times;</span></div>
       <div id="card-body" class="dialog-body">
         <!--p><h2>{{_('fill in desired values and strike "Commit"')}}</h2></p-->
         <!--h3>{{_('If you will confirm, the record will be irrecoverably deleted.')}}</h3-->
@@ -30,8 +30,18 @@
     }
   }
 
-  openCard = function() {
+  openCard = function(action) {
+    // Shows the card. Sets card title to "action" parameter.
     cardDialog.style.display = "block";
+    // Putting the title on the top of the card:
+    if (action != "") { //On resubmission sending empty string. In that case previous card title is left. Otherwise card title is overwritten.
+      titleDiv = document.getElementById("new-edit-card");
+      child = titleDiv.firstChild;
+      child.remove() // removes the existing title
+      child = titleDiv.firstChild;
+      var titleText = document.createTextNode(action);
+      titleDiv.insertBefore(titleText, child); // puts on the new title
+    }
   }
 
   confirmCard = function() {

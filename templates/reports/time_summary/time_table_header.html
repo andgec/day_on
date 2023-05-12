@@ -1,11 +1,26 @@
 <thead>
-<tr><th colspan={{meta.table_header.whitebar_col_span}}></th></tr>
+
+<tr><th style="border-left: 0.1em solid white" colspan={{meta.table_header.whitebar_col_span}}>
+</th></tr>
 <tr>
 	{% for col in header %}
 		{% if col.caption_month %}
 		  {% ifchanged col.caption_month %}<th class="monthHdrLine MonthHdr" colspan={{col.meta.month_col_span}}>{{col.caption_month}}</th>{% endifchanged %}
 		{% else %}
-		  <th class="monthHdrLine"/>
+			{% if col.name == 'employee' %}
+		  		<th class="monthHdrLine legendBox" colspan={{meta.table_header.non_date_col_span}}>
+					{% if meta.table_header.show_empl_cal_legend %}
+					<div class="legendLine">
+						<div class="legend tsRect cellHoliday"><div></div></div><div class = "legend tsTxt">{{ _('holidays and days off')|capfirst }}</div>
+						<div class="legend tsRect cellIllSelf"><div></div></div><div class = "legend tsTxt">{{ _('self-notified illnesses')|capfirst }}</div>
+					</div>
+					<div class="legendLine">
+						<div class="legend tsRect cellIllness"><div></div></div><div class = "legend tsTxt">{{ _('doctor-declared illnesses')|capfirst }}</div>
+						<div class="legend tsRect cellAbsence"><div></div></div><div class = "legend tsTxt">{{ _('absences')|capfirst }}</div>
+					</div>
+					{% endif %}
+				</th>
+			{% endif %}
         {% endif %}
 	{% endfor %}
 	<th class="pseudo"><div/></th>

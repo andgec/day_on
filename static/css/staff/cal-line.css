@@ -3,7 +3,7 @@ div.cal-line {
     background-color: #EEE;
     margin-bottom: 0.5em;
     display: flex;
-    max-width: 25em;
+    max-width: 26em;
     min-height: 4em;
     align-items: center;
 }
@@ -22,7 +22,7 @@ div.cal-line-hover {
 	position: absolute;
 }
 
-#hldCardCtrl {
+#calCardCtrl {
     display: none;
 }
 

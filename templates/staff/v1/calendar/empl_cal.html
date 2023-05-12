@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="{% static 'css/staff/empl-card.css' %}">
 	<link rel="stylesheet" href="{% static 'css/dialogs.css' %}">
 	<link rel="stylesheet" href="{% static 'css/staff/cal-line.css' %}">
-	<link rel="stylesheet" href="{% static 'css/staff/hld-cal-toolbar.css' %}">
+	<link rel="stylesheet" href="{% static 'css/staff/cal-toolbar.css' %}">
 	<!--link rel="stylesheet" href="{% static 'css/buttons.css' %}"-->
 	{{ form.media.css }}
 
@@ -17,25 +17,23 @@
 	<script src="{% static 'js/jquery/datepicker-no.js' %}"></script>
 	{{ form.media.js }}
 
-	</script>
-
 {% endblock %}
 
 {% block breadcrumbs %}
 		<div class="breadcrumbs">
 			<a href={% url 'employees' %}>{{ _('staff')|capfirst }}</a> ›
 			{{empl_name}} › 
-			{{ _('holidays')|capfirst }}
+			{{meta.verbose_name_plural|capfirst}}
 		</div>
 {% endblock %}
 
 {% block content %}
-	<h1>{{ _("holidays and days off")|capfirst }}
+	<h1>{{meta.verbose_long_name_plural|capfirst}}
 	<h2>{{empl_name}}</h2><br>
 
-	<div class="hld-cal-toolbar">
-		<button id="toolbtnNew" class="toolbtn">New</button>
-		<button id="btnDelete" type="button" onclick="deleteHandler()">{{ _('delete selected')|capfirst }}</button> <!-- Remove this from form, put wherever needed - it does not have to be here -->
+	<div class="cal-toolbar">
+		<button id="toolbtnNew" class="toolbtn">{{ _('new')|capfirst }}</button>
+		<button id="btnDelete" type="button" onclick="deleteHandler()">{{ _('delete selected')|capfirst }}</button>
 	</div>	
 	
 	{% include 'staff/v1/calendar/calendar.html' %}

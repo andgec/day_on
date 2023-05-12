@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-30 20:25+0100\n"
+"POT-Creation-Date: 2023-05-12 09:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgid "Address information"
 msgstr "Adresseinformasjon"
 
 #: djauth/admin.py:26 djauth/admin.py:27 djauth/admin.py:34
-#: receivables/models.py:40 reports/views.py:333 salary/models.py:41
+#: receivables/models.py:40 reports/views.py:344 salary/models.py:45
 #: templates/prjdash/posted_time_review.html:46
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
@@ -90,7 +90,7 @@ msgstr "Bruker med dette brukernavn finnes allerede."
 msgid "email address"
 msgstr "epostadresse"
 
-#: djauth/models.py:23 general/models.py:56 receivables/models.py:26
+#: djauth/models.py:23 general/models.py:61 receivables/models.py:26
 msgid "Company"
 msgstr "Selskap"
 
@@ -111,7 +111,7 @@ msgstr "Medarbeiderstatus"
 msgid "Log in"
 msgstr "Logg inn"
 
-#: general/admin.py:29 general/models.py:100
+#: general/admin.py:29 general/models.py:105
 msgid "Address"
 msgstr "Adresse"
 
@@ -141,188 +141,189 @@ msgstr "%s med disse verdiene finnes allerede"
 msgid "You have entered a duplicate name"
 msgstr "Du har tastet inn et duplikatnavn"
 
-#: general/models.py:22 general/models.py:109 inventory/models.py:13
+#: general/models.py:27 general/models.py:114 inventory/models.py:13
 #: inventory/models.py:44 receivables/models.py:193 receivables/models.py:219
 #: receivables/models.py:232
 msgid "Name"
 msgstr "Navn"
 
-#: general/models.py:23 receivables/models.py:190
+#: general/models.py:28 receivables/models.py:190
 msgid "Number"
 msgstr "Nummer"
 
-#: general/models.py:24
+#: general/models.py:29
 msgid "Website"
 msgstr "Nettsted"
 
-#: general/models.py:29
+#: general/models.py:34
 msgid "change logo"
 msgstr "bytt logo"
 
-#: general/models.py:30
+#: general/models.py:35
 msgid "domain"
 msgstr "domene"
 
-#: general/models.py:36
+#: general/models.py:41
 msgid "not selected"
 msgstr "ikke valgt"
 
-#: general/models.py:38
+#: general/models.py:43
 msgid "logo"
 msgstr "logo"
 
-#: general/models.py:57
+#: general/models.py:62
 msgid "Companies"
 msgstr "Selskapsopplysninger"
 
-#: general/models.py:79
+#: general/models.py:84
 msgid "First name"
 msgstr "Fornavn"
 
-#: general/models.py:80
+#: general/models.py:85
 msgid "Last name"
 msgstr "Etternavn"
 
-#: general/models.py:86
+#: general/models.py:91
 msgid "Contact"
 msgstr "Kontakt"
 
-#: general/models.py:87
+#: general/models.py:92
 msgid "Contacts"
 msgstr "Kontaktene"
 
-#: general/models.py:101
+#: general/models.py:106
 msgid "Addresses"
 msgstr "Adresser"
 
-#: general/models.py:110 inventory/models.py:19 inventory/models.py:50
+#: general/models.py:115 inventory/models.py:19 inventory/models.py:50
 #: receivables/models.py:220 receivables/models.py:236
 #: receivables/models.py:292
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:82
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: general/models.py:111 inventory/models.py:70 receivables/models.py:205
+#: general/models.py:116 inventory/models.py:70 receivables/models.py:205
 #: receivables/models.py:256 salary/admin.py:12 salary/admin.py:68
-#: salary/models.py:38
+#: salary/models.py:39
 msgid "Active"
 msgstr "Aktiv"
 
-#: general/models.py:113 inventory/models.py:66 receivables/models.py:357
+#: general/models.py:118 inventory/models.py:66 receivables/models.py:357
 msgid "Unit of measure"
 msgstr "Måleenhet"
 
-#: general/models.py:114
+#: general/models.py:119
 msgid "Units of measure"
 msgstr "Måleenheter"
 
-#: general/models.py:126 general/models.py:160 general/models.py:223
+#: general/models.py:131 general/models.py:165 general/models.py:228
 msgid "key"
 msgstr "nøkkel"
 
-#: general/models.py:133
+#: general/models.py:138
 msgid "parent"
 msgstr "forelder"
 
-#: general/models.py:139 general/models.py:179 general/models.py:243
+#: general/models.py:144 general/models.py:184 general/models.py:248
 msgid "object name"
 msgstr "objektnavn"
 
-#: general/models.py:144
+#: general/models.py:149
 msgid "configuration tree node"
 msgstr "konfigurasjonstre node"
 
-#: general/models.py:145
+#: general/models.py:150
 msgid "configuration tree nodes"
 msgstr "konfigurasjonstre noder"
 
-#: general/models.py:166
+#: general/models.py:171
 msgid "key node"
 msgstr "nøkkel node"
 
-#: general/models.py:170 general/models.py:356
+#: general/models.py:175 general/models.py:361
 msgid "type"
 msgstr "type"
 
-#: general/models.py:184 general/models.py:395
+#: general/models.py:189 general/models.py:405
+#: templates/staff/v1/calendar/cal_form.html:6
 msgid "description"
 msgstr "beskrivelse"
 
-#: general/models.py:189
+#: general/models.py:194
 msgid "metadata"
 msgstr "metadata"
 
-#: general/models.py:206
+#: general/models.py:211
 msgid "configuration key"
 msgstr "konfigurasjonsnøkkel"
 
-#: general/models.py:207
+#: general/models.py:212
 msgid "configuration keys"
 msgstr "konfigurasjonsnøkler"
 
-#: general/models.py:228 general/models.py:258
+#: general/models.py:233 general/models.py:263
 msgid "value"
 msgstr "verdi"
 
-#: general/models.py:231
+#: general/models.py:236
 msgid "configuration value"
 msgstr "konfigurasjonsverdi"
 
-#: general/models.py:232
+#: general/models.py:237
 msgid "configuration values"
 msgstr "konfigurasjonsverdier"
 
-#: general/models.py:239
+#: general/models.py:244
 msgid "module"
 msgstr "modul"
 
-#: general/models.py:327 general/models.py:361
+#: general/models.py:332 general/models.py:366
 msgid "name"
 msgstr "navn"
 
-#: general/models.py:331
+#: general/models.py:336
 msgid "calendar owner type"
 msgstr "kalender eier type"
 
-#: general/models.py:338
+#: general/models.py:343
 msgid "calendar type"
 msgstr "kalender type"
 
-#: general/models.py:339
+#: general/models.py:344
 msgid "calendar types"
 msgstr "kalender typer"
 
-#: general/models.py:375 general/models.py:390
+#: general/models.py:383 general/models.py:400
 msgid "calendar"
 msgstr "kalender"
 
-#: general/models.py:376
+#: general/models.py:384
 msgid "calendars"
 msgstr "kalendere"
 
-#: general/models.py:397
-msgid "date from"
-msgstr "dato fra"
+#: general/models.py:407
+msgid "from"
+msgstr "fra"
 
-#: general/models.py:398
-msgid "time from"
-msgstr "tid fra"
+#: general/models.py:408 templates/prjdash/posted_time_form.html:44
+#: templates/prjdash/print_timelist.html:96
+#: templates/reports/time_summary/dialog_date_filter.html:7
+#: templates/salary/v1/jobreg_form.html:14
+#: templates/salary/v2/jobreg_form.html:56
+msgid "to"
+msgstr "til"
 
-#: general/models.py:399
-msgid "date to"
-msgstr "dato til"
-
-#: general/models.py:400
-msgid "time to"
-msgstr "tid til"
-
-#: general/models.py:403
+#: general/models.py:411
 msgid "calendar record"
 msgstr "kalenderoppføring"
 
-#: general/models.py:404
+#: general/models.py:412
 msgid "calendar records"
 msgstr "kalenderoppføringer"
+
+#: general/models.py:417
+msgid "the beginning cannot be later than the end"
+msgstr "begynnelsen kan ikke være senere slutten."
 
 #: inventory/admin.py:24 inventory/models.py:32 inventory/models.py:60
 msgid "Item group"
@@ -357,7 +358,7 @@ msgid "Project name"
 msgstr "Prosjektnavn"
 
 #: prjdash/views.py:150 prjdash/views.py:241 prjdash/views.py:331
-#: templates/admin/base.html:20 templates/base.html:38
+#: templates/admin/base.html:20 templates/base.html:40
 msgid "Project management"
 msgstr "Prosjektstyring"
 
@@ -407,13 +408,13 @@ msgid "Receivables"
 msgstr "Inntekt"
 
 #: receivables/forms.py:29 receivables/models.py:264 receivables/models.py:297
-#: salary/models.py:42
+#: salary/models.py:46
 #: templates/reports/time_summary/time_table_filters.html:67
 msgid "Employees"
 msgstr "Ansatte"
 
 #: receivables/forms.py:66 receivables/models.py:269 receivables/models.py:287
-#: reports/views.py:342 templates/prjdash/project_dash.html:64
+#: reports/views.py:353 templates/prjdash/project_dash.html:64
 #: templates/reports/time_summary/posted_time.html:48
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:52
@@ -550,7 +551,7 @@ msgstr "Nettsted"
 msgid "Customers"
 msgstr "Kunder"
 
-#: receivables/models.py:223 reports/views.py:351
+#: receivables/models.py:223 reports/views.py:362
 msgid "Project category"
 msgstr "Prosjektkategori"
 
@@ -616,7 +617,7 @@ msgid "Related employees"
 msgstr "Tilknyttede ansatte"
 
 #: receivables/views.py:19 receivables/views.py:48 receivables/views.py:169
-#: templates/admin/base.html:21 templates/base.html:41
+#: templates/admin/base.html:21 templates/base.html:43
 msgid "Time registration"
 msgstr "Timeregistrering"
 
@@ -629,8 +630,8 @@ msgstr "Rapporter"
 msgid "Print timelist"
 msgstr "Skriv ut timelist"
 
-#: reports/views.py:257 reports/views.py:723 reports/views.py:1114
-#: templates/admin/base.html:22 templates/base.html:39
+#: reports/views.py:257 reports/views.py:815 reports/views.py:1218
+#: templates/admin/base.html:22 templates/base.html:41
 #: templates/reports/time_summary/base_ts.html:5
 #: templates/reports/time_summary/posted_time.html:11
 #: templates/reports/time_summary/posted_time.html:12
@@ -639,30 +640,30 @@ msgstr "Skriv ut timelist"
 msgid "Time summary"
 msgstr "Tidsoppsumering"
 
-#: reports/views.py:359
+#: reports/views.py:371
 msgid "Total hours"
 msgstr "Totalt antall timer"
 
-#: reports/views.py:366
+#: reports/views.py:378
 msgid "total overtime"
 msgstr "total overtid"
 
-#: reports/views.py:567 templates/prjdash/posted_time_review.html:75
+#: reports/views.py:614 templates/prjdash/posted_time_review.html:75
 #: templates/reports/time_summary/posted_time.html:75
 #: templates/salary/v1/registration_journal.html:78
 #: templates/salary/v2/registration_journal.html:80
 msgid "Total"
 msgstr "Totalt"
 
-#: reports/views.py:731
+#: reports/views.py:823
 msgid "No timelist entries for given period."
 msgstr "Ingen tidslisteoppføringer for en gitt periode."
 
-#: salary/admin.py:75 salary/models.py:29
+#: salary/admin.py:75 salary/models.py:30
 msgid "Full name"
 msgstr "Full navn"
 
-#: salary/admin.py:81 salary/models.py:33 shared/models.py:53
+#: salary/admin.py:81 salary/models.py:34 shared/models.py:53
 msgid "Email"
 msgstr "Epost"
 
@@ -670,13 +671,49 @@ msgstr "Epost"
 msgid "Salary"
 msgstr "Lønn"
 
-#: salary/models.py:15 shared/models.py:58
+#: salary/forms.py:87 salary/views.py:173
+msgid "holiday"
+msgstr "ferie"
+
+#: salary/forms.py:96 salary/forms.py:104 salary/views.py:185
+#: salary/views.py:196
+msgid "illness"
+msgstr "sykdom"
+
+#: salary/forms.py:112 salary/views.py:208
+msgid "absence"
+msgstr "fravær"
+
+#: salary/models.py:16 shared/models.py:58
 msgid "Phone No."
 msgstr "Telefonnr."
 
-#: salary/models.py:20 shared/models.py:63
+#: salary/models.py:21 shared/models.py:63
+#: templates/staff/v1/staff_line.html:12
 msgid "Mobile No."
 msgstr "Mobilnr."
+
+#: salary/views.py:174 templates/staff/v1/staff_line.html:19
+msgid "holidays"
+msgstr "ferier"
+
+#: salary/views.py:175 templates/reports/time_summary/time_table_header.html:14
+msgid "holidays and days off"
+msgstr "ferier og fridager"
+
+#: salary/views.py:186 salary/views.py:197
+#: templates/staff/v1/staff_line.html:41
+msgid "illnesses"
+msgstr "sykdomer"
+
+#: salary/views.py:187 salary/views.py:209
+#: templates/reports/time_summary/time_table_header.html:18
+msgid "doctor-declared illnesses"
+msgstr "sykemeldinger"
+
+#: salary/views.py:198 templates/reports/time_summary/time_table_header.html:15
+msgid "self-notified illnesses"
+msgstr "egenmeldinger"
 
 #: shared/const.py:19
 msgid "January"
@@ -760,26 +797,26 @@ msgstr "Faksnr."
 
 #: templates/admin/auth/user/change_password.html:3
 #: templates/admin/base.html:23 templates/admin/base.html:29
-#: templates/base.html:42
+#: templates/base.html:44
 msgid "Change password"
 msgstr "Bytte passord"
 
-#: templates/admin/base.html:11 templates/base.html:30
+#: templates/admin/base.html:11 templates/base.html:32
 msgid "Welcome"
 msgstr "Velkommen"
 
-#: templates/admin/base.html:18 templates/base.html:33
+#: templates/admin/base.html:18 templates/base.html:35
 #: templates/prjdash/project_dash.html:47
 msgid "Profile"
 msgstr "Profil"
 
 #: templates/admin/base.html:24 templates/admin/base.html:31
-#: templates/base.html:43
+#: templates/base.html:45
 msgid "Log out"
 msgstr "Logg ut"
 
 #: templates/admin/base_site.html:15 templates/admin/base_site.html:17
-#: templates/base.html:36 templates/prjdash/project_dash.html:47
+#: templates/base.html:38 templates/prjdash/project_dash.html:47
 msgid "Administration"
 msgstr "Administrasjon"
 
@@ -800,9 +837,72 @@ msgstr "Endre"
 msgid "You don't have permission to edit anything."
 msgstr "Du har ikke tillatelse til å endre noe."
 
-#: templates/base.html:37
+#: templates/base.html:39
 msgid "staff management"
 msgstr "personalstyring"
+
+#: templates/general/dialogs/v1/card_dialog.html:8
+msgid "fill in desired values and strike \"Commit\""
+msgstr "fyll inn ønskede verdier og trykk \"Lagre\""
+
+#: templates/general/dialogs/v1/card_dialog.html:9
+#: templates/general/dialogs/v1/delete_dialog.html:9
+#: templates/prjdash/posted_time_dialog.html:6
+#: templates/salary/v1/jobreg_delete_dialog.html:6
+msgid "If you will confirm, the record will be irrecoverably deleted."
+msgstr "Hvis du bekrefter blir posten uoprettelig sletted."
+
+#: templates/general/dialogs/v1/card_dialog.html:12
+#: templates/general/dialogs/v1/card_dialog.html:13
+#: templates/general/dialogs/v1/delete_dialog.html:12
+#: templates/general/dialogs/v1/delete_dialog.html:13
+#: templates/prjdash/posted_time_dialog.html:9
+#: templates/prjdash/posted_time_dialog.html:10
+#: templates/reports/time_summary/dialog_date_filter.html:11
+#: templates/reports/time_summary/dialog_date_filter.html:12
+#: templates/salary/v1/jobreg_delete_dialog.html:9
+#: templates/salary/v1/jobreg_delete_dialog.html:10
+#: templates/salary/v2/jobreg_delete_dialog.html:9
+#: templates/salary/v2/jobreg_delete_dialog.html:10
+msgid "Confirm"
+msgstr "Bekreft"
+
+#: templates/general/dialogs/v1/card_dialog.html:16
+#: templates/general/dialogs/v1/card_dialog.html:17
+#: templates/general/dialogs/v1/delete_dialog.html:16
+#: templates/general/dialogs/v1/delete_dialog.html:17
+#: templates/prjdash/assign_employees.html:38
+#: templates/prjdash/posted_time_dialog.html:13
+#: templates/prjdash/posted_time_dialog.html:14
+#: templates/prjdash/posted_time_form.html:85
+#: templates/prjdash/project_form.html:32
+#: templates/reports/time_summary/dialog_customer_filter.html:20
+#: templates/reports/time_summary/dialog_date_filter.html:15
+#: templates/reports/time_summary/dialog_date_filter.html:16
+#: templates/reports/time_summary/dialog_employee_filter.html:20
+#: templates/reports/time_summary/dialog_project_filter.html:26
+#: templates/reports/time_summary/dialog_report_parameters.html:24
+#: templates/salary/v1/jobreg_delete_dialog.html:13
+#: templates/salary/v1/jobreg_delete_dialog.html:14
+#: templates/salary/v1/jobreg_form.html:49
+#: templates/salary/v2/jobreg_delete_dialog.html:13
+#: templates/salary/v2/jobreg_delete_dialog.html:14
+#: templates/salary/v2/jobreg_form.html:105
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: templates/general/dialogs/v1/delete_dialog.html:6
+#: templates/prjdash/posted_time_dialog.html:3
+#: templates/salary/v1/jobreg_delete_dialog.html:3
+#: templates/salary/v2/jobreg_delete_dialog.html:3
+msgid "Warning"
+msgstr "Advarsel"
+
+#: templates/general/dialogs/v1/delete_dialog.html:8
+#: templates/prjdash/posted_time_dialog.html:5
+#: templates/salary/v1/jobreg_delete_dialog.html:5
+msgid "Do you really want to delete this record?"
+msgstr "Er du sikker du vil slette denne linjen?"
 
 #: templates/prjdash/assign_employees.html:18
 #: templates/prjdash/posted_time_review.html:25
@@ -832,57 +932,10 @@ msgstr "Tildele ansatte"
 msgid "Assign employees for project "
 msgstr "Tildele ansatte til prosjekt "
 
-#: templates/prjdash/assign_employees.html:38
-#: templates/prjdash/posted_time_dialog.html:13
-#: templates/prjdash/posted_time_dialog.html:14
-#: templates/prjdash/posted_time_form.html:85
-#: templates/prjdash/project_form.html:32
-#: templates/reports/time_summary/dialog_customer_filter.html:20
-#: templates/reports/time_summary/dialog_date_filter.html:15
-#: templates/reports/time_summary/dialog_date_filter.html:16
-#: templates/reports/time_summary/dialog_employee_filter.html:20
-#: templates/reports/time_summary/dialog_project_filter.html:26
-#: templates/reports/time_summary/dialog_report_parameters.html:24
-#: templates/salary/v1/jobreg_delete_dialog.html:13
-#: templates/salary/v1/jobreg_delete_dialog.html:14
-#: templates/salary/v1/jobreg_form.html:49
-#: templates/salary/v2/jobreg_delete_dialog.html:13
-#: templates/salary/v2/jobreg_delete_dialog.html:14
-#: templates/salary/v2/jobreg_form.html:105
-msgid "Cancel"
-msgstr "Avbryt"
-
 #: templates/prjdash/assign_employees.html:40
 #: templates/prjdash/assign_employees.html:43
 msgid "Assign"
 msgstr "Tildele"
-
-#: templates/prjdash/posted_time_dialog.html:3
-#: templates/salary/v1/jobreg_delete_dialog.html:3
-#: templates/salary/v2/jobreg_delete_dialog.html:3
-msgid "Warning"
-msgstr "Advarsel"
-
-#: templates/prjdash/posted_time_dialog.html:5
-#: templates/salary/v1/jobreg_delete_dialog.html:5
-msgid "Do you really want to delete this record?"
-msgstr "Er du sikker du vil slette denne linjen?"
-
-#: templates/prjdash/posted_time_dialog.html:6
-#: templates/salary/v1/jobreg_delete_dialog.html:6
-msgid "If you will confirm, the record will be irrecoverably deleted."
-msgstr "Hvis du bekrefter blir posten uoprettelig sletted."
-
-#: templates/prjdash/posted_time_dialog.html:9
-#: templates/prjdash/posted_time_dialog.html:10
-#: templates/reports/time_summary/dialog_date_filter.html:11
-#: templates/reports/time_summary/dialog_date_filter.html:12
-#: templates/salary/v1/jobreg_delete_dialog.html:9
-#: templates/salary/v1/jobreg_delete_dialog.html:10
-#: templates/salary/v2/jobreg_delete_dialog.html:9
-#: templates/salary/v2/jobreg_delete_dialog.html:10
-msgid "Confirm"
-msgstr "Bekreft"
 
 #: templates/prjdash/posted_time_form.html:6
 msgid ""
@@ -895,14 +948,6 @@ msgstr ""
 #: templates/prjdash/posted_time_form.html:9
 msgid "To create a new line fill in values on the right and click Save."
 msgstr "For å oprette ny linje tast inn verdiene til høyre og klikk på Lagre."
-
-#: templates/prjdash/posted_time_form.html:44
-#: templates/prjdash/print_timelist.html:96
-#: templates/reports/time_summary/dialog_date_filter.html:7
-#: templates/salary/v1/jobreg_form.html:14
-#: templates/salary/v2/jobreg_form.html:56
-msgid "to"
-msgstr "til"
 
 #: templates/prjdash/posted_time_form.html:79
 #: templates/salary/v1/jobreg_form.html:44
@@ -1247,6 +1292,11 @@ msgstr "Beregn"
 msgid "Export to"
 msgstr "Eksportere til"
 
+#: templates/reports/time_summary/time_table_header.html:19
+#: templates/staff/v1/staff_line.html:48
+msgid "absences"
+msgstr "fraværer"
+
 #: templates/salary/base_wtr.html:6
 msgid "Working time registration in project "
 msgstr "Arbeidstidsregistrering for prosjekt"
@@ -1274,6 +1324,69 @@ msgstr "Er du sikker du vil slette denne linjen"
 #: templates/salary/v2/jobreg_delete_dialog.html:6
 msgid "If you will confirm, the line will be deleted."
 msgstr "Hvis du bekrefter linjen blir slettet."
+
+#: templates/staff/v1/calendar/cal_form.html:6
+msgid "not required"
+msgstr "ikke påkrevet"
+
+#: templates/staff/v1/calendar/cal_form.html:10
+msgid "date from"
+msgstr "dato fra"
+
+#: templates/staff/v1/calendar/cal_form.html:13
+msgid "date to"
+msgstr "dato til"
+
+#: templates/staff/v1/calendar/cal_form.html:38
+msgid "edit record"
+msgstr "rediger posten"
+
+#: templates/staff/v1/calendar/calendar.html:36
+msgid "edit"
+msgstr "rediger"
+
+#: templates/staff/v1/calendar/calendar.html:37
+msgid "delete"
+msgstr "slette"
+
+#: templates/staff/v1/calendar/calendar.html:72
+msgid "new record"
+msgstr "ny post"
+
+#: templates/staff/v1/calendar/empl_cal.html:24
+#: templates/staff/v1/staff.html:38
+msgid "staff"
+msgstr "ansatte"
+
+#: templates/staff/v1/calendar/empl_cal.html:35
+msgid "new"
+msgstr "ny"
+
+#: templates/staff/v1/calendar/empl_cal.html:36
+msgid "delete selected"
+msgstr "slett valgte"
+
+#: templates/staff/v1/staff_line.html:21
+msgid "nearest holidays"
+msgstr "nærmest ferie"
+
+#: templates/staff/v1/staff_line.html:24
+msgid "nearest"
+msgstr "nærmest"
+
+#: templates/staff/v1/staff_line.html:27
+msgid "no entries"
+msgstr "ingen poster"
+
+#: templates/staff/v1/staff_line.html:34
+msgid "self notifications"
+msgstr "egenmeldinger"
+
+#~ msgid "time from"
+#~ msgstr "tid fra"
+
+#~ msgid "time to"
+#~ msgstr "tid til"
 
 #~ msgid "Bom"
 #~ msgstr "Bom"

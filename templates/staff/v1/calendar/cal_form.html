@@ -19,7 +19,7 @@
 <script>
     function transferData() {
         //Transfers data from the dataset in the memory to actual control elements on the form.
-        ds = state.hld.activeHldLine.dataset;
+        ds = state.cal.activeLine.dataset;
         document.getElementById("id_id").value = ds.id;
         document.getElementById("id_description").value = ds.description;
 
@@ -35,21 +35,25 @@
     function editHandler() {
         //prefill data from the appropriate line
         transferData();
-        openCard();
+        openCard("{{ _("edit record")|capfirst }}");
     };
 
+    //Toggle switch example: https://stackoverflow.com/questions/66820635/how-to-make-a-toggle-switch-with-embedded-text
+
     function clearData() {
-        ds = state.hld.activeHldLine.dataset;
+        ds = state.cal.activeLine.dataset;
         ds.id = null;
         ds.description = "";
 
-        ds.dfry = 2020;
-        ds.dfrm = 1;
-        ds.dfrd = 1;
+        dt = new Date();
 
-        ds.dtoy = 2020;
-        ds.dtom = 1;
-        ds.dtod = 1;
+        ds.dfry = dt.getFullYear();
+        ds.dfrm = dt.getMonth();
+        ds.dfrd = dt.getDate();
+
+        ds.dtoy = dt.getFullYear();
+        ds.dtom = dt.getMonth();
+        ds.dtod = dt.getDate();
         transferData();
     };
 

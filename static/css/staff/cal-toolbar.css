@@ -1,8 +1,8 @@
-div.hld-cal-toolbar{
-    margin-bottom: 1em;
+div.cal-toolbar{
+    margin-bottom: 3.2em;
 }
 
-#hldCardCtrl{
+#calCardCtrl{
     padding-left: 1em;
     padding-top: 0.5em;
     background-color: white;
@@ -12,7 +12,7 @@ div.hld-cal-toolbar{
     box-shadow: 
         -0.2em -0.2em 0.4em gray,
         0.2em -0.2em 0.4em gray;
-    width: 8em;
+    width: 11em;
     height: 2em;
     z-index: 1;
 }

@@ -20,14 +20,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.forms.models import model_to_dict
 from babel.dates import format_date
 
-from shared.utils import none2zero, uniq4list, start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str, write_log_message
+from shared.utils import none2zero, uniq4list, start_of_current_month, end_of_current_month, start_of_month, end_of_month, str2bool, date2str, write_log_message, add_css_class
 from receivables.models import Project, WorkTimeJournal, Customer
 from djauth.models import User
 from conf.settings import TIMELIST_LINES_PER_PAGE
 from dateutil.relativedelta import relativedelta
 from general.utils import get_fields_visible
 from shared.utils import qstring_add_param
-from general.models import CalendarHeader, CalendarLine, HOLIDAY, ILLNESS, ABSENCE
+from general.models import CalendarHeader, CalendarLine, HOLIDAY, ILLNESS, ILLSELF, ABSENCE
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -292,8 +292,10 @@ class TimeSummaryPostedLineDetailView(View):
 
 @method_decorator(staff_member_required, name='dispatch')
 class TimeSummaryBaseView(View):
-    table_col_count = 3
+    table_col_count = 2
+    non_date_col_count = 0
     ctp_proj = None
+    _show_employee_calendar = False
 
     def _get_context(self, request):
         context = self.get_report_lines(request)
@@ -309,6 +311,15 @@ class TimeSummaryBaseView(View):
         if not self.ctp_proj:
             self.ctp_proj = ContentType.objects.get(model='project')
         return self.ctp_proj
+
+    def _get_show_employee_calendar(self, **kwargs):
+        '''Returns bool value to show or hide calendar legend according to given report filters'''
+        result = True
+        if kwargs.get('split_by_project', False):
+            result = False
+        if not kwargs.get('split_by_dates', False):
+            result = False
+        return result
 
     default_start_date = property(__get_default_start_date) 
     default_end_date = property(__get_default_end_date)
@@ -353,6 +364,7 @@ class TimeSummaryBaseView(View):
                     }
                 )
         if not overtime:
+            self.table_col_count += 1
             header.append(
                     {'name': 'total_hours',
                     'type': 'decimal',
@@ -367,6 +379,7 @@ class TimeSummaryBaseView(View):
                 'meta': self._get_hdr_totalhrs_meta(col_count, last_col = not kwargs.get('split_by_dates', True)), #Rebuild on config to be able to hide overtime column.
                 },
             )
+        self.non_date_col_count = self.table_col_count # Recording non-date column count
         self.make_day_header(header, **kwargs)
         return header
 
@@ -509,7 +522,7 @@ class TimeSummaryBaseView(View):
 
     def get_calendar_data(self, **kwargs):
         q_list = [Q(calendar__company=kwargs['company'])]
-        q_list.append(Q(calendar__type__in=[HOLIDAY, ILLNESS, ABSENCE]))
+        q_list.append(Q(calendar__type__in=[HOLIDAY, ILLNESS, ILLSELF, ABSENCE]))
         q_list.append(Q(calendar__owner_type=ContentType.objects.get(app_label='salary', model='employee')))
 
         employee_ids = kwargs.get('employee_ids')
@@ -542,7 +555,7 @@ class TimeSummaryBaseView(View):
                 prev_empl_id = line['employee_id']
 
         # Adding distinct employees from calendar
-        if not kwargs.get('split_by_project', False): #temporary. To be removed when split by dates is implemented with calemdar support.
+        if self._show_employee_calendar:
             for line in calendar_data:
                 if line['calendar__owner_id'] != prev_empl_id:
                     if line['calendar__owner_id'] not in empl_ids:
@@ -699,7 +712,7 @@ class TimeSummaryBaseView(View):
     def fill_employee_calendar_data(self, time_matrix, calendar_data, **kwargs):
 
         # skip if split by project as it is not yet implemented
-        if kwargs.get('split_by_project', False):
+        if kwargs.get('split_by_project', False) or (not kwargs.get('split_by_dates', False)):
             return time_matrix
         # if no calendar data then skip
         if len(calendar_data) == 0:
@@ -761,18 +774,23 @@ class TimeSummaryBaseView(View):
             'show_proj_cat': str2bool(request.GET.get('show-proj-cat')) if request.GET.get('show-proj-cat') else True,
             'company': request.user.company,
         }
+        self._show_employee_calendar = self._get_show_employee_calendar(**filters)
 
         time_matrix = None
         header_data = self.make_report_header(**filters)
         timelist_data = self.get_timelist_data(**filters)
-        calendar_data = self.get_calendar_data(**filters)
 
+        if self._show_employee_calendar:
+            ''' Only make database call for calendar data if it is relevant '''
+            calendar_data = self.get_calendar_data(**filters)
+        else:
+            calendar_data = None
         distinct_empl_ids = self.get_distinct_empl_ids(timelist_data, calendar_data, **filters)
         employee_data, select_empl_list = self.get_employee_data(distinct_empl_ids, **filters)
         project_data, select_proj_list = self.get_project_data(timelist_data, **filters)
         select_cust_list = self.__get_customer_data(**filters)
 
-        if len(timelist_data) or (len(calendar_data) and not filters.get('split_by_project', False)):
+        if len(timelist_data) or (self._show_employee_calendar and len(calendar_data)):
             time_matrix = self.build_employee_time_matrix(
                 header_data,
                 employee_data,
@@ -835,8 +853,9 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             'css_cell_wknd_odd'     : 'cellWknd-odd',       #css class for weekend cell (odd line)
             'css_cell_wknd_even'    : 'cellWknd-even',      #css class for weekend cell (even line)
             'css_cell_cal_event_1'  : 'cellHoliday',        #css class for calendar event - holidays
-            'css_cell_cal_event_2'  : 'cellIllness',        #css class for calendar event - illness
+            'css_cell_cal_event_2'  : 'cellIllness',        #css class for calendar event - doctor-declared illness
             'css_cell_cal_event_3'  : 'cellAbsence',        #css class for calendar event - absence
+            'css_cell_cal_event_4'  : 'cellIllSelf',        #css class for calendar event - self-notified illness
             'css_cell_projcat'      : 'cellProjCat',        #css class for project category cell
             'css_cell_projcat_odd'  : 'cellWrkDay-odd',     #css class for project category cell (odd line)
             'css_cell_projcat_even' : 'cellWrkDay-even',    #css class for project category cell (even line)
@@ -909,6 +928,8 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
             },
             'table_header': {
                 'whitebar_col_span': self.table_col_count,
+                'non_date_col_span': self.non_date_col_count,
+                'show_empl_cal_legend': self._show_employee_calendar,
             }
         }
         return meta
@@ -985,14 +1006,11 @@ class TimeSummaryHTMLView(TimeSummaryBaseView):
                         'overtime': 1 if overtime else 0,
                         }
 
-        if meta.get('cssClass'):
-            meta['cssClass'] += ' ' + self.meta['css_cell_click'] if meta['cssClass'] != '' else self.meta['css_cell_click']
-        else:
-            meta['cssClass'] = self.meta['css_cell_click']
+        meta['cssClass'] = add_css_class(meta['cssClass'], self.meta['css_cell_click'])
 
         cal_event_type = kwargs.get('calendar_event_type', None)
         if cal_event_type is not None:
-            meta['cssClass'] += ' ' + self.meta['css_cell_cal_event_'+ str(cal_event_type)]
+            meta['cssClass'] = add_css_class(meta['cssClass'], self.meta['css_cell_cal_event_'+ str(cal_event_type)])
 
         return meta
 
@@ -1071,7 +1089,10 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
                                'wknd-odd'   : {'bg_color': '#E7EFF2'},
                                'wknd-even'  : {'bg_color': '#CFDFE6'},
                                'white'      : {'bg_color': '#FFFFFF'},
-                               'holiday'    : {'bg_color': '#D6DA00'},
+                               'holiday'    : {'bg_color': '#EEEF94'},
+                               'illself'    : {'bg_color': '#8A4BBD'},
+                               'illness'    : {'bg_color': '#94B9EF'},
+                               'absence'    : {'bg_color': '#EF9494'},
                                },
         'font'              : {'type'       : 'enum',
                                'default'    : {'font_color': '#333333',
@@ -1174,6 +1195,8 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
         return res_text
 
     def __get_xlsx(self, request, context):
+        start_row = self.meta['start_row']
+        start_col = self.meta['start_col']
         # get xlsx format object by dictionary cell metadata
         def get_xlsx_format(workbook, format_dict, dcell):
             xlsx_format_props = self.__get_xlsx_format_props(dcell);
@@ -1210,21 +1233,43 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
         # dictionary for actual cell format objects in xlsx workbook
         fd = {}
 
-        if self.meta['start_col'] > 0:
-            sheet.set_column(0, self.meta['start_col'] - 1, 2)
+        if start_col > 0:
+            sheet.set_column(0, start_col - 1, 2)
 
         white_row_format = get_xlsx_format(book, fd, {'meta':{'bgcolor': 'white'}})
 
-        for row in range(self.meta['start_row']):
-            row_write_style(sheet, row, self.meta['start_col'] + len(context['header']), white_row_format)
+        if self._show_employee_calendar:
+            start_row += 2
+
+        for row in range(start_row):
+            row_write_style(sheet, row, start_col + len(context['header']), white_row_format)
+
+        #----------------------
+        # write employee legend
+        #----------------------
+        def add_empl_legend(row, col, legend_type, legend_text):
+            cell_format = get_xlsx_format(book, fd, {'meta':{'bgcolor': legend_type}})
+            sheet.write_string(row, col, '', cell_format)
+            sheet.write_string(row, col+1, ' ' + (legend_text).capitalize(), white_row_format)
+            col += 5
+            return row, col
+
+        col = start_col + 3
+        row = start_row - 2
+
+        row, col = add_empl_legend(row, col, 'holiday', str(_('holidays and days off')))
+        row, col = add_empl_legend(row, col, 'illself', str(_('self-notified illnesses')))
+        row, col = add_empl_legend(row, col, 'illness', str(_('doctor-declared illnesses')))
+        row, col = add_empl_legend(row, col, 'absence', str(_('absences')))
+
         # ------------------
         # write month header
         # ------------------
-        row = self.meta['start_row']
-        col = self.meta['start_col']
+        row = start_row
+        col = start_col
 
         if context['filters']['split_by_dates']:
-            row_write_style(sheet, row, self.meta['start_col'] + len(context['header']), white_row_format)
+            row_write_style(sheet, row, start_col + len(context['header']), white_row_format)
             curr_month = 0
             month_format = get_xlsx_format(book, fd, {'meta':{'month-hdr': True}})
             for cell in context['header']:
@@ -1242,7 +1287,7 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
         # -----------------
         # write main header
         # -----------------
-        col = self.meta['start_col']
+        col = start_col
 
         for cell in context['header']:
             col_width = cell['meta'].get('width', None)
@@ -1277,7 +1322,7 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
         # ------------
         for row_data in context['timelist'].values():
             row += 1
-            col = self.meta['start_col']
+            col = start_col
             for cell in row_data.values():
                 row_height = cell['meta'].get('height', None)
                 if row_height:
@@ -1429,6 +1474,12 @@ class TimeSummaryXLSXView(TimeSummaryBaseView):
         if cal_event_type is not None:
             if cal_event_type == HOLIDAY:
                 meta['bgcolor'] = 'holiday'
+            elif cal_event_type == ILLSELF:
+                meta['bgcolor'] = 'illself'
+            elif cal_event_type == ILLNESS:
+                meta['bgcolor'] = 'illness'
+            elif cal_event_type == ABSENCE:
+                meta['bgcolor'] = 'absence'
         return meta
 
     def _get_total_cell_meta(self, line_id, meta, **kwargs):

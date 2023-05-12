@@ -21,7 +21,7 @@ from shared.const import VARIABLE_TYPE_CHOICES, BOOLEAN, INTEGER, DECIMAL, STRIN
 HOLIDAY=1
 ILLNESS=2
 ABSENCE=3
-
+ILLSELF=4
 
 class Company(AddressMixin, ContactMixin, models.Model):
     name            = models.CharField(max_length=60, unique=True, verbose_name=_('Name'))

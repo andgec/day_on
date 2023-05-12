@@ -129,3 +129,24 @@ def qstring_add_param(qstring, param, value, default_value = None):
         if qstring == '&':
             qstring = ''
         return qstring if qstring is not None else '' # return original qstring or initialize to empty string if qstring was None.
+
+def add_unique_substr(rstr, substr, separator):
+    '''
+        Adding substring to a string if it does not exists within a string.
+    '''
+    if rstr is None or rstr == '':
+        rstr = ''
+
+    if substr not in rstr:
+        if len(rstr) > 0:
+            rstr = rstr + separator + substr
+        else:
+            rstr = substr
+    return rstr
+
+def add_css_class(class_list, new_class):
+    '''
+        Adds css class to a class_list variable of type string. 
+        Only class names that does not exist in the class_list string (unique) are added
+    '''
+    return add_unique_substr(class_list, new_class, ' ')

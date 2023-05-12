@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-30 20:25+0100\n"
+"POT-Creation-Date: 2023-05-12 09:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgid "Address information"
 msgstr "Adresas"
 
 #: djauth/admin.py:26 djauth/admin.py:27 djauth/admin.py:34
-#: receivables/models.py:40 reports/views.py:333 salary/models.py:41
+#: receivables/models.py:40 reports/views.py:344 salary/models.py:45
 #: templates/prjdash/posted_time_review.html:46
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:81
 msgid "Employee"
@@ -95,7 +95,7 @@ msgstr "Vartotojas tokiu vardu jau egzistuoja."
 msgid "email address"
 msgstr "el. pašto adresas"
 
-#: djauth/models.py:23 general/models.py:56 receivables/models.py:26
+#: djauth/models.py:23 general/models.py:61 receivables/models.py:26
 msgid "Company"
 msgstr "Įmonė"
 
@@ -116,7 +116,7 @@ msgstr "Darbuotojas"
 msgid "Log in"
 msgstr "Prisijungimas"
 
-#: general/admin.py:29 general/models.py:100
+#: general/admin.py:29 general/models.py:105
 msgid "Address"
 msgstr "Adresas"
 
@@ -146,188 +146,189 @@ msgstr "%s su tokiomis reikšmėmis jau yra."
 msgid "You have entered a duplicate name"
 msgstr "Įvedėte besidubliuojantį pavadinimą."
 
-#: general/models.py:22 general/models.py:109 inventory/models.py:13
+#: general/models.py:27 general/models.py:114 inventory/models.py:13
 #: inventory/models.py:44 receivables/models.py:193 receivables/models.py:219
 #: receivables/models.py:232
 msgid "Name"
 msgstr "Pavadinimas"
 
-#: general/models.py:23 receivables/models.py:190
+#: general/models.py:28 receivables/models.py:190
 msgid "Number"
 msgstr "Numeris"
 
-#: general/models.py:24
+#: general/models.py:29
 msgid "Website"
 msgstr "Interneto puslapis"
 
-#: general/models.py:29
+#: general/models.py:34
 msgid "change logo"
 msgstr "keisti logotipą"
 
-#: general/models.py:30
+#: general/models.py:35
 msgid "domain"
 msgstr "domenas"
 
-#: general/models.py:36
+#: general/models.py:41
 msgid "not selected"
 msgstr "nepasirinktas"
 
-#: general/models.py:38
+#: general/models.py:43
 msgid "logo"
 msgstr "logotipas"
 
-#: general/models.py:57
+#: general/models.py:62
 msgid "Companies"
 msgstr "Duomenys apie įmonę"
 
-#: general/models.py:79
+#: general/models.py:84
 msgid "First name"
 msgstr "Vardas"
 
-#: general/models.py:80
+#: general/models.py:85
 msgid "Last name"
 msgstr "Pavardė"
 
-#: general/models.py:86
+#: general/models.py:91
 msgid "Contact"
 msgstr "Kontaktas"
 
-#: general/models.py:87
+#: general/models.py:92
 msgid "Contacts"
 msgstr "Kontaktai"
 
-#: general/models.py:101
+#: general/models.py:106
 msgid "Addresses"
 msgstr "Adresai"
 
-#: general/models.py:110 inventory/models.py:19 inventory/models.py:50
+#: general/models.py:115 inventory/models.py:19 inventory/models.py:50
 #: receivables/models.py:220 receivables/models.py:236
 #: receivables/models.py:292
 #: templates/reports/pdf_timelist/pdf_timelist_html4.html:82
 msgid "Description"
 msgstr "Aprašymas"
 
-#: general/models.py:111 inventory/models.py:70 receivables/models.py:205
+#: general/models.py:116 inventory/models.py:70 receivables/models.py:205
 #: receivables/models.py:256 salary/admin.py:12 salary/admin.py:68
-#: salary/models.py:38
+#: salary/models.py:39
 msgid "Active"
 msgstr "Aktyvus"
 
-#: general/models.py:113 inventory/models.py:66 receivables/models.py:357
+#: general/models.py:118 inventory/models.py:66 receivables/models.py:357
 msgid "Unit of measure"
 msgstr "Matavimo vienetai"
 
-#: general/models.py:114
+#: general/models.py:119
 msgid "Units of measure"
 msgstr "Matavimo vienetai"
 
-#: general/models.py:126 general/models.py:160 general/models.py:223
+#: general/models.py:131 general/models.py:165 general/models.py:228
 msgid "key"
 msgstr "raktas"
 
-#: general/models.py:133
+#: general/models.py:138
 msgid "parent"
 msgstr "tėvinis"
 
-#: general/models.py:139 general/models.py:179 general/models.py:243
+#: general/models.py:144 general/models.py:184 general/models.py:248
 msgid "object name"
 msgstr "pavadinimas"
 
-#: general/models.py:144
+#: general/models.py:149
 msgid "configuration tree node"
 msgstr "nustatymų medžio šaka"
 
-#: general/models.py:145
+#: general/models.py:150
 msgid "configuration tree nodes"
 msgstr "nustatymų medžio šakos"
 
-#: general/models.py:166
+#: general/models.py:171
 msgid "key node"
 msgstr "rakto šaka"
 
-#: general/models.py:170 general/models.py:356
+#: general/models.py:175 general/models.py:361
 msgid "type"
 msgstr "tipas"
 
-#: general/models.py:184 general/models.py:395
+#: general/models.py:189 general/models.py:405
+#: templates/staff/v1/calendar/cal_form.html:6
 msgid "description"
 msgstr "aprašymas"
 
-#: general/models.py:189
+#: general/models.py:194
 msgid "metadata"
 msgstr "metaduomenys"
 
-#: general/models.py:206
+#: general/models.py:211
 msgid "configuration key"
 msgstr "konfigūracijos raktas"
 
-#: general/models.py:207
+#: general/models.py:212
 msgid "configuration keys"
 msgstr "konfigūracijos raktai"
 
-#: general/models.py:228 general/models.py:258
+#: general/models.py:233 general/models.py:263
 msgid "value"
 msgstr "reikšmė"
 
-#: general/models.py:231
+#: general/models.py:236
 msgid "configuration value"
 msgstr "nustatymas"
 
-#: general/models.py:232
+#: general/models.py:237
 msgid "configuration values"
 msgstr "nustatymai"
 
-#: general/models.py:239
+#: general/models.py:244
 msgid "module"
 msgstr "modulis"
 
-#: general/models.py:327 general/models.py:361
+#: general/models.py:332 general/models.py:366
 msgid "name"
 msgstr "pavadinimas"
 
-#: general/models.py:331
+#: general/models.py:336
 msgid "calendar owner type"
 msgstr "kalendoriaus savininko tipas"
 
-#: general/models.py:338
+#: general/models.py:343
 msgid "calendar type"
 msgstr "kalendoriaus tipas"
 
-#: general/models.py:339
+#: general/models.py:344
 msgid "calendar types"
 msgstr "kalendoriaus tipai"
 
-#: general/models.py:375 general/models.py:390
+#: general/models.py:383 general/models.py:400
 msgid "calendar"
 msgstr "kalendorius"
 
-#: general/models.py:376
+#: general/models.py:384
 msgid "calendars"
 msgstr "kalendoriai"
 
-#: general/models.py:397
-msgid "date from"
-msgstr "data nuo"
+#: general/models.py:407
+msgid "from"
+msgstr "nuo"
 
-#: general/models.py:398
-msgid "time from"
-msgstr "laikas nuo"
+#: general/models.py:408 templates/prjdash/posted_time_form.html:44
+#: templates/prjdash/print_timelist.html:96
+#: templates/reports/time_summary/dialog_date_filter.html:7
+#: templates/salary/v1/jobreg_form.html:14
+#: templates/salary/v2/jobreg_form.html:56
+msgid "to"
+msgstr "iki"
 
-#: general/models.py:399
-msgid "date to"
-msgstr "data iki"
-
-#: general/models.py:400
-msgid "time to"
-msgstr "laikas iki"
-
-#: general/models.py:403
+#: general/models.py:411
 msgid "calendar record"
 msgstr "kalendoriaus įrašas"
 
-#: general/models.py:404
+#: general/models.py:412
 msgid "calendar records"
 msgstr "kalendoriaus įrašai"
+
+#: general/models.py:417
+msgid "the beginning cannot be later than the end"
+msgstr "pradžia negali būti vėliau už pabaigą."
 
 #: inventory/admin.py:24 inventory/models.py:32 inventory/models.py:60
 msgid "Item group"
@@ -362,7 +363,7 @@ msgid "Project name"
 msgstr "Projekto pavadinimas"
 
 #: prjdash/views.py:150 prjdash/views.py:241 prjdash/views.py:331
-#: templates/admin/base.html:20 templates/base.html:38
+#: templates/admin/base.html:20 templates/base.html:40
 msgid "Project management"
 msgstr "Projektų valdymas"
 
@@ -412,13 +413,13 @@ msgid "Receivables"
 msgstr "Įplaukos"
 
 #: receivables/forms.py:29 receivables/models.py:264 receivables/models.py:297
-#: salary/models.py:42
+#: salary/models.py:46
 #: templates/reports/time_summary/time_table_filters.html:67
 msgid "Employees"
 msgstr "Darbuotojai"
 
 #: receivables/forms.py:66 receivables/models.py:269 receivables/models.py:287
-#: reports/views.py:342 templates/prjdash/project_dash.html:64
+#: reports/views.py:353 templates/prjdash/project_dash.html:64
 #: templates/reports/time_summary/posted_time.html:48
 #: templates/salary/v1/registration_journal.html:51
 #: templates/salary/v2/registration_journal.html:52
@@ -559,7 +560,7 @@ msgstr "Interneto puslapis"
 msgid "Customers"
 msgstr "Klientai"
 
-#: receivables/models.py:223 reports/views.py:351
+#: receivables/models.py:223 reports/views.py:362
 msgid "Project category"
 msgstr "Projekto kategorija"
 
@@ -625,7 +626,7 @@ msgid "Related employees"
 msgstr "Priskirti darbuotojai"
 
 #: receivables/views.py:19 receivables/views.py:48 receivables/views.py:169
-#: templates/admin/base.html:21 templates/base.html:41
+#: templates/admin/base.html:21 templates/base.html:43
 msgid "Time registration"
 msgstr "Laiko registravimas"
 
@@ -638,8 +639,8 @@ msgstr "Ataskaitos"
 msgid "Print timelist"
 msgstr "Spausdinti laiko tabelį"
 
-#: reports/views.py:257 reports/views.py:723 reports/views.py:1114
-#: templates/admin/base.html:22 templates/base.html:39
+#: reports/views.py:257 reports/views.py:815 reports/views.py:1218
+#: templates/admin/base.html:22 templates/base.html:41
 #: templates/reports/time_summary/base_ts.html:5
 #: templates/reports/time_summary/posted_time.html:11
 #: templates/reports/time_summary/posted_time.html:12
@@ -648,30 +649,30 @@ msgstr "Spausdinti laiko tabelį"
 msgid "Time summary"
 msgstr "Laiko suvestinė"
 
-#: reports/views.py:359
+#: reports/views.py:371
 msgid "Total hours"
 msgstr "Bendras valandų skaičius"
 
-#: reports/views.py:366
+#: reports/views.py:378
 msgid "total overtime"
 msgstr "bendras viršval. skaičius"
 
-#: reports/views.py:567 templates/prjdash/posted_time_review.html:75
+#: reports/views.py:614 templates/prjdash/posted_time_review.html:75
 #: templates/reports/time_summary/posted_time.html:75
 #: templates/salary/v1/registration_journal.html:78
 #: templates/salary/v2/registration_journal.html:80
 msgid "Total"
 msgstr "Viso"
 
-#: reports/views.py:731
+#: reports/views.py:823
 msgid "No timelist entries for given period."
 msgstr "Nurodytu laikotarpiu nerasta jokių laiko žiniaraščio įrašų."
 
-#: salary/admin.py:75 salary/models.py:29
+#: salary/admin.py:75 salary/models.py:30
 msgid "Full name"
 msgstr "Vardas, pavardė"
 
-#: salary/admin.py:81 salary/models.py:33 shared/models.py:53
+#: salary/admin.py:81 salary/models.py:34 shared/models.py:53
 msgid "Email"
 msgstr "El. paštas"
 
@@ -679,13 +680,49 @@ msgstr "El. paštas"
 msgid "Salary"
 msgstr "Atlyginimai"
 
-#: salary/models.py:15 shared/models.py:58
+#: salary/forms.py:87 salary/views.py:173
+msgid "holiday"
+msgstr "atostogos"
+
+#: salary/forms.py:96 salary/forms.py:104 salary/views.py:185
+#: salary/views.py:196
+msgid "illness"
+msgstr "sirgimas"
+
+#: salary/forms.py:112 salary/views.py:208
+msgid "absence"
+msgstr "pravaikšta"
+
+#: salary/models.py:16 shared/models.py:58
 msgid "Phone No."
 msgstr "Telefonas"
 
-#: salary/models.py:20 shared/models.py:63
+#: salary/models.py:21 shared/models.py:63
+#: templates/staff/v1/staff_line.html:12
 msgid "Mobile No."
 msgstr "Mob. tel."
+
+#: salary/views.py:174 templates/staff/v1/staff_line.html:19
+msgid "holidays"
+msgstr "atostogos"
+
+#: salary/views.py:175 templates/reports/time_summary/time_table_header.html:14
+msgid "holidays and days off"
+msgstr "atostogos ir laisvadieniai"
+
+#: salary/views.py:186 salary/views.py:197
+#: templates/staff/v1/staff_line.html:41
+msgid "illnesses"
+msgstr "sirgimai"
+
+#: salary/views.py:187 salary/views.py:209
+#: templates/reports/time_summary/time_table_header.html:18
+msgid "doctor-declared illnesses"
+msgstr "gydytojo patvirtinti sirgimai"
+
+#: salary/views.py:198 templates/reports/time_summary/time_table_header.html:15
+msgid "self-notified illnesses"
+msgstr "darbuotojo pranešti sirgimai"
 
 #: shared/const.py:19
 msgid "January"
@@ -769,26 +806,26 @@ msgstr "Faksas"
 
 #: templates/admin/auth/user/change_password.html:3
 #: templates/admin/base.html:23 templates/admin/base.html:29
-#: templates/base.html:42
+#: templates/base.html:44
 msgid "Change password"
 msgstr "Keisti slaptažodį"
 
-#: templates/admin/base.html:11 templates/base.html:30
+#: templates/admin/base.html:11 templates/base.html:32
 msgid "Welcome"
 msgstr "Sveiki"
 
-#: templates/admin/base.html:18 templates/base.html:33
+#: templates/admin/base.html:18 templates/base.html:35
 #: templates/prjdash/project_dash.html:47
 msgid "Profile"
 msgstr "Profilis"
 
 #: templates/admin/base.html:24 templates/admin/base.html:31
-#: templates/base.html:43
+#: templates/base.html:45
 msgid "Log out"
 msgstr "Atsijungti"
 
 #: templates/admin/base_site.html:15 templates/admin/base_site.html:17
-#: templates/base.html:36 templates/prjdash/project_dash.html:47
+#: templates/base.html:38 templates/prjdash/project_dash.html:47
 msgid "Administration"
 msgstr "Administravimas"
 
@@ -809,9 +846,72 @@ msgstr "Pakeisti"
 msgid "You don't have permission to edit anything."
 msgstr "Neturite teisių nieko keisti."
 
-#: templates/base.html:37
+#: templates/base.html:39
 msgid "staff management"
 msgstr "personalo valdymas"
+
+#: templates/general/dialogs/v1/card_dialog.html:8
+msgid "fill in desired values and strike \"Commit\""
+msgstr "įrašykite pageidaujamas reikšmes ir spauskite \"Patvirtinti\""
+
+#: templates/general/dialogs/v1/card_dialog.html:9
+#: templates/general/dialogs/v1/delete_dialog.html:9
+#: templates/prjdash/posted_time_dialog.html:6
+#: templates/salary/v1/jobreg_delete_dialog.html:6
+msgid "If you will confirm, the record will be irrecoverably deleted."
+msgstr "Jei patvirtinsite, pasirinktas įrašas bus negrįžtamai ištrintas."
+
+#: templates/general/dialogs/v1/card_dialog.html:12
+#: templates/general/dialogs/v1/card_dialog.html:13
+#: templates/general/dialogs/v1/delete_dialog.html:12
+#: templates/general/dialogs/v1/delete_dialog.html:13
+#: templates/prjdash/posted_time_dialog.html:9
+#: templates/prjdash/posted_time_dialog.html:10
+#: templates/reports/time_summary/dialog_date_filter.html:11
+#: templates/reports/time_summary/dialog_date_filter.html:12
+#: templates/salary/v1/jobreg_delete_dialog.html:9
+#: templates/salary/v1/jobreg_delete_dialog.html:10
+#: templates/salary/v2/jobreg_delete_dialog.html:9
+#: templates/salary/v2/jobreg_delete_dialog.html:10
+msgid "Confirm"
+msgstr "Patvirtinti"
+
+#: templates/general/dialogs/v1/card_dialog.html:16
+#: templates/general/dialogs/v1/card_dialog.html:17
+#: templates/general/dialogs/v1/delete_dialog.html:16
+#: templates/general/dialogs/v1/delete_dialog.html:17
+#: templates/prjdash/assign_employees.html:38
+#: templates/prjdash/posted_time_dialog.html:13
+#: templates/prjdash/posted_time_dialog.html:14
+#: templates/prjdash/posted_time_form.html:85
+#: templates/prjdash/project_form.html:32
+#: templates/reports/time_summary/dialog_customer_filter.html:20
+#: templates/reports/time_summary/dialog_date_filter.html:15
+#: templates/reports/time_summary/dialog_date_filter.html:16
+#: templates/reports/time_summary/dialog_employee_filter.html:20
+#: templates/reports/time_summary/dialog_project_filter.html:26
+#: templates/reports/time_summary/dialog_report_parameters.html:24
+#: templates/salary/v1/jobreg_delete_dialog.html:13
+#: templates/salary/v1/jobreg_delete_dialog.html:14
+#: templates/salary/v1/jobreg_form.html:49
+#: templates/salary/v2/jobreg_delete_dialog.html:13
+#: templates/salary/v2/jobreg_delete_dialog.html:14
+#: templates/salary/v2/jobreg_form.html:105
+msgid "Cancel"
+msgstr "Atšaukti"
+
+#: templates/general/dialogs/v1/delete_dialog.html:6
+#: templates/prjdash/posted_time_dialog.html:3
+#: templates/salary/v1/jobreg_delete_dialog.html:3
+#: templates/salary/v2/jobreg_delete_dialog.html:3
+msgid "Warning"
+msgstr "Dėmesio"
+
+#: templates/general/dialogs/v1/delete_dialog.html:8
+#: templates/prjdash/posted_time_dialog.html:5
+#: templates/salary/v1/jobreg_delete_dialog.html:5
+msgid "Do you really want to delete this record?"
+msgstr "Ar tikrai norite ištrinti įrašą?"
 
 #: templates/prjdash/assign_employees.html:18
 #: templates/prjdash/posted_time_review.html:25
@@ -841,57 +941,10 @@ msgstr "Priskirti darbuotojus"
 msgid "Assign employees for project "
 msgstr "Priskirti darbuotojus projektui "
 
-#: templates/prjdash/assign_employees.html:38
-#: templates/prjdash/posted_time_dialog.html:13
-#: templates/prjdash/posted_time_dialog.html:14
-#: templates/prjdash/posted_time_form.html:85
-#: templates/prjdash/project_form.html:32
-#: templates/reports/time_summary/dialog_customer_filter.html:20
-#: templates/reports/time_summary/dialog_date_filter.html:15
-#: templates/reports/time_summary/dialog_date_filter.html:16
-#: templates/reports/time_summary/dialog_employee_filter.html:20
-#: templates/reports/time_summary/dialog_project_filter.html:26
-#: templates/reports/time_summary/dialog_report_parameters.html:24
-#: templates/salary/v1/jobreg_delete_dialog.html:13
-#: templates/salary/v1/jobreg_delete_dialog.html:14
-#: templates/salary/v1/jobreg_form.html:49
-#: templates/salary/v2/jobreg_delete_dialog.html:13
-#: templates/salary/v2/jobreg_delete_dialog.html:14
-#: templates/salary/v2/jobreg_form.html:105
-msgid "Cancel"
-msgstr "Atšaukti"
-
 #: templates/prjdash/assign_employees.html:40
 #: templates/prjdash/assign_employees.html:43
 msgid "Assign"
 msgstr "Priskirti"
-
-#: templates/prjdash/posted_time_dialog.html:3
-#: templates/salary/v1/jobreg_delete_dialog.html:3
-#: templates/salary/v2/jobreg_delete_dialog.html:3
-msgid "Warning"
-msgstr "Dėmesio"
-
-#: templates/prjdash/posted_time_dialog.html:5
-#: templates/salary/v1/jobreg_delete_dialog.html:5
-msgid "Do you really want to delete this record?"
-msgstr "Ar tikrai norite ištrinti įrašą?"
-
-#: templates/prjdash/posted_time_dialog.html:6
-#: templates/salary/v1/jobreg_delete_dialog.html:6
-msgid "If you will confirm, the record will be irrecoverably deleted."
-msgstr "Jei patvirtinsite, pasirinktas įrašas bus negrįžtamai ištrintas."
-
-#: templates/prjdash/posted_time_dialog.html:9
-#: templates/prjdash/posted_time_dialog.html:10
-#: templates/reports/time_summary/dialog_date_filter.html:11
-#: templates/reports/time_summary/dialog_date_filter.html:12
-#: templates/salary/v1/jobreg_delete_dialog.html:9
-#: templates/salary/v1/jobreg_delete_dialog.html:10
-#: templates/salary/v2/jobreg_delete_dialog.html:9
-#: templates/salary/v2/jobreg_delete_dialog.html:10
-msgid "Confirm"
-msgstr "Patvirtinti"
 
 #: templates/prjdash/posted_time_form.html:6
 msgid ""
@@ -906,14 +959,6 @@ msgid "To create a new line fill in values on the right and click Save."
 msgstr ""
 "Jei norite pridėti naują įrašą, užpildykite laukų reikšmes dešiniau ir "
 "spauskite Išsaugoti."
-
-#: templates/prjdash/posted_time_form.html:44
-#: templates/prjdash/print_timelist.html:96
-#: templates/reports/time_summary/dialog_date_filter.html:7
-#: templates/salary/v1/jobreg_form.html:14
-#: templates/salary/v2/jobreg_form.html:56
-msgid "to"
-msgstr "iki"
 
 #: templates/prjdash/posted_time_form.html:79
 #: templates/salary/v1/jobreg_form.html:44
@@ -1262,6 +1307,11 @@ msgstr "Skaičiuoti"
 msgid "Export to"
 msgstr "Eksportuoti į"
 
+#: templates/reports/time_summary/time_table_header.html:19
+#: templates/staff/v1/staff_line.html:48
+msgid "absences"
+msgstr "pravaikštos"
+
 #: templates/salary/base_wtr.html:6
 msgid "Working time registration in project "
 msgstr "Darbo laiko registravimas projekte"
@@ -1289,6 +1339,69 @@ msgstr "Ar tikrai norite ištrinti šią eilutę?"
 #: templates/salary/v2/jobreg_delete_dialog.html:6
 msgid "If you will confirm, the line will be deleted."
 msgstr "Jei patvirtinsite, pasirinkta eilutė bus ištrinta."
+
+#: templates/staff/v1/calendar/cal_form.html:6
+msgid "not required"
+msgstr "nebūtina"
+
+#: templates/staff/v1/calendar/cal_form.html:10
+msgid "date from"
+msgstr "data nuo"
+
+#: templates/staff/v1/calendar/cal_form.html:13
+msgid "date to"
+msgstr "data iki"
+
+#: templates/staff/v1/calendar/cal_form.html:38
+msgid "edit record"
+msgstr "redaguoti įrašą"
+
+#: templates/staff/v1/calendar/calendar.html:36
+msgid "edit"
+msgstr "redaguoti"
+
+#: templates/staff/v1/calendar/calendar.html:37
+msgid "delete"
+msgstr "trinti"
+
+#: templates/staff/v1/calendar/calendar.html:72
+msgid "new record"
+msgstr "naujas įrašas"
+
+#: templates/staff/v1/calendar/empl_cal.html:24
+#: templates/staff/v1/staff.html:38
+msgid "staff"
+msgstr "personalas"
+
+#: templates/staff/v1/calendar/empl_cal.html:35
+msgid "new"
+msgstr "naujas"
+
+#: templates/staff/v1/calendar/empl_cal.html:36
+msgid "delete selected"
+msgstr "ištrinti pasirinktus"
+
+#: templates/staff/v1/staff_line.html:21
+msgid "nearest holidays"
+msgstr "artimiausios atostogos"
+
+#: templates/staff/v1/staff_line.html:24
+msgid "nearest"
+msgstr "artimiausios"
+
+#: templates/staff/v1/staff_line.html:27
+msgid "no entries"
+msgstr "įrašų nėra"
+
+#: templates/staff/v1/staff_line.html:34
+msgid "self notifications"
+msgstr "darbuotojo pranešti sirgimai"
+
+#~ msgid "time from"
+#~ msgstr "laikas nuo"
+
+#~ msgid "time to"
+#~ msgstr "laikas iki"
 
 #~ msgid "Company site admin"
 #~ msgstr "VitasBygg administravimas"
