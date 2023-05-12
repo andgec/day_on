@@ -1,0 +1,85 @@
+<div class="tool-filter"> 
+	<div class="tool-col">
+		<div class="tool-field ok">
+			<div class="label">{{ _('Date from') }}</div>
+			<div class="drop-input">
+				<input type="text" id="datepicker-from">
+			</div>
+		</div>
+		<div class="tool-field ok">
+			<div class="label">**{{ _('date to')|capfirst }}**</div>
+			<div class="drop-input">
+				<input type="text" id="datepicker-to">
+			</div>
+		</div>
+	</div>
+
+	<div class="tool-col">
+		<div class="tool-field ok">
+			<div class="label">{{_('Employees')|capfirst}}</div>
+			<div class="input" id="employee_input">
+				<select data-placeholder="{{_('Select employees...')}}" id="select-employees" class="js-s2" multiple tabindex="3">
+					<option value=""></option>
+					<optgroup>
+					{% for employee in employees %}
+						<option value="{{employee.1}}">{{employee.0}}</option>
+					{% endfor %}
+					</optgroup>
+				</select>
+			</div>
+		</div>
+
+		<div class="tool-field ok">
+			<div class="label"> {{ _('Items')|capfirst }} </div>
+			<div class="input" id="item_input"-->
+				{% if fvisible.item or fvisible.item_and_description %}
+				<select data-placeholder="{{_('Select tasks...')}}" id="select-tasks" class="js-s2" multiple tabindex="4">
+					<option value=""></option>
+					<optgroup>
+					{% for item in items %}
+					{% ifchanged item.0 %}
+						</optgroup>
+						<optgroup label="{{item.0}}">
+					{% endifchanged %}
+						<option value="{{item.2}}">{{item.1}}</option>
+					{% endfor %}
+					</optgroup>
+				</select>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="tool-btn">
+		<script>
+            /* Change URL on before refresh is clicked */
+            /* kam šitas? */
+            /*
+            window.onbeforeunload = function(e) {
+                location.href = getUrl();
+            };*/
+            /* --------------------------------------- */
+            function btnFilterClick(){
+                f = document.state.toolbar.filters;
+                f.props = {};
+                fp = f.props;
+                fp.date_from = $("#datepicker-from")[0].value;
+                fp.date_to = $("#datepicker-to")[0].value;
+                fp.item_ids = $("#select-tasks").val();
+                fp.employee_ids = $("#select-employees").val();
+                window.location.replace(getUrl());
+            };
+            function btnShowAllClick(){
+                f = document.state.toolbar.filters;
+                f.props = {};
+                fp = f.props;
+                fp.date_from = '';
+                fp.date_to = '';
+                fp.item_ids = '';
+                fp.employee_ids = '';
+                window.location.replace(getUrl());
+            }
+		</script>
+		<button class="btool-save" title = {{ _('apply') | capfirst }} onclick="btnFilterClick()">{{ _('apply') | capfirst }}</button>
+        <button class="btool-clear-filters" title = "{{ _('Show all') | capfirst }}" onclick="btnShowAllClick()">{{ _('Show all') | capfirst }}</button>
+	</div>
+</div>

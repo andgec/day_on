@@ -65,6 +65,17 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+def dict2str(dict):
+    """
+    Converts all dictionary keys and values to strings
+    Used for templates as template is unable to fetch advanced python data types
+    """
+    resdict = {}
+    for key, value in dict.items():
+        resdict[str(key)] = '' if value is None else str(value)
+    return resdict
+
+
 def write_log_message(user, text, view=None):
     db_logger = logging.getLogger('db')
     message = ''

@@ -1,6 +1,7 @@
 				<form action = "" method = "post">
 				{% csrf_token %}
 					<tr class="edit-row">
+						<td></td>
 						<td class = "active"
 						  {% if mode == 'edit' %}
 						    title="{{_('This line is being edited. Change values on the right and click Save or Cancel.')}}">
@@ -39,20 +40,13 @@
 							{{ form.work_date }}
 						</td>
 						<td>
-							<div style="min-width:130px; float:left;">
-								{{ form.work_time_from.errors }}
-								{{ form.work_time_from }} {{ _('to') }}
-							</div>
-							<div style="min-width:130px;">
-								{{ form.work_time_to.errors }}
-								{{ form.work_time_to }}
-							</div>
+							{{ form.work_time_from.errors }}
+							{{ form.work_time_from }} {{ _('to') }}
+							{{ form.work_time_to.errors }}
+							{{ form.work_time_to }}
 						</td>
 						<td></td>
-						<td id="num-col" style="text-align:right">
-							{{ form.is_overtime.errors }}
-							{{ form.is_overtime }}
-						</td>
+						<!--
 						<td id="num-col">
 							{{ form.distance.errors }}
 							{{ form.distance }}
@@ -73,19 +67,14 @@
 							{{ form.diet.errors }}
 							{{ form.diet }}
 						</td>
-						<!-- td>  -->
+						-->
 						<td id="button-save-col">
-							<div {% if mode == 'edit' %}style="min-width: 125px"{% endif %}>
-								<button class="btn-create" title = {{ _('Register') }} type="submit">
-									<!-- i class="fa fa-plus-circle"></i>  -->
-									<i class="fa fa-save"></i>
-								</button>
-								&nbsp&nbsp
-								{% if mode == 'edit' %}
-								<a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' location=location project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
-								{% endif %}
-							<div>
+							<button class="btn-create" title = {{ _('Register') }} type="submit">
+								<!-- i class="fa fa-plus-circle"></i>  -->
+								<i class="fa fa-save"></i>
+							</button>
+							&nbsp&nbsp
+							{% if mode == 'edit' %}
+							  <a class="btn-edit" title = {{ _('Cancel') }} href={% url 'pdash-time-review' location=location project_id=project.id %}><i class="fa fa-undo-alt"></i></a>
+							{% endif %}
 						</td>
-
-					</tr>
-				</form>

@@ -3,6 +3,7 @@ psycopg2-binary==2.9.3
 pytz==2018.5
 django-countries==5.3.2
 django-debug-toolbar==1.11.1
+django-debug-toolbar==1.11.1
 django-select2==6.3.1
 django-parler==1.9.2
 boto==2.49.0
@@ -17,7 +18,7 @@ webencodings==0.5.1
 xhtml2pdf==0.2.3
 babel==2.10.3
 django-wkhtmltopdf==3.2.0
-urllib3==1.26.5
+urllib3==1.26.7
 django-db-logger==0.1.7
 XlsxWriter==1.2.2
 django-maintenancemode==0.11.3

@@ -1,5 +1,9 @@
 /* OnClick menu */
 
+#user-tools{
+  user-select: none;
+}
+
 /* The container <div> - needed to position the dropdown content */
 #dropdown {
   user-select: none;

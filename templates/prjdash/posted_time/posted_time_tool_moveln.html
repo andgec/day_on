@@ -1,0 +1,31 @@
+<div class="tool-move-lines"> 
+	<div class="tool-col">
+		<div class="tool-field ok">
+			<div class="label">* pažymėtos eilutės*</div>
+			<div class="drop-input" id="date_input">
+				{{ form.work_date.errors }}
+				{{ form.work_date }}
+			</div>
+		</div>
+	</div>
+	<div class="tool-col">
+		<div class="tool-field ok">
+			<div class="label">* perkelti į projektą *</div>
+			<div class="input" id="project">
+				<select name="cars" id="cars">
+				<option value="volvo">Volvo</option>
+				<option value="saab">Saab</option>
+				<option value="mercedes">Mercedes</option>
+				<option value="audi">Audi</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="tool-btn">
+		<button class="btool-save" title = {{ _('Apply') }} type="submit">{{ _('Apply') }}</button>
+		<!--button class="btn-create" title = {{ _('Register') }} type="submit">
+			<i class="fa fa-save"></i>
+		</button-->
+	</div>
+
+</div>

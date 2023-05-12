@@ -1,6 +1,9 @@
+import datetime
+import operator
+from functools import reduce
 from django.shortcuts import render, redirect
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 #from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.decorators import method_decorator
 from django.views import View
 from receivables.models import Project
-from shared.utils import get_contenttypes, none2zero
+from shared.utils import get_contenttypes, str2bool, none2zero
 from django.db import connection
 from .forms import PDashProjectForm, PDashAssignEmployees, ProjectDashTimeReviewForm
 #from botocore.vendored.requests.api import request
@@ -17,6 +20,7 @@ from receivables.models import WorkTimeJournal
 from inventory.models import Item
 from djauth.models import User
 from general.utils import get_fields_visible
+from shared.utils import dict2str
 
 
 class RecState:
@@ -269,7 +273,7 @@ class ProjectDashboardAssignEmployeesView(View):
 
 @method_decorator(staff_member_required, name='dispatch')
 class ProjectDashboardPostedTimeReview(View):
-    template = 'prjdash/posted_time_review.html'
+    template = 'prjdash/posted_time/posted_time_review.html'
     content_type_id_by_name = None
     form_class = ProjectDashTimeReviewForm
     model = WorkTimeJournal
@@ -286,6 +290,9 @@ class ProjectDashboardPostedTimeReview(View):
             form = self.form_class(instance = self.jr_line if self.state == RecState.EDIT else None, request = request)
         project = Project.objects.select_related('customer').get(id=project_id)
 
+        filters = self.get_filters(request, project)
+        jr_q_list = self.get_journal_qlist(filters)
+
         items = Item.objects.filter(company = request.user.company
                                             ).select_related('item_group'
                                             ).prefetch_related('translations'
@@ -301,9 +308,7 @@ class ProjectDashboardPostedTimeReview(View):
                                         ).order_by('first_name', 'last_name', 'username')
         employees = [(employee.name_or_username(), employee.id) for employee in employees]
 
-        journal_raw = self.model.objects.filter(company = request.user.company,
-                                                content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                object_id = project_id
+        journal_raw = self.model.objects.filter(reduce(operator.and_, jr_q_list)
                                                 ).select_related('item'
                                                 ).select_related('employee'
                                                 ).select_related('employee__user'
@@ -315,16 +320,16 @@ class ProjectDashboardPostedTimeReview(View):
 
         journal_lines = self.get_journal_lines(journal_raw, log_raw) #Adding log information
 
-        journal_totals = self.model.objects.filter(company = request.user.company,
-                                                   content_type = self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)],
-                                                   object_id = project_id).aggregate(Sum('work_time'),
-                                                                                 Sum('overtime_50'),
-                                                                                 Sum('distance'),
-                                                                                 Sum('toll_ring'),
-                                                                                 Sum('ferry'),
-                                                                                 Sum('diet'),
-                                                                                 Sum('parking'),
-                                                                                 )
+        ''' !!! This is not optimal due to extra call to database. Calculate totals from existing resultset '''
+        journal_totals = self.model.objects.filter(reduce(operator.and_, jr_q_list)
+                                                    ).aggregate(Sum('work_time'),
+                                                    Sum('overtime_50'),
+                                                    Sum('distance'),
+                                                    Sum('toll_ring'),
+                                                    Sum('ferry'),
+                                                    Sum('diet'),
+                                                    Sum('parking'),
+                                                    )
         #removed journal_totals['work_time__sum'] = none2zero(journal_totals['work_time__sum']) - none2zero(journal_totals['overtime_50__sum']) #temporary overtime solution
         context = {
                 'location': location,
@@ -339,10 +344,73 @@ class ProjectDashboardPostedTimeReview(View):
                 'journal_lines': journal_lines,
                 'journal_totals': journal_totals,
                 'fvisible': get_fields_visible(request.user.company),
+                'applied_filters': dict2str(filters),
                 }
         return context
 
+    def get_filters(self, request, project):
+        req_vars = request.GET if request.method == 'GET' else request.POST #Read variables either from GET or POST request
+        dtfr = req_vars.get('date-from', None)
+        if dtfr:
+            dtfr = datetime.datetime.strptime(dtfr, "%Y-%m-%d").date()
+        dtto = req_vars.get('date-to', None)
+        if dtto:
+            dtto = datetime.datetime.strptime(dtto, "%Y-%m-%d").date()
+        filters = {
+            #Adding default values and converting string dates to date data type.
+            'project': project.id,
+            'date_from': dtfr,
+            'date_to': dtto,
+            'employees': req_vars.get('employees'),
+            'items': req_vars.get('items'),
+            'company': request.user.company,
+        }
+        return filters
+
+    def get_journal_qlist(self, filters):
+        q_list = [Q(company=filters.get('company'))]
+
+        q_list.append(Q(content_type=self.content_type_id_by_name[(Project._meta.app_label, Project._meta.model_name)]))
+        q_list.append(Q(object_id=filters.get('project')))
+
+        if filters.get('date_from'):
+            q_list.append(Q(work_date__gte=filters.get('date_from')))
+
+        if filters.get('date_to'):
+            q_list.append(Q(work_date__lte=filters.get('date_to')))
+
+        employee_ids = filters.get('employees')
+        if employee_ids:
+            q_list.append(Q(employee_id__in=employee_ids.split(',')))
+
+        item_ids = filters.get('items')
+        if item_ids:
+            q_list.append(Q(item_id__in = item_ids.split(',')))
+
+        return q_list
+
+    def get_filter_data(self, filters):
+        empl_f_dict = {}
+        item_f_dict = {}
+
+        jr = self.model.objects.filter(reduce(operator.and_, jr_q_list)
+                                        ).select_related('item'
+                                        ).select_related('employee'
+                                        ).select_related('employee__user'
+                                        ).order_by('-work_date', 'employee_id', 'work_time_from')
+        for jr_line in jr:
+            empl_f_dict[jr_line.employee_id] = jr.employee.full_name
+            item_f_dict[jr_line.item_id] = jr.item.name
+
+            #sorting example below:
+            #items = [(item.item_group.name, item.name, item.id) for item in items]
+            #items.sort(key = lambda val: (val[0].lower(), val[1].lower(), val[2]))
+
+        return empl_f_dict, item_f_dict
+
+
     def get_journal_lines(self, jr_raw, log_raw):
+
         LOG_LINE = 0
         LOG_TITLE = 1
 
@@ -370,7 +438,7 @@ class ProjectDashboardPostedTimeReview(View):
                               'action': log_line.action_flag,
                               'user': log_line.user.first_name + ' ' + log_line.user.last_name,
                               'time': log_line.action_time.strftime("%Y-%m-%d %H:%M:%S"),
-                              'title': get_log_text(log_line, LOG_TITLE) ,
+                              'title': get_log_text(log_line, LOG_TITLE),
                               'lines': []
                             }
 
@@ -410,8 +478,11 @@ class ProjectDashboardPostedTimeReview(View):
                 jr_line.save()
             finally:
                 form.save(commit=True) #this only writes a log action, not the record itself
-            # Redirect to GET.
-            return redirect('pdash-time-review', location=location, project_id=project_id)
+            #reload page
+            return render(request,
+                          self.template,
+                          self.get_context(request, location, project_id, pk, mode)
+                          )
         else:
             return render(request,
                           self.template,

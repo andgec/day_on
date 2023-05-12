@@ -1,0 +1,63 @@
+<div class="tool-add-line">
+    <form name="toolAddLine" method = "POST">
+        {% csrf_token %}
+        <!-- Hidden fields below are for passing eventual filter parameters to the POST request -->
+        <input type="hidden" id="filter_dateFrom" name="date-from">
+        <input type="hidden" id="filter_dateTo" name="date-to">
+        <input type="hidden" id="filter_emplIds" name="employees">
+        <input type="hidden" id="filter_itemIds" name="items">
+		<div class="tool-col">
+			<div class="tool-field ok" data-tab="add">
+				<div class="label">* darbuotojas *</div>
+				<div class="input" id="employee_input">
+					{{ form.company.errors }}
+					{{ form.company }}
+					{{ form.employee.errors }}
+					{{ form.employee }}
+				</div>
+			</div>
+		    <div class="tool-field ok" data-tab="add">
+				<div class="label">* data *</div>
+				<div class="drop-input" id="date_input">
+					{{ form.work_date.errors }}
+					{{ form.work_date }}
+				</div>
+			</div>
+			<div class="tool-field ok" data-tab="add">
+				<div class="label">* Laikas *</div>
+				<div class="drop-input" id="time_input">
+					{{ form.work_time_from.errors }}
+					{{ form.work_time_from }} {{ _('to') }}
+					{{ form.work_time_to.errors }}
+					{{ form.work_time_to }}
+				</div>
+			</div>
+		</div>
+		<div class="tool-col">
+			<div class="tool-field ok" data-tab="add">
+				<div class="label"> * darbas * </div>
+				<div class="input" id="item_input">
+					{{ form.item.errors }}
+					{{ form.item }}
+				</div>
+			</div>
+			<div class="tool-field ok" data-tab="add">
+				<div class="label">* aprašymas *</div>
+				<div class="input" id="description_input">
+					{{ form.description.errors }}
+					<div class="treg_form_descr">{{ form.description }}</div>
+				</div>
+			</div>
+		</div>
+		<div class="tool-btn">
+            <script>
+                //Methond for the Cancel button
+                function btnAddCancelClick() {
+                    location.href = getUrl();
+                };
+            </script>
+			<button class="btool-save" title = {{ _('Register') }} type="submit">{{ _('Register') }}</button>
+            <button class="btool-save" title = {{ _('Cancel') }} type="button" onclick="btnAddCancelClick()">{{ _('Cancel') }}</button>
+		</div>
+    </form>
+</div>
