@@ -11,7 +11,7 @@ django-s3-folder-storage==0.5
 django-storages==1.7.1
 Pillow==9.2.0
 html5lib==1.0.1
-pyPdf2==1.27.5
+pyPdf2==1.27.9
 reportlab==3.5.55
 webencodings==0.5.1
 xhtml2pdf==0.2.3
